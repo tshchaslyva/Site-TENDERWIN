@@ -1,0 +1,14 @@
+// Налаштування Cloudflare Workers для сайту TenderWin.
+// Публікується лише вміст папки site/ як статичний сайт (без серверного коду).
+// "name" має збігатися з назвою проєкту в Cloudflare (site-tenderwin).
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "site-tenderwin",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "observability": { "enabled": true }
+}
