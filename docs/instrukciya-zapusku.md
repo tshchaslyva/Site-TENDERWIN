@@ -131,16 +131,45 @@ Cloudflare має перенести їх сам, а знімок знадоби
 
 ---
 
-## Крок 5. Прив’язати домен до сайту (5 хвилин)
+## Крок 5. Прив’язати домен до сайту (10 хвилин)
 
-Виконуйте тільки після того, як `tenderwin.in.ua` став **Active**.
+Виконуйте тільки після того, як `tenderwin.in.ua` став **Active**. Так налаштовано і працює на 27.09.2026.
 
-1. **Workers & Pages** → проєкт `site-tenderwin` → вкладка **Domains** у верхньому рядку (поруч з Observability; у старішому інтерфейсі — **Settings** → **Domains & Routes**) → **Add** / **+ Add domain** → **Custom domain**.
-2. Введіть `tenderwin.in.ua` → **Add domain**. Cloudflare сам створить запис і сертифікат HTTPS.
-3. Повторіть для `www.tenderwin.in.ua`.
-4. Через 1–15 хвилин (зрідка до години) відкрийте `https://tenderwin.in.ua`: має бути ваш сайт із замочком в адресному рядку.
+### 5.1. Адреса з www: через Add Domain
 
-> ⚠️ Не створюйте запис для сайту вручну в розділі DNS: сайт видаватиме помилку 522. Тільки через вкладку **Domains** → **Custom domain**.
+1. **Compute** → **Workers & Pages** → проєкт `site-tenderwin` → вкладка **Domains** (у верхньому рядку, між Observability і Access).
+2. **+ Add Domain** → у полі **Domain name** введіть `www.tenderwin.in.ua` → **Continue** → підтвердьте.
+   Cloudflare сам створить DNS-запис типу **Worker** і сертифікат HTTPS.
+
+### 5.2. Адреса без www: запис `100::` + маршрут
+
+Кнопка **Add Domain** сприймає `tenderwin.in.ua` без www як спробу додати новий сайт і відповідає
+«already active on Cloudflare». Тому для адреси без www використовуємо офіційний спосіб «маршрут + порожній запис»:
+
+1. DNS-записи домену: `https://dash.cloudflare.com/<ваш-акаунт>/tenderwin.in.ua/dns/records`
+   (або **Domains** → **Overview** → `tenderwin.in.ua` → **DNS** → **Records**) → **+ Додати запис**:
+
+   | Тип | Ім’я | IPv6-адреса | Статус проксі | TTL |
+   |---|---|---|---|---|
+   | `AAAA` | `@` | `100::` | **Проксі** (помаранчева хмарка) | Авто |
+
+   `100::` — спеціальна «порожня» адреса: запис лише каже Cloudflare приймати відвідувачів `tenderwin.in.ua`.
+2. Проєкт `site-tenderwin` → вкладка **Domains** → **+ Add Route**:
+   - **Zone:** `tenderwin.in.ua`;
+   - **Route:** `tenderwin.in.ua/*`. Саме так: **без** `*.` на початку, бо `*.tenderwin.in.ua/*` охоплює лише піддомени;
+   - **Failure mode:** за замовчуванням → **Add Route**.
+
+**Має вийти.** У таблиці **Custom Domains and Routes** два рядки: `tenderwin.in.ua/*` (Route) і `www.tenderwin.in.ua` (Production).
+У DNS-записах два записи: `AAAA tenderwin.in.ua 100::` і `Worker www.tenderwin.in.ua site-tenderwin`, обидва Proxied.
+
+### 5.3. Перевірка
+
+Відкрийте `https://tenderwin.in.ua` і `https://www.tenderwin.in.ua` у вікні інкогніто. Якщо адреса без www показує
+`DNS_PROBE_FINISHED_NXDOMAIN`, це браузер чи провайдер пам’ятають стару відповідь «домену немає» (до 30–60 хв).
+Щоб прискорити: `Win+R` → `cmd` → `ipconfig /flushdns`, у Chrome — `chrome://net-internals/#dns` → **Clear host cache**.
+Або перевірте з телефона через мобільний інтернет.
+
+> ℹ️ Chrome ховає `www.` в адресному рядку, тож обидві адреси там виглядають однаково.
 
 **Щоб `www` вело на адресу без `www`** (необов’язково, але правильно для Google): домен `tenderwin.in.ua` → **Rules** →
 **Redirect Rules** → **Create rule** → шаблон **Redirect from WWW to root** (якщо шаблону немає: умова *Hostname equals
@@ -244,6 +273,7 @@ Claude внесе зміну в репозиторій, і сайт оновит
 |---|---|---|
 | Домен понад добу «Pending» | NS у thehost замінено не повністю | Має бути рівно два сервери Cloudflare і жодного іншого; за потреби напишіть у підтримку thehost |
 | Error 522 | Запис для сайту створено вручну в DNS | Видалити його й прив’язати домен через вкладку **Domains** → **Custom domain** |
+| `DNS_PROBE_FINISHED_NXDOMAIN` для адреси без www | Немає запису `AAAA @ 100::` або браузер пам’ятає стару відповідь | Перевірити запис (крок 5.2); `ipconfig /flushdns`; зачекати до години |
 | Браузер лається на сертифікат | Сертифікат ще випускається | Зачекати до години |
 | Відкривається стара сторінка-заглушка thehost | Лишилися старі A/CNAME-записи | Видалити їх у Cloudflare → **DNS**, прив’язку робити лише через вкладку **Domains** → **Custom domain** |
 | Форма відкриває поштову програму замість «Дякуємо» | Не вставлено ключ Web3Forms | Крок 6 |
