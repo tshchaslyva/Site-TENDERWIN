@@ -1,7 +1,7 @@
 # TenderWin — запуск сайту на tenderwin.in.ua
 
 **Для кого:** Віталій Щасливий. Інструкція розрахована на людину без досвіду програмування.
-**Платформа:** Cloudflare Pages + Cloudflare DNS, тариф Free (0 грн). Чому саме вона — див. [порівняння хостингів](hosting-porivnyannya.md).
+**Платформа:** Cloudflare (Workers зі статичним сайтом) + Cloudflare DNS, тариф Free (0 грн). Чому саме вона — див. [порівняння хостингів](hosting-porivnyannya.md).
 **Домени:**
 
 | Домен | Для чого | Що з ним робимо |
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | 1 | Зливаєте pull request у `main` | 1 хв | Сайт готовий до публікації |
 | 2 | Створюєте акаунт Cloudflare | 10 хв | Є доступ до хостингу |
-| 3 | Підключаєте GitHub до Cloudflare Pages | 10 хв | Сайт працює на тимчасовій адресі `tenderwin.pages.dev` |
+| 3 | Підключаєте GitHub до Cloudflare | 10 хв | Сайт працює на тимчасовій адресі `…workers.dev` |
 | 4 | Додаєте `tenderwin.in.ua` у Cloudflare і міняєте NS у thehost | 15 хв + від 1 до 24 год | Cloudflare керує доменом |
 | 5 | Прив’язуєте домен до сайту | 5 хв | Сайт відкривається на https://tenderwin.in.ua |
 | 6 | Вмикаєте форму заявки | 10 хв | Заявки приходять на vitalii@tenderwin.com.ua |
@@ -54,36 +54,38 @@
 
 ---
 
-## Крок 3. Запустити сайт у Cloudflare Pages (10 хвилин)
+## Крок 3. Запустити сайт у Cloudflare (10 хвилин)
 
-1. У Cloudflare в лівому меню: **Workers & Pages** (іноді **Compute (Workers)** → **Workers & Pages**) → **Create application**
-   (або **Create**) → вкладка **Pages** → **Connect to Git** (**Import an existing Git repository**).
-2. Виберіть **GitHub** → **Connect GitHub**. Відкриється GitHub: дозвольте доступ лише до репозиторію
+У 2026 році Cloudflare за замовчуванням створює проєкт типу **Worker**. Це нормально: у репозиторії вже є файл
+`wrangler.jsonc`, який каже Cloudflare опублікувати папку `site` як звичайний статичний сайт.
+
+1. У Cloudflare в лівому меню: **Compute** → **Workers & Pages** → **Create application** (або **Create**) → **Import a repository**.
+2. Виберіть **GitHub** → **Connect GitHub**. На GitHub дозвольте доступ лише до репозиторію
    `tshchaslyva/Site-TENDERWIN` (**Only select repositories**) → **Install & Authorize**.
-3. Виберіть репозиторій `Site-TENDERWIN` → **Begin setup**. Заповніть:
+3. Виберіть репозиторій `Site-TENDERWIN` і заповніть поля **точно так**:
 
    | Поле | Значення |
    |---|---|
-   | Project name | `tenderwin` |
+   | Project name | `site-tenderwin` (має збігатися з `"name"` у файлі `wrangler.jsonc`) |
+   | Build command | **порожньо**: нічого не пишіть |
+   | Deploy command | `npx wrangler deploy` |
+   | Path / Root directory | `/` |
    | Production branch | `main` |
-   | Framework preset | `None` |
-   | Build command | *залиште порожнім* |
-   | Build output directory | `site` |
 
-4. **Save and Deploy**. За 30–60 секунд з’явиться адреса на кшталт **`https://tenderwin.pages.dev`**.
-   Якщо назва `tenderwin` уже зайнята, Cloudflare додасть до неї кілька символів — це нормально.
+4. **Deploy**. За 30–60 секунд з’явиться адреса на кшталт **`https://site-tenderwin.<ваш-акаунт>.workers.dev`**.
 5. Відкрийте адресу й перевірте: сайт гортається, питання розкриваються, на телефоні внизу є панель «Замовити аналіз / Telegram».
 
 Відтепер **кожна зміна в гілці `main` публікується автоматично** приблизно за хвилину.
 
+> **Якщо збірка впала з помилкою `site: not found`,** у полі Build command помилково вписано `site`.
+> Виправлення: проєкт `site-tenderwin` → **Settings** → **Build** → **Build configuration** → олівець →
+> **Build command** зробити порожнім → **Save** → вкладка **Deployments** → **Retry build** (або дочекайтеся наступної зміни в `main`).
+
 <details>
-<summary>Якщо з GitHub не виходить: запасний спосіб — перетягнути папку</summary>
+<summary>Якщо Cloudflare показує стару форму Pages (поле «Build output directory»)</summary>
 
-1. На GitHub відкрийте репозиторій → зелена кнопка **Code** → **Download ZIP** → розпакуйте.
-2. Cloudflare → **Workers & Pages** → **Create application** → **Pages** → **Upload assets** (**Drag and drop your files**) → назва `tenderwin`.
-3. Перетягніть **вміст** папки `site` (так, щоб `index.html` лежав у корені) → **Deploy site**.
-
-Мінус: кожну зміну доведеться заливати так само вручну. Такий проєкт потім не можна підключити до GitHub.
+Заповніть: Framework preset — `None`, Build command — порожньо, Build output directory — `site`, Production branch — `main`
+→ **Save and Deploy**. Адреса буде виду `tenderwin.pages.dev`. Далі все так само, лише прив’язка домену — у вкладці **Custom domains**.
 </details>
 
 ---
@@ -133,12 +135,12 @@ Cloudflare має перенести їх сам, а знімок знадоби
 
 Виконуйте тільки після того, як `tenderwin.in.ua` став **Active**.
 
-1. **Workers & Pages** → проєкт `tenderwin` → вкладка **Custom domains** → **Set up a custom domain**.
-2. Введіть `tenderwin.in.ua` → **Continue** → **Activate domain**. Cloudflare сам створить запис і сертифікат HTTPS.
+1. **Workers & Pages** → проєкт `site-tenderwin` → **Settings** → **Domains & Routes** → **+ Add** → **Custom domain**.
+2. Введіть `tenderwin.in.ua` → **Add domain**. Cloudflare сам створить запис і сертифікат HTTPS.
 3. Повторіть для `www.tenderwin.in.ua`.
 4. Через 1–15 хвилин (зрідка до години) відкрийте `https://tenderwin.in.ua`: має бути ваш сайт із замочком в адресному рядку.
 
-> ⚠️ Не створюйте запис для сайту вручну в розділі DNS: сайт видаватиме помилку 522. Тільки через **Custom domains**.
+> ⚠️ Не створюйте запис для сайту вручну в розділі DNS: сайт видаватиме помилку 522. Тільки через **Domains & Routes → Custom domain**.
 
 **Щоб `www` вело на адресу без `www`** (необов’язково, але правильно для Google): домен `tenderwin.in.ua` → **Rules** →
 **Redirect Rules** → **Create rule** → шаблон **Redirect from WWW to root** (якщо шаблону немає: умова *Hostname equals
@@ -176,7 +178,7 @@ Cloudflare має перенести їх сам, а знімок знадоби
 
 ### Статистика відвідувань (безкоштовно, без cookie)
 
-**Workers & Pages** → `tenderwin` → **Metrics** → **Web Analytics** → **Enable**.
+Ліве меню Cloudflare → **Analytics & Logs** → **Web Analytics** → **Add a site** → `tenderwin.in.ua` → **Done** (автоматичне підключення для домену в Cloudflare).
 
 ### Google Search Console
 
@@ -232,7 +234,7 @@ Claude внесе зміну в репозиторій, і сайт оновит
 > **Ціна фігурує в шести місцях `index.html`:** картка ціни, наліпка на першому екрані, два описи для пошуку й месенджерів
 > (як `3 499`) і два поля розмітки для Google (як `3499`). Замініть усі. Ціна є і на прев’ю `og.png`: його Claude може перегенерувати.
 
-**Відкат:** Cloudflare → **Workers & Pages** → `tenderwin` → **Deployments** → попередня робоча версія → **⋯** → **Rollback to this deployment**.
+**Відкат:** Cloudflare → **Workers & Pages** → `site-tenderwin` → **Deployments** → попередня робоча версія → **⋯** → **Rollback**.
 
 ---
 
@@ -241,9 +243,9 @@ Claude внесе зміну в репозиторій, і сайт оновит
 | Симптом | Причина | Що робити |
 |---|---|---|
 | Домен понад добу «Pending» | NS у thehost замінено не повністю | Має бути рівно два сервери Cloudflare і жодного іншого; за потреби напишіть у підтримку thehost |
-| Error 522 | Запис для сайту створено вручну в DNS | Видалити його й прив’язати домен через **Custom domains** |
+| Error 522 | Запис для сайту створено вручну в DNS | Видалити його й прив’язати домен через **Domains & Routes → Custom domain** |
 | Браузер лається на сертифікат | Сертифікат ще випускається | Зачекати до години |
-| Відкривається стара сторінка-заглушка thehost | Лишилися старі A/CNAME-записи | Видалити їх у Cloudflare → **DNS**, прив’язку робити лише через **Custom domains** |
+| Відкривається стара сторінка-заглушка thehost | Лишилися старі A/CNAME-записи | Видалити їх у Cloudflare → **DNS**, прив’язку робити лише через **Domains & Routes → Custom domain** |
 | Форма відкриває поштову програму замість «Дякуємо» | Не вставлено ключ Web3Forms | Крок 6 |
 | «Не вдалося надіслати» | Помилка в ключі або вичерпано 250 заявок на місяць | Перевірити ключ і лічильник у кабінеті Web3Forms |
 | Зміни не видно | Кеш браузера або публікація ще триває | `Ctrl+F5`; перевірити **Deployments** |

@@ -9,9 +9,9 @@
 | **Порівняння хостингів** (Cloudflare + 5 альтернатив) | [`docs/hosting-porivnyannya.md`](docs/hosting-porivnyannya.md) |
 | Попередні матеріали (архів) | `tenderwin-sayt-perehlyad.html`, `TENDERWIN_sayt_instrukciya.pdf/.docx`, `Сайт.txt` |
 
-**Хостинг:** Cloudflare Pages (Free), підключений до цього репозиторію. Налаштування проєкту:
-production branch `main`, framework `None`, build command порожній, build output directory `site`.
-Кожна зміна в `main` публікується автоматично.
+**Хостинг:** Cloudflare Workers зі статичним сайтом (Free), підключений до цього репозиторію.
+Налаштування — у `wrangler.jsonc` (публікується папка `site`). У проєкті Cloudflare: build command порожній,
+deploy command `npx wrangler deploy`, root `/`, production branch `main`. Кожна зміна в `main` публікується автоматично.
 
 **Домени:** сайт — `tenderwin.in.ua` (DNS у Cloudflare); пошта — `vitalii@tenderwin.com.ua` (домен лишається в thehost, не чіпати).
 
