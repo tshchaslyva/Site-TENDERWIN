@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tenderwin.com.ua/sitemap.xml
+Sitemap: https://tenderwin.in.ua/sitemap.xml

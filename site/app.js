@@ -81,7 +81,7 @@
       "Ситуація: " + val("Ситуація")
     ].join("\n");
     return "mailto:" + EMAIL +
-      "?subject=" + encodeURIComponent("Заявка з сайту tenderwin.com.ua") +
+      "?subject=" + encodeURIComponent("Заявка з сайту tenderwin.in.ua") +
       "&body=" + encodeURIComponent(body);
   }
 
