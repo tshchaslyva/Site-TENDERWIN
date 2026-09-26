@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TenderWin — розбір відхилення в тендері: оскаржувати чи ні</title>
+<meta name="description" content="Розбираємо підставу відхилення вашої пропозиції за документами і даємо відповідь із доказами: є сенс оскаржувати чи ні. Фіксовані ціни. Спеціалізація — будівельні закупівлі.">
+<link rel="canonical" href="https://tenderwin.in.ua/">
+<meta name="theme-color" content="#0B1B2B">
+<meta name="robots" content="index, follow">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:site_name" content="TenderWin">
+<meta property="og:url" content="https://tenderwin.in.ua/">
+<meta property="og:title" content="TenderWin — розбір відхилення в тендері: оскаржувати чи ні">
+<meta property="og:description" content="Розбираємо підставу відхилення за документами і даємо відповідь із доказами. Рекомендація «не оскаржувати» — теж результат.">
+<meta property="og:image" content="https://tenderwin.in.ua/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230B1B2B'/%3E%3Cpath d='M14 20h36M32 20v26M22 44h20' stroke='%23D99A2B' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+
+<style>
+:root{
+  --ink:#0B1B2B; --ink-2:#122c44; --ink-3:#1b3c58;
+  --paper:#ffffff; --paper-2:#f4f6f9; --paper-3:#eaeef3;
+  --line:#dde4ec; --line-dark:#24425e;
+  --text:#101d2b; --muted:#546678; --muted-dark:#9db3c8;
+  --gold:#e0a53c; --gold-deep:#8a5a10; --gold-soft:#fdf6e8;
+  --green:#16704f; --green-soft:#e9f5f0;
+  --red:#a32218; --red-soft:#fdeceb;
+  --radius:14px;
+  --wrap:1140px;
+  --shadow:0 1px 2px rgba(16,29,43,.06), 0 8px 24px -12px rgba(16,29,43,.18);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; -webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--text);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums;
+}
+img{max-width:100%}
+a{color:inherit}
+h1,h2,h3,h4{line-height:1.18; letter-spacing:-.02em; margin:0; text-wrap:balance}
+h1{font-size:clamp(2rem,5.2vw,3.35rem); font-weight:800}
+h2{font-size:clamp(1.55rem,3.4vw,2.35rem); font-weight:800}
+h3{font-size:1.16rem; font-weight:700; letter-spacing:-.01em}
+p{margin:0}
+.wrap{max-width:var(--wrap); margin-inline:auto; padding-inline:20px}
+section{padding-block:clamp(56px,8vw,96px)}
+.eyebrow{
+  font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold-deep); margin-bottom:14px;
+}
+.dark .eyebrow{color:var(--gold)}
+.lede{font-size:clamp(1.02rem,1.9vw,1.2rem); color:var(--muted); max-width:62ch}
+.dark .lede{color:var(--muted-dark)}
+.dark{background:var(--ink); color:#eaf1f8}
+.alt{background:var(--paper-2)}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:.55em;
+  padding:.86em 1.5em; border-radius:10px; font-weight:700; font-size:1rem;
+  text-decoration:none; border:1.5px solid transparent; cursor:pointer;
+  transition:transform .12s ease, background .15s ease, border-color .15s ease;
+  line-height:1.2; text-align:center;
+}
+.btn:active{transform:translateY(1px)}
+.btn-gold{background:var(--gold); color:#2a1a02; border-color:var(--gold)}
+.btn-gold:hover{background:#efb552; border-color:#efb552}
+.btn-ink{background:var(--ink); color:#fff; border-color:var(--ink)}
+.btn-ink:hover{background:var(--ink-2); border-color:var(--ink-2)}
+.btn-ghost{background:transparent; color:inherit; border-color:currentColor; opacity:.92}
+.btn-ghost:hover{opacity:1; background:rgba(255,255,255,.07)}
+.btn-ghost-dark{background:transparent; color:var(--ink); border-color:var(--line)}
+.btn-ghost-dark:hover{background:var(--paper-2)}
+
+/* ---------- header ---------- */
+header{
+  position:sticky; top:0; z-index:50; background:rgba(11,27,43,.94);
+  backdrop-filter:saturate(160%) blur(10px); border-bottom:1px solid var(--line-dark);
+}
+.nav{display:flex; align-items:center; gap:22px; height:66px}
+.logo{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.02em;
+  font-size:1.18rem; color:#fff; text-decoration:none; flex-shrink:0}
+.logo span{color:var(--gold)}
+.logo svg{flex-shrink:0}
+.nav-links{display:flex; gap:18px; margin-left:auto; min-width:0; overflow:hidden;
+  font-size:.95rem; font-weight:600}
+.nav-links a{color:#c7d6e4; text-decoration:none; white-space:nowrap}
+.nav-links a:hover{color:#fff}
+.nav-cta{display:flex; align-items:center; gap:14px; flex-shrink:0}
+.nav-phone{color:#fff; text-decoration:none; font-weight:700; white-space:nowrap; font-size:.97rem}
+.nav-phone:hover{color:var(--gold)}
+@media(max-width:1180px){ .nav-links{display:none} }
+@media(max-width:640px){
+  .nav{height:60px; gap:12px}
+  .nav-cta .btn{display:none}
+  .logo{font-size:1.05rem}
+}
+
+/* ---------- hero ---------- */
+.hero{
+  background:
+    radial-gradient(1100px 460px at 78% -8%, rgba(224,165,60,.16), transparent 62%),
+    radial-gradient(760px 420px at 8% 108%, rgba(60,130,190,.16), transparent 60%),
+    var(--ink);
+  color:#eaf1f8; padding-block:clamp(56px,8.5vw,104px);
+  border-bottom:1px solid var(--line-dark);
+}
+.hero h1{color:#fff}
+.hero .lede{margin-top:20px; font-size:clamp(1.06rem,2.1vw,1.28rem); color:#c2d3e2; max-width:60ch}
+.hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:32px}
+.hero-trust{
+  display:flex; flex-wrap:wrap; gap:10px 26px; margin-top:34px;
+  padding-top:26px; border-top:1px solid var(--line-dark);
+  font-size:.93rem; color:#9db3c8;
+}
+.hero-trust b{color:#e6eef6; font-weight:600}
+
+/* ---------- alert strip ---------- */
+.strip{background:var(--gold-soft); border-bottom:1px solid #f0dcb4; padding-block:16px}
+.strip .wrap{display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; justify-content:space-between}
+.strip p{font-size:.98rem; color:#4a3608}
+.strip b{color:#2a1f04}
+.strip a.phone{font-weight:800; color:#7a4f0c; text-decoration:none; white-space:nowrap; border-bottom:2px solid rgba(122,79,12,.35)}
+.strip a.phone:hover{border-bottom-color:#7a4f0c}
+
+/* ---------- grids & cards ---------- */
+.grid{display:grid; gap:20px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){ .g3,.g4{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:640px){ .g2,.g3,.g4{grid-template-columns:1fr} }
+
+.card{
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+  padding:26px 24px; box-shadow:var(--shadow);
+}
+.card h3{margin-bottom:9px}
+.card p{color:var(--muted); font-size:.985rem}
+.card .num{
+  display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px;
+  border-radius:9px; background:var(--ink); color:var(--gold); font-weight:800; font-size:.95rem;
+  margin-bottom:14px;
+}
+.sec-head{max-width:74ch; margin-bottom:clamp(30px,4vw,46px)}
+.sec-head p{margin-top:14px}
+
+/* ---------- problem cards (dark) ---------- */
+.dark .card{background:var(--ink-2); border-color:var(--line-dark); box-shadow:none}
+.dark .card p{color:#a8bece}
+.dark .card h3{color:#fff}
+.dark .card .num{background:rgba(224,165,60,.14); color:var(--gold)}
+
+/* ---------- price cards ---------- */
+.price-group{margin-top:34px}
+.price-group > h3{
+  font-size:.82rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--line);
+}
+.price{
+  position:relative; display:flex; flex-direction:column; background:var(--paper);
+  border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow);
+}
+.price.featured{border-color:var(--gold); box-shadow:0 0 0 3px rgba(224,165,60,.16), var(--shadow)}
+.price .tag{
+  position:absolute; top:-11px; left:22px; font-size:.72rem; font-weight:800;
+  letter-spacing:.08em; text-transform:uppercase; background:var(--gold); color:#2a1a02;
+  padding:4px 10px; border-radius:6px; white-space:nowrap;
+}
+/* заголовки в ряду з чотирьох карток мають однакову висоту, щоб ціни вишикувались */
+@media(min-width:901px){ .g4 .price h4{min-height:3.6em} }
+.price h4{font-size:1.1rem; font-weight:700; letter-spacing:-.01em; margin-bottom:8px}
+.price .amount{
+  font-size:1.75rem; font-weight:800; letter-spacing:-.03em; color:var(--ink);
+  margin:10px 0 4px; display:flex; align-items:baseline; gap:.28em; flex-wrap:wrap;
+}
+.price .amount small{font-size:.92rem; font-weight:600; color:var(--muted); letter-spacing:0}
+.price .desc{color:var(--muted); font-size:.95rem; margin-top:8px; flex-grow:1}
+.price .note{
+  margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);
+  font-size:.86rem; color:var(--green); font-weight:600;
+}
+.fineprint{
+  margin-top:30px; padding:20px 22px; background:var(--paper-2);
+  border:1px solid var(--line); border-left:4px solid var(--ink); border-radius:10px;
+  font-size:.94rem; color:var(--muted);
+}
+.fineprint b{color:var(--text)}
+.fineprint + .fineprint{margin-top:14px}
+
+/* ---------- calculator ---------- */
+.calc{
+  background:var(--ink); color:#eaf1f8; border-radius:18px; padding:clamp(26px,4vw,40px);
+  display:grid; gap:30px; grid-template-columns:1fr 1.05fr; align-items:start;
+}
+@media(max-width:820px){ .calc{grid-template-columns:1fr} }
+.calc h3{color:#fff; font-size:1.35rem}
+.calc .lede{color:#a8bece; margin-top:10px; font-size:1rem}
+.calc label{display:block; font-size:.88rem; font-weight:700; color:#c2d3e2; margin-bottom:8px}
+.calc-input{position:relative}
+.calc input[type=text]{
+  width:100%; font:inherit; font-size:1.3rem; font-weight:700; letter-spacing:-.01em;
+  padding:14px 58px 14px 16px; border-radius:11px; border:1.5px solid var(--line-dark);
+  background:#0a1624; color:#fff; -moz-appearance:textfield;
+}
+.calc input:focus{outline:2px solid var(--gold); outline-offset:1px; border-color:transparent}
+.calc-input .cur{position:absolute; right:16px; top:50%; transform:translateY(-50%); color:#7d96ab; font-weight:700}
+.calc .hintrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+.chip{
+  background:rgba(255,255,255,.07); border:1px solid var(--line-dark); color:#c2d3e2;
+  font:inherit; font-size:.84rem; font-weight:600; padding:6px 11px; border-radius:99px; cursor:pointer;
+}
+.chip:hover{background:rgba(224,165,60,.16); color:#fff; border-color:var(--gold)}
+.calc-out{display:grid; gap:12px}
+.calc-row{
+  background:var(--ink-2); border:1px solid var(--line-dark); border-radius:12px;
+  padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.calc-row .t{font-size:.97rem; color:#c2d3e2; font-weight:600; max-width:23ch}
+.calc-row .v{font-size:1.5rem; font-weight:800; color:var(--gold); letter-spacing:-.02em; white-space:nowrap}
+.calc-note{font-size:.87rem; color:#8ba4ba; margin-top:4px}
+
+/* ---------- honesty ---------- */
+.honest{display:grid; gap:16px}
+.honest li{
+  list-style:none; background:var(--paper); border:1px solid var(--line);
+  border-left:4px solid var(--red); border-radius:10px; padding:20px 22px;
+}
+.honest b{display:block; margin-bottom:5px; font-size:1.03rem}
+.honest span{color:var(--muted); font-size:.97rem}
+.honest ul{margin:0; padding:0}
+
+/* ---------- steps ---------- */
+.steps{counter-reset:s; display:grid; gap:0}
+.step{
+  display:grid; grid-template-columns:auto 1fr; gap:20px; padding:26px 0;
+  border-bottom:1px solid var(--line);
+}
+.step:last-child{border-bottom:0}
+.step .dot{
+  width:44px; height:44px; border-radius:12px; background:var(--ink); color:var(--gold);
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.05rem;
+}
+.step .free{
+  display:inline-block; font-size:.72rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase;
+  background:var(--green-soft); color:var(--green); padding:3px 8px; border-radius:5px; margin-left:9px;
+  vertical-align:2px;
+}
+.step .paid{background:var(--paper-3); color:var(--muted)}
+.step p{color:var(--muted); margin-top:7px; font-size:.985rem; max-width:70ch}
+
+/* ---------- about ---------- */
+.about{display:grid; grid-template-columns:1.1fr 1fr; gap:36px; align-items:start}
+@media(max-width:820px){ .about{grid-template-columns:1fr} }
+.about-facts{display:grid; gap:14px}
+.fact{
+  background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:18px 20px;
+}
+.fact b{display:block; font-size:1.02rem; margin-bottom:4px}
+.fact span{color:var(--muted); font-size:.94rem}
+
+/* ---------- faq ---------- */
+.faq details{
+  border:1px solid var(--line); border-radius:12px; background:var(--paper);
+  margin-bottom:12px; overflow:hidden;
+}
+.faq details[open]{border-color:var(--ink-3); box-shadow:var(--shadow)}
+.faq summary{
+  cursor:pointer; padding:19px 52px 19px 22px; font-weight:700; font-size:1.03rem;
+  list-style:none; position:relative;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"+"; position:absolute; right:20px; top:50%; transform:translateY(-50%);
+  font-size:1.5rem; font-weight:400; color:var(--muted); line-height:1;
+}
+.faq details[open] summary::after{content:"–"}
+.faq .answer{padding:0 22px 21px; color:var(--muted); font-size:.985rem; max-width:78ch}
+.faq .answer p + p{margin-top:11px}
+
+/* ---------- form ---------- */
+.form-wrap{display:grid; grid-template-columns:1fr .85fr; gap:40px; align-items:start}
+@media(max-width:900px){ .form-wrap{grid-template-columns:1fr} }
+form .row{display:grid; gap:16px; grid-template-columns:1fr 1fr; margin-bottom:16px}
+@media(max-width:560px){ form .row{grid-template-columns:1fr} }
+.field label{display:block; font-size:.87rem; font-weight:700; margin-bottom:7px; color:#c2d3e2}
+.field input, .field textarea{
+  width:100%; font:inherit; font-size:1rem; padding:12px 14px; border-radius:10px;
+  border:1.5px solid var(--line-dark); background:#0a1624; color:#fff;
+}
+.field textarea{min-height:112px; resize:vertical}
+.field input::placeholder, .field textarea::placeholder{color:#63798d}
+.field input:focus, .field textarea:focus{outline:2px solid var(--gold); outline-offset:1px; border-color:transparent}
+.consent{display:flex; gap:11px; align-items:flex-start; margin:6px 0 20px; font-size:.88rem; color:#a8bece}
+.consent input{margin-top:4px; width:17px; height:17px; accent-color:var(--gold); flex-shrink:0}
+.consent a{color:var(--gold)}
+.hp{position:absolute; left:-9999px; opacity:0; height:0; width:0}
+.formmsg{
+  display:none; margin-top:18px; padding:15px 18px; border-radius:10px; font-size:.96rem; font-weight:600;
+}
+.formmsg.ok{display:block; background:var(--green-soft); color:var(--green)}
+.formmsg.err{display:block; background:var(--red-soft); color:var(--red)}
+.contact-card{
+  background:var(--ink-2); border:1px solid var(--line-dark); border-radius:var(--radius); padding:28px 26px;
+}
+.contact-card h3{color:#fff; margin-bottom:18px}
+.contact-line{display:flex; gap:13px; align-items:flex-start; padding:13px 0; border-bottom:1px solid var(--line-dark)}
+.contact-line:last-of-type{border-bottom:0}
+.contact-line .k{font-size:.8rem; color:#8ba4ba; text-transform:uppercase; letter-spacing:.09em; font-weight:700; min-width:74px; padding-top:3px}
+.contact-line .v{font-weight:700; font-size:1.04rem}
+.contact-line .v a{color:#fff; text-decoration:none; border-bottom:1px solid rgba(224,165,60,.5)}
+.contact-line .v a:hover{color:var(--gold)}
+.contact-line .v small{display:block; font-weight:500; font-size:.85rem; color:#8ba4ba; margin-top:3px; letter-spacing:0}
+
+/* ---------- footer ---------- */
+footer{background:#07131f; color:#8ba4ba; padding-block:46px 34px; border-top:1px solid var(--line-dark)}
+.foot-top{display:flex; flex-wrap:wrap; gap:26px; justify-content:space-between; align-items:flex-start}
+.foot-links{display:flex; flex-wrap:wrap; gap:8px 22px; font-size:.92rem}
+.foot-links a{color:#a8bece; text-decoration:none}
+.foot-links a:hover{color:#fff}
+.foot-bottom{
+  margin-top:30px; padding-top:22px; border-top:1px solid var(--line-dark);
+  font-size:.85rem; display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between;
+}
+footer details{margin-top:26px; font-size:.88rem; max-width:80ch}
+footer summary{cursor:pointer; color:#a8bece; font-weight:700; padding:8px 0}
+footer summary:hover{color:#fff}
+footer details p{margin-top:10px; line-height:1.7}
+footer details p + p{margin-top:9px}
+
+/* ---------- мобільна панель дзвінка ---------- */
+.mobilebar{display:none}
+@media(max-width:740px){
+  .mobilebar{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    position:fixed; left:0; right:0; bottom:0; z-index:60;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+    background:rgba(11,27,43,.97); border-top:1px solid var(--line-dark);
+    backdrop-filter:saturate(160%) blur(10px);
+  }
+  .mobilebar .btn{padding:.8em .9em; font-size:.95rem}
+  .mobilebar .btn-ghost{color:#fff}
+  body{padding-bottom:78px}
+}
+
+/* ---------- захист від горизонтального скролу ---------- */
+.grid > *, .calc > *, .form-wrap > *, .about > *, .about-facts > *,
+.steps > *, .step > *, .calc-out > *, .calc-row > *, .strip .wrap > * { min-width:0 }
+input, textarea, select { min-width:0; max-width:100% }
+.contact-line .v, .contact-line .v a, .foot-bottom a, .price .desc, .card p { overflow-wrap:anywhere }
+
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+</style>
+</head>
+<body>
+
+<a href="#zayavka" class="sr">Перейти до форми заявки</a>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo" aria-label="TenderWin — на головну">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="13" fill="#122c44"/>
+        <path d="M14 20h36M32 20v26M22 44h20" stroke="#e0a53c" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+      TENDER<span>WIN</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#pidhid">Підхід</a>
+      <a href="#ciny">Ціни</a>
+      <a href="#kalkulyator">Калькулятор</a>
+      <a href="#yak">Як працюємо</a>
+      <a href="#pytannya">Питання</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="nav-phone" href="tel:+380503101492">+380 50 310 14 92</a>
+      <a class="btn btn-gold" href="#zayavka" style="padding:.6em 1.1em; font-size:.94rem">Безкоштовний розбір</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Публічні закупівлі · Prozorro · спеціалізація: будівництво</p>
+    <h1>Вас відхилили в тендері.<br>Питання одне: що робити далі?</h1>
+    <p class="lede">
+      TenderWin розбирає підставу відхилення за документами — тендерною документацією,
+      вашою пропозицією та рішенням замовника — і дає відповідь, підкріплену доказами:
+      є сенс оскаржувати чи немає. Якщо позиція замовника стійка, ми скажемо це прямо,
+      до того як ви заплатите за скаргу.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="#zayavka">Безкоштовний розбір по телефону</a>
+      <a class="btn btn-ghost" href="#ciny">Послуги і ціни</a>
+    </div>
+    <div class="hero-trust">
+      <span><b>Фіксовані ціни</b> — опубліковані на сайті</span>
+      <span><b>Договір, рахунок, акт</b> — ФОП 3 групи, без ПДВ</span>
+      <span><b>Кошторисник</b> — понад 20 років у будівництві</span>
+      <span><b>Вся Україна</b> — працюємо дистанційно</span>
+    </div>
+  </div>
+</div>
+
+<div class="strip">
+  <div class="wrap">
+    <p><b>Строк на оскарження обмежений і рахується від дати оприлюднення рішення в системі.</b>
+       Якщо рішення про відхилення вже з’явилося — не відкладайте дзвінок.</p>
+    <a class="phone" href="tel:+380503101492">+380 50 310 14 92</a>
+  </div>
+</div>
+
+<!-- ============ PROBLEM ============ -->
+<section id="problema" class="dark">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Коли ми потрібні</p>
+      <h2>Вас відхиляють не за ціну. Вас відхиляють за формальність</h2>
+      <p class="lede">Пропозиція була конкурентною, аукціон мав відбутися — а рішення замовника
+        закриває питання за одним абзацом протоколу. Далі починається найдорожча частина:
+        рішення ухвалювати треба швидко, а підстав для нього зазвичай немає.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <span class="num">1</span>
+        <h3>Підстава — на пів рядка</h3>
+        <p>«Не відповідає вимогам пункту...» Що саме не відповідає, у якому файлі й на якій
+           сторінці — у рішенні не написано. Розібратися можна лише звіривши рішення,
+           тендерну документацію і вашу пропозицію рядок у рядок.</p>
+      </div>
+      <div class="card">
+        <span class="num">2</span>
+        <h3>Часу на роздуми немає</h3>
+        <p>Строк оскарження короткий і рахується від оприлюднення документа в електронній
+           системі. Поки ви шукаєте юриста, який вільний саме цього тижня, строк тече.</p>
+      </div>
+      <div class="card">
+        <span class="num">3</span>
+        <h3>Ціна помилки зросла</h3>
+        <p>З 7 червня 2026 року діють нові правила оплати участі в закупівлях
+           (постанова КМУ № 565 від 06.05.2026). Кожна участь наосліп тепер коштує грошей
+           ще до того, як стане відомий результат.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APPROACH ============ -->
+<section id="pidhid">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Підхід</p>
+      <h2>Ми продаємо не скарги. Ми продаємо ясність</h2>
+      <p class="lede">Скарга — це інструмент, а не послуга. Спершу треба встановити, чи є
+        позиція, яку варто захищати. Саме це ми і робимо.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <span class="num">01</span>
+        <h3>Починаємо з рішення, а не з усієї документації</h3>
+        <p>Замовник уже назвав підстави. Ми розбираємо кожну з них окремо: що каже замовник,
+           що насправді вимагала тендерна документація, що було у вашій пропозиції.
+           Якщо підстав три — аналізуються всі три. Одна хибна підстава не робить скаргу
+           виграшною, якщо дві інші тримаються.</p>
+      </div>
+      <div class="card">
+        <span class="num">02</span>
+        <h3>Кожен висновок спирається на документ</h3>
+        <p>У звіті вказано, звідки взято факт: файл, сторінка, пункт, клітинка таблиці.
+           Ви можете перевірити будь-яке наше твердження за хвилину, а не шукати його
+           у двохсотсторінковому PDF. Те, що ми не встановили, позначається як
+           «не встановлено», а не підганяється під зручний висновок.</p>
+      </div>
+      <div class="card">
+        <span class="num">03</span>
+        <h3>«Не оскаржувати» — це теж результат</h3>
+        <p>Ми не заробляємо на кількості поданих скарг. Якщо підстава відхилення
+           обґрунтована і позиція замовника стійка, ви почуєте це від нас — і збережете
+           плату за подання скарги та кілька тижнів очікування.</p>
+      </div>
+      <div class="card">
+        <span class="num">04</span>
+        <h3>Будівництво — наша спеціалізація</h3>
+        <p>Кошториси, відомості ресурсів, локальні та об’єктні розрахунки, технічні вимоги.
+           Цифри звіряються розрахунком, а не «на око»: 125,40 і 125,04 — це різні числа,
+           і саме на таких розбіжностях будуються відхилення.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICES ============ -->
+<section id="ciny" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Послуги і ціни</p>
+      <h2>Ціни фіксовані й опубліковані</h2>
+      <p class="lede">Ви бачите вартість до розмови, а не після неї. Ціни, прив’язані до суми,
+        рахуються від вартості <b>лоту</b>, а не всього тендера — у багатолотовій закупівлі
+        це принципово різні суми.</p>
+    </div>
+
+    <div class="price-group">
+      <h3>До подання пропозиції — поки ще можна все виправити</h3>
+      <div class="grid g4">
+        <div class="price">
+          <h4>Експрес-аналіз вимог тендерної документації</h4>
+          <div class="amount">2 499 <small>грн</small></div>
+          <p class="desc">Читаємо ТД до подання і показуємо, які вимоги дискримінаційні
+            або нездійсненні й де замовник звузив коло учасників.</p>
+        </div>
+        <div class="price">
+          <h4>Вимога про усунення порушень</h4>
+          <div class="amount">999 <small>грн</small></div>
+          <p class="desc">Подається через електронну систему до кінця строку подання.
+            Замовник зобов’язаний відповісти.</p>
+          <p class="note">Плати до АМКУ немає взагалі</p>
+        </div>
+        <div class="price featured">
+          <span class="tag">фіксована ціна</span>
+          <h4>Скарга на вимоги тендерної документації</h4>
+          <div class="amount">6 999 <small>грн</small></div>
+          <p class="desc">Коли вимогу не прибрали і без скарги участь неможлива.</p>
+          <p class="note">Від суми закупівлі не залежить</p>
+        </div>
+        <div class="price">
+          <h4>Передтендерна перевірка пропозиції</h4>
+          <div class="amount">від 7 999 <small>грн</small></div>
+          <p class="desc">Дивимось ваш комплект очима замовника, який шукає привід відхилити.
+            Показуємо конкретні місця і що саме дописати.</p>
+          <p class="note"><a href="#kalkulyator" style="color:inherit">Порахувати за вашим лотом →</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-group">
+      <h3>Після відхилення — коли рішення вже опубліковане</h3>
+      <div class="grid g2">
+        <div class="price featured">
+          <span class="tag">з цього починають</span>
+          <h4>Експрес-аналіз відхилення пропозиції</h4>
+          <div class="amount">3 499 <small>грн</small></div>
+          <p class="desc">Кожна підстава відхилення розбирається окремо: що каже замовник,
+            що вимагала ТД, що ви подали, чи стійка позиція замовника. На виході — висновок
+            по кожній підставі та загальна рекомендація: оскаржувати чи ні.</p>
+        </div>
+        <div class="price">
+          <h4>Скарга на рішення про відхилення</h4>
+          <div class="amount">від 9 999 <small>грн</small></div>
+          <p class="desc">Підготовка та супровід скарги. Беремося, коли аналіз показав,
+            що позиція у вас є.</p>
+          <p class="note"><a href="#kalkulyator" style="color:inherit">Порахувати за вашим лотом →</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-group">
+      <h3>Окремо — незалежно від конкретної закупівлі</h3>
+      <div class="grid g2">
+        <div class="price">
+          <h4>Профіль замовника (досьє)</h4>
+          <div class="amount">3 999 <small>грн</small></div>
+          <p class="desc">Скількох учасників цей замовник відхиляв і за якими підставами,
+            чи були скарги проти нього і чим вони закінчилися, які вимоги повторюються
+            з тендера в тендер. Перед наступною участю ви знатимете, де він шукатиме привід.</p>
+        </div>
+        <div class="price">
+          <h4>Кошториси на ремонтно-будівельні роботи</h4>
+          <div class="amount">за домовленістю</div>
+          <p class="desc">Наш кошторисник працює в будівництві понад 20 років. Коли кошторис
+            готує той, хто знає, як його читатиме замовник, частина підстав для відхилення
+            зникає ще до подання.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="fineprint">
+      <b>Плата за подання скарги до органу оскарження сплачується окремо.</b>
+      Це не наш гонорар: кошти йдуть безпосередньо до Антимонопольного комітету, а їх розмір
+      встановлено законодавством і залежить від предмета скарги та вартості лоту. Точну суму
+      ми називаємо до початку роботи — щоб ви бачили повний бюджет рішення, а не його частину.
+    </div>
+    <div class="fineprint">
+      <b>Працюємо за договором.</b> ФОП третьої групи, без ПДВ. На кожну роботу — рахунок
+      і акт виконаних робіт. Усні домовленості не замінюють документів — ні для нас, ні для вас.
+    </div>
+  </div>
+</section>
+
+<!-- ============ CALCULATOR ============ -->
+<section id="kalkulyator">
+  <div class="wrap">
+    <div class="calc">
+      <div>
+        <h3>Порахуйте вартість за вашим лотом</h3>
+        <p class="lede">Дві послуги залежать від суми. Введіть очікувану вартість
+          <b>лоту</b> — і побачите точну ціну ще до розмови.</p>
+        <div style="margin-top:24px">
+          <label for="lot">Очікувана вартість лоту</label>
+          <div class="calc-input">
+            <input type="text" id="lot" inputmode="numeric" autocomplete="off"
+                   value="3 000 000" aria-describedby="calcnote">
+            <span class="cur">грн</span>
+          </div>
+          <div class="hintrow" role="group" aria-label="Швидкий вибір суми">
+            <button type="button" class="chip" data-v="1500000">1,5 млн</button>
+            <button type="button" class="chip" data-v="5000000">5 млн</button>
+            <button type="button" class="chip" data-v="8000000">8 млн</button>
+            <button type="button" class="chip" data-v="20000000">20 млн</button>
+          </div>
+          <p class="calc-note" style="margin-top:20px">
+            Беріть вартість <b style="color:#c2d3e2">свого лоту</b>, а не всієї закупівлі.
+            У багатолотовому тендері це різні суми, і розрахунок від загальної вартості
+            завищує ціну в рази.
+          </p>
+          <p class="calc-note" style="margin-top:10px">
+            Решта послуг має фіксовану ціну незалежно від суми — див.
+            <a href="#ciny" style="color:var(--gold)">повний перелік</a>.
+          </p>
+        </div>
+      </div>
+      <div>
+        <div class="calc-out">
+          <div class="calc-row">
+            <span class="t">Передтендерна перевірка пропозиції</span>
+            <span class="v" id="outA">—</span>
+          </div>
+          <div class="calc-row">
+            <span class="t">Скарга на рішення про відхилення</span>
+            <span class="v" id="outB">—</span>
+          </div>
+          <div class="calc-row">
+            <span class="t">Експрес-аналіз відхилення</span>
+            <span class="v">3 499 грн</span>
+          </div>
+          <div class="calc-row">
+            <span class="t">Скарга на вимоги ТД</span>
+            <span class="v">6 999 грн</span>
+          </div>
+        </div>
+        <p class="calc-note" id="calcnote">
+          Ціни вказано без плати до органу оскарження — вона сплачується окремо.
+          Розрахунок орієнтовний; остаточна сума фіксується в договорі.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section id="yak" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Як працюємо</p>
+      <h2>Перші два кроки — безкоштовні</h2>
+      <p class="lede">Ви платите тільки тоді, коли вже бачите, за що саме. До цього моменту
+        ризикуєте лише двадцятьма хвилинами часу.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="dot">1</span>
+        <div>
+          <h3>Дзвінок <span class="free">безкоштовно</span></h3>
+          <p>15–20 хвилин. Ви називаєте номер закупівлі — ми відкриваємо її при вас
+             і дивимося рішення замовника разом. Готуватися не треба, документи надсилати
+             теж не треба.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="dot">2</span>
+        <div>
+          <h3>Короткий бриф <span class="free">безкоштовно</span></h3>
+          <p>До двох сторінок: точна підстава відхилення, відповідний пункт тендерної
+             документації, що саме було у вашій пропозиції, і скільки часу лишилося.
+             Цього достатньо, щоб ухвалити рішення — або зрозуміти, що потрібен повний аналіз.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="dot">3</span>
+        <div>
+          <h3>Експрес-аналіз <span class="free paid">платно</span></h3>
+          <p>Кожна підстава відхилення розбирається окремо, з посиланням на конкретний документ,
+             сторінку і пункт. На виході — висновок по кожній підставі, оцінка стійкості позиції
+             замовника в цілому і рекомендація: подавати скаргу чи ні.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="dot">4</span>
+        <div>
+          <h3>Рішення ухвалюєте ви</h3>
+          <p>Якщо йдемо в скаргу — готуємо документ і супроводжуємо справу. Якщо ні —
+             ви зекономили плату за подання скарги і час, а натомість отримали чіткий перелік
+             того, що треба виправити до наступної участі.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HONESTY ============ -->
+<section id="chesno">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Чесно</p>
+      <h2>Чого ми не обіцяємо</h2>
+      <p class="lede">Цей розділ важливіший за розділ «наші переваги». Прочитайте його
+        до того, як платити нам чи будь-кому іншому.</p>
+    </div>
+    <ul class="honest">
+      <li>
+        <b>Не обіцяємо перемоги в тендері</b>
+        <span>Ми прибираємо формальні приводи вас відхилити. Хто запропонує кращу ціну —
+        вирішує аукціон, а не юрист.</span>
+      </li>
+      <li>
+        <b>Не обіцяємо, що скарга завжди виграшна</b>
+        <span>Якщо підстава відхилення обґрунтована, ми скажемо це до того, як ви заплатите
+        за скаргу. Рекомендація «не оскаржувати» для нас — нормальний результат роботи,
+        а не невдача.</span>
+      </li>
+      <li>
+        <b>Не готуємо тендерні пропозиції «під ключ»</b>
+        <span>Ми перевіряємо, знаходимо слабкі місця і захищаємо — але не заповнюємо
+        документи замість вас. Це різні послуги й різна відповідальність.</span>
+      </li>
+      <li>
+        <b>Не даємо оцінок «на око»</b>
+        <span>Якщо факт не встановлено за документами, він так і позначається — «не встановлено».
+        Здогад не подається як доведений факт, а результат пошуку в сторонньому сервісі —
+        як офіційне джерело.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="pro" class="alt">
+  <div class="wrap">
+    <div class="about">
+      <div>
+        <p class="eyebrow">Хто працює</p>
+        <h2>Практика, а не консультації «взагалі»</h2>
+        <p class="lede" style="margin-top:16px">
+          TenderWin веде <b>Віталій Щасливий</b>, керуючий партнер. Робота будується навколо
+          однієї спеціалізації — будівельні та ремонтні закупівлі, де найбільше відхилень
+          припадає на кошториси, відомості ресурсів і технічні вимоги.
+        </p>
+        <p class="lede" style="margin-top:14px">
+          Кошторисну частину веде фахівець із понад 20-річним досвідом у будівництві.
+          Це та частина, у якій найлегше втратити тендер на дрібниці — і найскладніше
+          довести свою правоту заднім числом.
+        </p>
+        <div class="hero-actions" style="margin-top:28px">
+          <a class="btn btn-ink" href="#zayavka">Обговорити вашу ситуацію</a>
+          <a class="btn btn-ghost-dark" href="tel:+380503101492">+380 50 310 14 92</a>
+        </div>
+      </div>
+      <div class="about-facts">
+        <div class="fact">
+          <b>ФОП третьої групи, без ПДВ</b>
+          <span>Договір, рахунок, акт виконаних робіт на кожну роботу.</span>
+        </div>
+        <div class="fact">
+          <b>Вся Україна, дистанційно</b>
+          <span>Закупівлі ведуться в електронній системі — фізична присутність не потрібна.</span>
+        </div>
+        <div class="fact">
+          <b>Спеціалізація — будівництво</b>
+          <span>Кошториси, локальні та об’єктні розрахунки, відомості ресурсів, технічні вимоги.</span>
+        </div>
+        <div class="fact">
+          <b>Первинні джерела</b>
+          <span>Працюємо з офіційними даними закупівлі та оригіналами документів,
+          а не з переказом ситуації по телефону.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="pytannya">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Питання</p>
+      <h2>Що зазвичай запитують</h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Скільки часу в мене є на оскарження?</summary>
+        <div class="answer">
+          <p>Строк обмежений і різний для скарг на умови тендерної документації та на рішення
+             замовника. Він рахується від дати оприлюднення відповідного документа в електронній
+             системі, а не від дня, коли ви про нього дізналися.</p>
+          <p>Назвіть номер закупівлі — ми порахуємо саме ваш строк на дзвінку, безкоштовно.
+             Це перше, що ми перевіряємо: якщо строк уже минув, немає сенсу платити за аналіз
+             скарги, і ми про це скажемо одразу.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Скільки коштує плата до Антимонопольного комітету?</summary>
+        <div class="answer">
+          <p>Це окремий платіж, він іде не нам, а безпосередньо органу оскарження. Розмір
+             встановлено законодавством і він залежить від предмета скарги та вартості лоту.</p>
+          <p>Ми не публікуємо суму на сайті, бо вона змінюється разом із законодавством,
+             а застаріла цифра на сайті — гірше, ніж її відсутність. Точну суму для вашої
+             закупівлі називаємо до початку роботи.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Що потрібно від мене, щоб почати?</summary>
+        <div class="answer">
+          <p>Для безкоштовного дзвінка — лише номер закупівлі (наприклад, UA-2026-00-00-000000).
+             Усе інше є у відкритому доступі, ми піднімемо самі.</p>
+          <p>Для платного аналізу додатково знадобиться ваша тендерна пропозиція в тому вигляді,
+             в якому ви її подавали, і матеріали щодо усунення невідповідностей, якщо вони були.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Ви гарантуєте, що скаргу задовольнять?</summary>
+        <div class="answer">
+          <p>Ні, і жоден сумлінний виконавець такої гарантії не дасть. Рішення ухвалює орган
+             оскарження, а не ми.</p>
+          <p>Що ми справді робимо — це чесно оцінюємо ваші шанси <em>до</em> подання, називаючи
+             і найсильніший аргумент на вашу користь, і найсильніший аргумент замовника.
+             Якщо позиція слабка, ви дізнаєтесь про це від нас, а не з рішення через місяць.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Ви працюєте тільки з будівництвом?</summary>
+        <div class="answer">
+          <p>Будівельні та ремонтні закупівлі — наша основна спеціалізація, там ми найсильніші:
+             кошториси, відомості ресурсів, технічні вимоги.</p>
+          <p>Але підстави для відхилення здебільшого формальні й однакові в будь-якому предметі
+             закупівлі — довідки, ліцензії, дозволи, досвід, формат документів. Тож дзвоніть
+             незалежно від предмета: якщо ситуація не наша, ми так і скажемо.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Як відбувається оплата і які документи я отримаю?</summary>
+        <div class="answer">
+          <p>Працюємо за договором. ФОП третьої групи, без ПДВ. На кожну роботу виставляється
+             рахунок, після виконання підписується акт виконаних робіт.</p>
+          <p>Результат аналізу ви отримуєте окремим документом із посиланнями на джерела —
+             файл, сторінку, пункт. Його можна показати юристу, бухгалтеру чи керівнику
+             і перевірити кожне твердження.</p>
+        </div>
+      </details>
+      <details>
+        <summary>А якщо строк уже минув — усе втрачено?</summary>
+        <div class="answer">
+          <p>Скаргу подати вже не вдасться, але це не означає, що робити нічого. Найчастіше
+             та сама підстава спрацює проти вас і в наступній закупівлі — у того самого
+             замовника або в іншого.</p>
+          <p>У такому разі має сенс профіль замовника та передтендерна перевірка наступної
+             пропозиції: дешевше, ніж скарга, і працює на майбутнє.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Чи можете підготувати кошторис?</summary>
+        <div class="answer">
+          <p>Так, кошториси на ремонтно-будівельні роботи — окрема послуга, ціна за домовленістю
+             залежно від обсягу.</p>
+          <p>Сенс у тому, щоб кошторис готував той, хто знає, як його читатиме замовник
+             і за що саме відхиляють. Частина приводів для відхилення зникає ще до подання.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORM ============ -->
+<section id="zayavka" class="dark">
+  <div class="wrap">
+    <div class="form-wrap">
+      <div>
+        <p class="eyebrow">Заявка</p>
+        <h2 style="color:#fff">Безкоштовний розбір ситуації</h2>
+        <p class="lede" style="margin-top:14px; color:#c2d3e2">
+          Заповніть форму або просто зателефонуйте. Достатньо номера закупівлі —
+          решту ми піднімемо самі, щоб не починати розмову з нуля.
+        </p>
+
+        <form id="leadform" action="https://api.web3forms.com/submit" method="POST" style="margin-top:26px">
+          <!-- ↓↓↓ ЗАМІНІТЬ НА СВІЙ КЛЮЧ З web3forms.com (крок 6 інструкції) ↓↓↓ -->
+          <input type="hidden" name="access_key" value="ВСТАВТЕ-СЮДИ-ACCESS-KEY">
+          <input type="hidden" name="subject" value="Нова заявка з сайту tenderwin.in.ua">
+          <input type="hidden" name="from_name" value="Сайт TenderWin">
+          <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
+
+          <div class="row">
+            <div class="field">
+              <label for="f-name">Ваше ім’я <span aria-hidden="true">*</span></label>
+              <input id="f-name" name="Імʼя" type="text" required autocomplete="name" placeholder="Іван Петренко">
+            </div>
+            <div class="field">
+              <label for="f-phone">Телефон <span aria-hidden="true">*</span></label>
+              <input id="f-phone" name="Телефон" type="tel" required autocomplete="tel" placeholder="+380 XX XXX XX XX">
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="f-mail">E-mail</label>
+              <input id="f-mail" name="Email" type="email" autocomplete="email" placeholder="name@company.ua">
+            </div>
+            <div class="field">
+              <label for="f-tender">Номер або посилання на закупівлю</label>
+              <input id="f-tender" name="Закупівля" type="text" placeholder="UA-2026-00-00-000000">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:16px">
+            <label for="f-msg">Коротко про ситуацію</label>
+            <textarea id="f-msg" name="Ситуація" placeholder="Що сталося, на якому етапі закупівля, що написав замовник у рішенні"></textarea>
+          </div>
+
+          <label class="consent">
+            <input type="checkbox" required id="f-consent">
+            <span>Погоджуюся на обробку моїх персональних даних для опрацювання цього
+              звернення — відповідно до <a href="#privacy">політики конфіденційності</a>.</span>
+          </label>
+
+          <button type="submit" class="btn btn-gold" style="width:100%">Надіслати заявку</button>
+          <p class="formmsg" id="formmsg" role="status" aria-live="polite"></p>
+          <p style="font-size:.84rem; color:#7d96ab; margin-top:14px">
+            Зазвичай відповідаємо того ж робочого дня. Якщо строк оскарження спливає —
+            краще одразу телефонуйте.
+          </p>
+        </form>
+      </div>
+
+      <aside class="contact-card">
+        <h3>Контакти</h3>
+        <div class="contact-line">
+          <span class="k">Телефон</span>
+          <span class="v"><a href="tel:+380503101492">+380 50 310 14 92</a>
+            <small>Пн–Пт, робочі години</small></span>
+        </div>
+        <div class="contact-line">
+          <span class="k">Пошта</span>
+          <span class="v"><a href="mailto:vitalii@tenderwin.com.ua">vitalii@tenderwin.com.ua</a></span>
+        </div>
+        <div class="contact-line">
+          <span class="k">Сайт</span>
+          <span class="v"><a href="https://tenderwin.in.ua/">tenderwin.in.ua</a></span>
+        </div>
+        <div class="contact-line">
+          <span class="k">Форма</span>
+          <span class="v" style="font-size:.98rem">ФОП Щасливий В. О.
+            <small>Третя група, без ПДВ. Договір, рахунок, акт.</small></span>
+        </div>
+        <p style="margin-top:20px; font-size:.9rem; color:#8ba4ba; line-height:1.65">
+          Не надсилайте конфіденційні документи через форму. Після першого контакту
+          ми домовимось про безпечний спосіб передачі файлів.
+        </p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <a href="#top" class="logo" style="font-size:1.1rem">
+          <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+            <rect width="64" height="64" rx="13" fill="#122c44"/>
+            <path d="M14 20h36M32 20v26M22 44h20" stroke="#e0a53c" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+          TENDER<span>WIN</span>
+        </a>
+        <p style="margin-top:12px; font-size:.92rem; max-width:44ch">
+          Аналіз відхилень і супровід оскарження в публічних закупівлях.
+          Спеціалізація — будівельні та ремонтні закупівлі.
+        </p>
+      </div>
+      <nav class="foot-links" aria-label="Розділи сайту">
+        <a href="#problema">Коли ми потрібні</a>
+        <a href="#pidhid">Підхід</a>
+        <a href="#ciny">Ціни</a>
+        <a href="#kalkulyator">Калькулятор</a>
+        <a href="#yak">Як працюємо</a>
+        <a href="#chesno">Чого не обіцяємо</a>
+        <a href="#pytannya">Питання</a>
+        <a href="#zayavka">Контакти</a>
+      </nav>
+    </div>
+
+    <details id="privacy">
+      <summary>Політика конфіденційності та обробки персональних даних</summary>
+      <p><b>Хто обробляє дані.</b> Володільцем персональних даних є фізична особа —
+        підприємець Щасливий Віталій Олександрович (далі — TenderWin), контактна адреса:
+        vitalii@tenderwin.com.ua.</p>
+      <p><b>Які дані збираються.</b> Через форму на сайті — ім’я, номер телефону, адреса
+        електронної пошти, номер закупівлі та текст звернення, які ви вказали добровільно.
+        Технічні дані відвідування (знеособлена статистика переглядів) збираються без
+        використання файлів cookie й не дозволяють ідентифікувати особу.</p>
+      <p><b>Мета обробки.</b> Виключно опрацювання вашого звернення: зв’язок із вами,
+        попередня оцінка ситуації та, за вашої згоди, надання послуг. Для розсилок
+        і маркетингу ці дані без окремої згоди не використовуються.</p>
+      <p><b>Передача третім особам.</b> Повідомлення з форми передається сервісом доставки
+        форм на нашу електронну пошту. Персональні дані не продаються, не передаються
+        рекламним мережам і не публікуються. Передача можлива лише на вимогу уповноважених
+        органів у випадках, прямо передбачених законом.</p>
+      <p><b>Строк зберігання.</b> Дані зберігаються, доки це потрібно для опрацювання
+        звернення та виконання договору, а далі — у межах строків, установлених
+        законодавством для первинних документів.</p>
+      <p><b>Ваші права.</b> Відповідно до Закону України «Про захист персональних даних»
+        ви маєте право знати, хто і з якою метою обробляє ваші дані, отримувати до них
+        доступ, вимагати їх виправлення, видалення або обмеження обробки, а також
+        відкликати згоду. Для цього напишіть на vitalii@tenderwin.com.ua.</p>
+      <p><b>Застереження.</b> Матеріали цього сайту мають інформаційний характер і не є
+        юридичною консультацією щодо конкретної ситуації. Консультація надається після
+        ознайомлення з документами вашої закупівлі.</p>
+    </details>
+
+    <div class="foot-bottom">
+      <span>© <span id="year">2026</span> TenderWin · ФОП Щасливий В. О.</span>
+      <span><a href="tel:+380503101492" style="color:#a8bece; text-decoration:none">+380 50 310 14 92</a>
+        · <a href="mailto:vitalii@tenderwin.com.ua" style="color:#a8bece; text-decoration:none">vitalii@tenderwin.com.ua</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="mobilebar" aria-label="Швидкий зв’язок">
+  <a class="btn btn-gold" href="tel:+380503101492">Подзвонити</a>
+  <a class="btn btn-ghost" href="#zayavka">Залишити заявку</a>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- рік у футері ---------- */
+  var y = document.getElementById("year");
+  if (y) y.textContent = new Date().getFullYear();
+
+  /* ================================================================
+     КАЛЬКУЛЯТОР ЦІНИ
+     Формули збігаються з розрахунком у внутрішній системі TenderWin:
+       поріг 5 000 000 грн
+       A — передтендерна перевірка:  до порога 7 999; далі 0,16% зі стелею 10 999
+       B — скарга на відхилення:     до порога 9 999; далі 0,20% зі стелею 24 999
+     ================================================================ */
+  var POROG = 5000000;
+  var A = { min: 7999,  rate: 0.0016, cap: 10999 };
+  var B = { min: 9999,  rate: 0.0020, cap: 24999 };
+
+  function priceFormula(v, p) {
+    if (!isFinite(v) || v <= 0) return null;
+    if (v < POROG) return p.min;
+    return Math.min(p.cap, Math.round(v * p.rate));
+  }
+
+  function grn(n) {
+    return n.toLocaleString("uk-UA").replace(/ /g, " ") + " грн";
+  }
+
+  var lot    = document.getElementById("lot");
+  var outA   = document.getElementById("outA");
+  var outB   = document.getElementById("outB");
+
+  function parseLot() {
+    if (!lot) return 0;
+    return parseFloat(String(lot.value).replace(/[^\d.,]/g, "").replace(/,/g, ".")) || 0;
+  }
+
+  function formatLot(v) {
+    if (!v) return "";
+    return Math.round(v).toLocaleString("uk-UA").replace(/ /g, " ");
+  }
+
+  function recalc() {
+    var v  = parseLot();
+    var pa = priceFormula(v, A);
+    var pb = priceFormula(v, B);
+    if (outA) outA.textContent = pa ? grn(pa) : "—";
+    if (outB) outB.textContent = pb ? grn(pb) : "—";
+  }
+
+  if (lot) {
+    lot.addEventListener("input", recalc);
+    lot.addEventListener("blur", function () {
+      var v = parseLot();
+      lot.value = formatLot(v);
+      recalc();
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (c) {
+      c.addEventListener("click", function () {
+        lot.value = formatLot(parseFloat(c.getAttribute("data-v")));
+        recalc();
+      });
+    });
+    recalc();
+  }
+
+  /* ================================================================
+     ФОРМА ЗАЯВКИ (Web3Forms)
+     Поки в поле access_key не вставлено справжній ключ, форма не
+     надсилається «в нікуди», а показує телефон і пошту.
+     ================================================================ */
+  var form = document.getElementById("leadform");
+  var msg  = document.getElementById("formmsg");
+
+  function say(text, kind) {
+    if (!msg) return;
+    msg.textContent = text;
+    msg.className = "formmsg " + kind;
+  }
+
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var keyField = form.querySelector('input[name="access_key"]');
+      var key = keyField ? keyField.value.trim() : "";
+
+      if (!key || key.indexOf("ВСТАВТЕ") === 0) {
+        say("Форму ще не підключено. Зателефонуйте: +380 50 310 14 92 " +
+            "або напишіть на vitalii@tenderwin.com.ua", "err");
+        return;
+      }
+
+      var btn = form.querySelector('button[type="submit"]');
+      var old = btn ? btn.textContent : "";
+      if (btn) { btn.disabled = true; btn.textContent = "Надсилаємо…"; }
+      say("", "");
+
+      var data = Object.fromEntries(new FormData(form).entries());
+
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(data)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res && res.success) {
+            form.reset();
+            say("Дякуємо, заявку отримано. Зв’яжемося з вами найближчим часом. " +
+                "Якщо строк оскарження спливає — телефонуйте: +380 50 310 14 92", "ok");
+          } else {
+            say("Не вдалося надіслати заявку. Зателефонуйте: +380 50 310 14 92 " +
+                "або напишіть на vitalii@tenderwin.com.ua", "err");
+          }
+        })
+        .catch(function () {
+          say("Не вдалося надіслати заявку. Зателефонуйте: +380 50 310 14 92 " +
+              "або напишіть на vitalii@tenderwin.com.ua", "err");
+        })
+        .finally(function () {
+          if (btn) { btn.disabled = false; btn.textContent = old; }
+        });
+    });
+  }
+})();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://tenderwin.in.ua/#business",
+      "name": "TenderWin",
+      "description": "Аналіз підстав відхилення тендерної пропозиції та супровід оскарження в публічних закупівлях України. Спеціалізація — будівельні та ремонтні закупівлі.",
+      "url": "https://tenderwin.in.ua/",
+      "telephone": "+380503101492",
+      "email": "vitalii@tenderwin.com.ua",
+      "priceRange": "999–24999 UAH",
+      "currenciesAccepted": "UAH",
+      "areaServed": { "@type": "Country", "name": "Україна" },
+      "availableLanguage": "uk",
+      "founder": { "@type": "Person", "name": "Віталій Щасливий", "jobTitle": "Керуючий партнер" },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Послуги TenderWin",
+        "itemListElement": [
+          { "@type": "Offer", "priceCurrency": "UAH", "price": "999",  "itemOffered": { "@type": "Service", "name": "Вимога про усунення порушень" } },
+          { "@type": "Offer", "priceCurrency": "UAH", "price": "2499", "itemOffered": { "@type": "Service", "name": "Експрес-аналіз вимог тендерної документації" } },
+          { "@type": "Offer", "priceCurrency": "UAH", "price": "3499", "itemOffered": { "@type": "Service", "name": "Експрес-аналіз відхилення пропозиції" } },
+          { "@type": "Offer", "priceCurrency": "UAH", "price": "3999", "itemOffered": { "@type": "Service", "name": "Профіль замовника" } },
+          { "@type": "Offer", "priceCurrency": "UAH", "price": "6999", "itemOffered": { "@type": "Service", "name": "Скарга на вимоги тендерної документації" } },
+          { "@type": "Offer", "priceCurrency": "UAH", "price": "7999", "itemOffered": { "@type": "Service", "name": "Передтендерна перевірка пропозиції" } },
+          { "@type": "Offer", "priceCurrency": "UAH", "price": "9999", "itemOffered": { "@type": "Service", "name": "Скарга на рішення про відхилення" } }
+        ]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tenderwin.in.ua/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Скільки часу в мене є на оскарження відхилення в тендері?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Строк обмежений і різний для скарг на умови тендерної документації та на рішення замовника. Він рахується від дати оприлюднення відповідного документа в електронній системі, а не від дня, коли ви про нього дізналися. Точний строк для конкретної закупівлі рахується за її номером." }
+        },
+        {
+          "@type": "Question",
+          "name": "Скільки коштує плата до Антимонопольного комітету за подання скарги?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Це окремий платіж, який іде безпосередньо органу оскарження, а не виконавцю. Розмір встановлено законодавством і він залежить від предмета скарги та вартості лоту. Точна сума називається до початку роботи." }
+        },
+        {
+          "@type": "Question",
+          "name": "Що потрібно, щоб почати роботу з TenderWin?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Для безкоштовного дзвінка достатньо номера закупівлі. Для платного аналізу додатково потрібна тендерна пропозиція в тому вигляді, в якому вона подавалася, і матеріали щодо усунення невідповідностей, якщо вони були." }
+        },
+        {
+          "@type": "Question",
+          "name": "Чи гарантує TenderWin, що скаргу задовольнять?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ні. Рішення ухвалює орган оскарження. TenderWin оцінює шанси до подання скарги, називаючи і найсильніший аргумент учасника, і найсильніший аргумент замовника. Рекомендація не оскаржувати вважається нормальним результатом роботи." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+</body>
+</html>
