@@ -33,7 +33,9 @@
 4. У Resend натисніть **Verify DNS Records**. За 5–30 хвилин статус домену стане **Verified**.
 5. Ліве меню **API Keys** → **Create API Key** → назва `tenderwin-site`, доступ **Sending access**,
    домен `tenderwin.in.ua` → **Add**. Скопіюйте ключ, він починається з `re_`. Показується лише один раз.
-6. Cloudflare → **Workers & Pages** → `site-tenderwin` → **Settings** → **Variables and secrets** → **+ Add**:
+6. **Після злиття оновлення з обробником заявок** (до того Cloudflare пише «Variables cannot be added to a Worker that only has static assets»):
+   Cloudflare → **Workers & Pages** → `site-tenderwin` → **Settings** → **верхній** блок **Runtime variables and secrets** → **+ Add variable**
+   (не блок *Builds → Variables and secrets* — ті змінні сайт не бачить):
    - **Type:** `Secret`;
    - **Variable name:** `RESEND_API_KEY`;
    - **Value:** ключ `re_…`;

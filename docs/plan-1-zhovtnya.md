@@ -8,7 +8,8 @@
 - [ ] Новий віртуальний номер телефону для проєкту
 - [ ] Рішення щодо підпису в рахунку. Рекомендація: без підпису, з рядком «Рахунок сформовано в електронному вигляді, дійсний без підпису та печатки»; підписаний рахунок на запит — через «Вчасно» з КЕП
 - [ ] Зауваження до текстів і оформлення
-- [ ] (Можна заздалегідь) Resend: домен `tenderwin.in.ua` + секрет `RESEND_API_KEY` у Cloudflare — див. [rakhunky-nalashtuvannya.md](rakhunky-nalashtuvannya.md)
+- [x] Resend: домен `tenderwin.in.ua` підтверджено (27.09, записи додано автоматично в Cloudflare)
+- [ ] DMARC: запис `TXT _dmarc` → `v=DMARC1; p=none;` у Cloudflare (якщо ще не додано)
 
 ## Що змінити на сайті
 
@@ -35,4 +36,6 @@
 
 ### 5. Публікація
 - Злити гілку з обробником заявок і PDF-рахунком разом з усіма правками вище
+- **Одразу після злиття:** Cloudflare → `site-tenderwin` → Settings → верхній блок **Runtime variables and secrets** → **+ Add variable** → Secret `RESEND_API_KEY` (ключ Resend з доступом Sending access для `tenderwin.in.ua`; за потреби створити новий) → Deploy.
+  До злиття цей блок недоступний («Variables cannot be added to a Worker that only has static assets»); блок *Builds → Variables and secrets* для цього **не підходить**
 - Перевірка: тестова заявка → лист клієнту з рахунком + лист Віталію
