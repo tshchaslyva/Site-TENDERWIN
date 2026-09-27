@@ -1,14 +1,52 @@
 // Налаштування Cloudflare Workers для сайту TenderWin.
-// Публікується лише вміст папки site/ як статичний сайт (без серверного коду).
+//  - site/   — статичні файли сайту (Cloudflare віддає їх сам, безкоштовно й без ліміту)
+//  - worker/ — обробник заявок /api/zayavka: листи + PDF-рахунок
 // "name" має збігатися з назвою проєкту в Cloudflare (site-tenderwin).
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "site-tenderwin",
+  "main": "worker/index.js",
   "compatibility_date": "2025-09-01",
   "assets": {
     "directory": "./site",
+    "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash"
+    "html_handling": "auto-trailing-slash",
+    // код запускається лише для /api/*, усе інше — статичні файли
+    "run_worker_first": ["/api/*"]
+  },
+  "rules": [
+    { "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "REGISTRY", "class_name": "InvoiceRegistry" }]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["InvoiceRegistry"] }
+  ],
+  // ===================== РЕКВІЗИТИ ТА НАЛАШТУВАННЯ =====================
+  // Змінюються тут. Секрети (RESEND_API_KEY, CLARITY_API_KEY) — лише в
+  // панелі Cloudflare: site-tenderwin → Settings → Variables and secrets.
+  "vars": {
+    "SELLER_NAME": "ФОП Щасливий Віталій Олександрович",
+    "SELLER_SIGNATURE": "Щасливий В. О.",
+    "SELLER_SIGNATURE_FULL": "Віталій Щасливий",
+    "SELLER_RNOKPP": "2817712530",
+    "SELLER_ADDRESS": "02002, м. Київ, вул. Нестайка Всеволода, 5, кв. 4",
+    // Поки IBAN порожній, рахунок не виписується: клієнт отримує лише подяку.
+    "SELLER_IBAN": "",
+    "SELLER_BANK": "",
+    "SELLER_TAX_NOTE": "Платник єдиного податку 3 групи, не є платником ПДВ",
+    "SELLER_PHONE": "+380 50 310 14 92",
+    "SERVICE_TITLE": "Аналіз відхилення ТП",
+    "PRICE_UAH": "3499",
+    "INVOICE_VALID_DAYS": "5",
+    "MAIL_FROM": "TenderWin <info@tenderwin.in.ua>",
+    "MAIL_OWNER": "vitalii@tenderwin.com.ua",
+    "SITE_DOMAIN": "tenderwin.in.ua",
+    "ALLOWED_ORIGINS": "https://tenderwin.in.ua,https://www.tenderwin.in.ua,https://site-tenderwin.ppvetik1.workers.dev",
+    "LIMIT_PER_IP_HOUR": "3",
+    "LIMIT_PER_DAY": "40"
   },
   "observability": { "enabled": true }
 }

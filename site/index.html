@@ -819,7 +819,7 @@ input, textarea { min-width:0; max-width:100% }
 
         <div class="form-card" data-reveal>
         <form id="leadform" action="https://api.web3forms.com/submit" method="POST" novalidate>
-          <!-- ↓↓↓ КЛЮЧ ФОРМИ З web3forms.com (див. інструкцію, крок 5). Заявки йдуть на vitalii@tenderwin.com.ua ↓↓↓ -->
+          <!-- Запасний канал: ключ Web3Forms (заявки на vitalii@tenderwin.com.ua), якщо обробник /api/zayavka недоступний -->
           <input type="hidden" name="access_key" value="0c4f2931-6627-48bf-b58f-ff3e88bf3acc">
           <input type="hidden" name="subject" value="Нова заявка з сайту tenderwin.in.ua">
           <input type="hidden" name="from_name" value="Сайт TenderWin">
@@ -837,19 +837,21 @@ input, textarea { min-width:0; max-width:100% }
           </div>
           <div class="row">
             <div class="field">
-              <label for="f-mail">E-mail</label>
-              <input id="f-mail" name="email" type="email" autocomplete="email" placeholder="name@company.ua">
+              <label for="f-mail">E-mail <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-mail" name="email" type="email" required autocomplete="email" placeholder="name@company.ua" aria-describedby="f-mail-hint">
+              <span class="hint" id="f-mail-hint">Сюди надішлемо підтвердження і рахунок.</span>
             </div>
             <div class="field">
-              <label for="f-tender">ID закупівлі</label>
-              <input id="f-tender" name="ID закупівлі" type="text" placeholder="UA-2026-00-00-000000">
+              <label for="f-tender">ID закупівлі <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-tender" name="ID закупівлі" type="text" required autocomplete="off" placeholder="UA-2026-00-00-000000-a" aria-describedby="f-tender-hint">
+              <span class="hint" id="f-tender-hint">Можна вставити й посилання на закупівлю.</span>
             </div>
           </div>
           <div class="field" style="margin-bottom:16px">
-            <label for="f-code">Код ЄДРПОУ/ІПН</label>
-            <input id="f-code" name="Код ЄДРПОУ/ІПН" type="text" inputmode="numeric" autocomplete="off"
+            <label for="f-code">Код ЄДРПОУ/ІПН <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-code" name="Код ЄДРПОУ/ІПН" type="text" required inputmode="numeric" autocomplete="off"
                    pattern="[0-9]{8}|[0-9]{10}" maxlength="10" title="8 цифр (код ЄДРПОУ) або 10 цифр (ІПН для ФОП)" placeholder="8 цифр — ЄДРПОУ, 10 цифр — ІПН для ФОП" aria-describedby="f-code-hint">
-            <span class="hint" id="f-code-hint">Потрібен, щоб виставити рахунок.</span>
+            <span class="hint" id="f-code-hint">Для рахунку. Назву організації чи ФОП підтягнемо з реєстру автоматично.</span>
           </div>
           <div class="field" style="margin-bottom:16px">
             <label for="f-msg">Коротко про ситуацію <span class="opt">(необов’язково)</span></label>
@@ -864,8 +866,8 @@ input, textarea { min-width:0; max-width:100% }
 
           <button type="submit" class="btn btn-gold btn-lg" style="width:100%">Надіслати заявку</button>
           <p class="formmsg" id="formmsg" role="status" aria-live="polite"></p>
-          <p class="form-note">Зазвичай відповідаємо того ж робочого дня. Якщо строк оскарження
-            спливає — краще одразу телефонуйте або пишіть у Telegram.</p>
+          <p class="form-note">Після надсилання на вашу пошту одразу прийде підтвердження з рахунком
+            на оплату. Якщо строк оскарження спливає — краще одразу телефонуйте або пишіть у Telegram.</p>
         </form>
         </div>
       </div>
@@ -948,7 +950,9 @@ input, textarea { min-width:0; max-width:100% }
         виставлення рахунку, укладення договору та надання послуг. Для розсилок і маркетингу
         ці дані без окремої згоди не використовуються.</p>
       <p><b>Передача третім особам.</b> Повідомлення з форми передається сервісом доставки
-        форм на нашу електронну пошту. Договір і акт підписуються через сервіс електронного
+        форм на нашу електронну пошту; лист-підтвердження з рахунком надсилається поштовим сервісом Resend.
+        Код ЄДРПОУ/ІПН використовується для пошуку назви платника у відкритих державних реєстрах
+        (через сервіс Clarity Project) — лише для оформлення рахунку. Договір і акт підписуються через сервіс електронного
         документообігу «Вчасно». Персональні дані не продаються, не передаються рекламним
         мережам і не публікуються. Передача можлива лише на вимогу уповноважених органів
         у випадках, прямо передбачених законом.</p>

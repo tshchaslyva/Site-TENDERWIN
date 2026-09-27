@@ -1,0 +1,13 @@
+{
+  "name": "site-tenderwin",
+  "private": true,
+  "description": "Сайт TenderWin: статичні файли (site/) + обробник заявок з PDF-рахунком (worker/)",
+  "type": "module",
+  "scripts": {
+    "test": "node --test worker/tests/*.test.js"
+  },
+  "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
+    "pdf-lib": "^1.17.1"
+  }
+}
