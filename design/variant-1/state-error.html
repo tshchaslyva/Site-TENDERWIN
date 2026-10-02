@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Варіант 1: Еволюція — TenderWin (макет)</title>
+<meta name="robots" content="noindex">
+
+<style>
+@font-face{font-family:"Fixel";src:url("../../site/fonts/FixelText-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Fixel";src:url("../../site/fonts/FixelText-SemiBold.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Fixel";src:url("../../site/fonts/FixelText-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Fixel Display";src:url("../../site/fonts/FixelDisplay-ExtraBold.woff2") format("woff2");font-weight:800;font-display:swap}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0}
+img,svg{max-width:100%}
+a{color:inherit}
+h1,h2,h3,p{margin:0}
+.nw{white-space:nowrap}
+.wrap{max-width:var(--wrap,1180px);margin-inline:auto;padding-inline:20px}
+.ic{width:20px;height:20px;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;font:inherit;font-weight:700;text-decoration:none;cursor:pointer;line-height:1.2;text-align:center;border:1.5px solid transparent}
+.btn .ic{width:18px;height:18px}
+.btn-block{width:100%}
+details summary{cursor:pointer;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.field{margin-bottom:16px}
+.field label{display:block}
+.field input,.field textarea{width:100%;font:inherit;max-width:100%}
+.field textarea{min-height:104px;resize:vertical}
+.field .hint,.field .err{display:block}
+.field .err:empty{display:none}
+.c-line .v,.c-line .k,.c-line small{display:block}
+.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.row .field{margin-bottom:16px}
+@media(max-width:560px){.row{grid-template-columns:1fr;gap:0}}
+.check{display:flex;gap:10px;align-items:flex-start;cursor:pointer;margin:0 0 14px}
+.check input{width:18px;height:18px;margin-top:3px;flex-shrink:0}
+.formmsg:empty{display:none}
+.formmsg .more{display:block;margin-top:6px;font-weight:500}
+.mobilebar{display:none}
+.zd{position:fixed;right:18px;bottom:18px;z-index:70;width:58px;height:58px;border-radius:50%;display:grid;place-items:center}
+.zd .ic{width:24px;height:24px}
+.zd-label{position:absolute;right:66px;white-space:nowrap;font:600 11px/1.2 system-ui,sans-serif;padding:4px 7px;border-radius:6px;background:rgba(0,0,0,.72);color:#fff}
+@media(max-width:740px){
+  .mobilebar{display:flex;align-items:center;gap:12px;position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+  .mobilebar .mb-text{flex:1;min-width:0;font-size:.86rem;line-height:1.3}
+  .mobilebar .btn{white-space:nowrap}
+  body{padding-bottom:78px}
+  .zd{bottom:88px;right:14px;width:52px;height:52px}
+}
+@media(max-width:359px){.mobilebar .mb-text{display:none}.mobilebar .btn{flex:1}}
+.posts-note{font-size:.88rem;margin-top:6px}
+.m-only{display:none}
+@media(max-width:980px){.m-only{display:block}.d-only{display:none !important}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* захист від горизонтальної прокрутки на 320 px */
+.hero-grid>*,.form-grid>*,.form-wrap>*,.layout>*,.split>*,.margin-sec>*,.cols>*,.two>*,.cards>*,.grid2>*,.ledger-row>*,
+.price-box>*,.price-card>*,.pricing>*,.person>*,.steps>*,.row>*,.foot-top>*{min-width:0}
+input,textarea{min-width:0}
+.c-line .v,.c-line .v a,.foot-bottom,.contacts p,.formmsg{overflow-wrap:anywhere}
+@media(max-width:420px){.nav-phone{font-size:.88rem}.logo{font-size:1rem !important;letter-spacing:.02em !important}.logo svg{width:26px;height:26px}}
+
+:root{--ink:#0B1B2B;--ink2:#112538;--gold:#D9A441;--gold2:#ECC06A;--ivory:#FAF7F0;--paper:#fff;--text:#13202D;--muted:#4C5D6E;--line:#E4DED2;--wrap:1200px}
+body{font-family:"Fixel",system-ui,sans-serif;font-size:17px;line-height:1.65;color:var(--text);background:var(--ivory);-webkit-font-smoothing:antialiased}
+h1,h2{font-family:"Fixel Display","Fixel",sans-serif;font-weight:800;letter-spacing:-.025em;line-height:1.1}
+h3{font-size:1.15rem;line-height:1.3}
+.btn{border-radius:12px;padding:.95em 1.6em;font-size:1rem}
+.btn-primary{background:var(--gold);color:#241602;border-color:var(--gold)}
+.btn-primary:hover{background:var(--gold2)}
+.btn-secondary{color:#fff;border-color:rgba(255,255,255,.35)}
+.btn-sm{padding:.62em 1.1em;font-size:.94rem}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.top{position:sticky;top:0;z-index:50;background:rgba(11,27,43,.96);border-bottom:1px solid rgba(255,255,255,.07)}
+.nav{display:flex;align-items:center;gap:26px;height:72px}
+.logo{display:flex;gap:10px;align-items:center;color:#fff;text-decoration:none;font:800 1.2rem "Fixel Display",sans-serif}
+.logo-t span{color:var(--gold)}
+.nav-links{display:flex;gap:24px;margin-left:auto;font-weight:600;font-size:.95rem}
+.nav-links a{color:#C7D4E1;text-decoration:none}
+.nav-cta{display:flex;gap:18px;align-items:center}
+.nav-phone{color:#fff;font-weight:700;text-decoration:none;white-space:nowrap}
+@media(max-width:1120px){.nav-links{display:none}.nav-cta{margin-left:auto}}
+@media(max-width:640px){.nav-cta .btn{display:none}.nav{height:62px}}
+.hero{background:radial-gradient(800px 420px at 90% 0%,rgba(217,164,65,.16),transparent 60%),var(--ink);color:#E9F0F6;padding:84px 0 92px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
+@media(max-width:980px){.hero-grid{grid-template-columns:1fr;gap:36px}.hero{padding:40px 0 56px}}
+.kicker{display:inline-block;font-size:.84rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.hero h1{font-size:clamp(2rem,4.8vw,3.4rem);color:#fff}
+.lede{margin-top:20px;font-size:1.14rem;color:#C9D6E2;max-width:58ch}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+@media(max-width:520px){.actions .btn{flex:1 1 100%}}
+.hero-note{margin-top:14px;font-size:.92rem;color:#A9BCCF}
+.m-offer{margin-top:22px;padding:16px 18px;border:1px solid rgba(217,164,65,.55);border-radius:14px;background:rgba(255,255,255,.05)}
+.m-offer b{display:block;font:800 1.2rem/1.3 "Fixel Display",sans-serif;color:#fff}.m-offer .price{color:var(--gold)}
+.m-offer .sub{display:block;margin-top:6px;color:#C9D6E2;font-size:.95rem}
+.offer-card{background:#fff;color:var(--text);border-radius:22px;padding:34px 32px;box-shadow:0 30px 60px -28px rgba(0,0,0,.6);position:relative}
+.offer-card::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;border-radius:22px 22px 0 0;background:var(--gold)}
+.offer-card .lbl{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7A5410}
+.offer-card .offer-line b{display:block;font:800 1.5rem/1.25 "Fixel Display",sans-serif;margin-top:10px;letter-spacing:-.02em}
+.offer-card .price{display:block;font-size:3.1rem;line-height:1;color:var(--ink)}
+.offer-card .sub{display:block;margin-top:12px;color:var(--muted);font-size:1rem}
+.offer-card .desc{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.96rem}
+.offer-card .btn{margin-top:24px;width:100%}
+section{padding:96px 0}
+@media(max-width:700px){section{padding:64px 0}}
+.sec-head{max-width:760px;margin-bottom:44px}
+.eyebrow{display:flex;gap:12px;align-items:center;font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7A5410;margin-bottom:14px}
+.eyebrow b{font:800 .95rem "Fixel Display",sans-serif;color:var(--gold);letter-spacing:0}
+.sec-head h2{font-size:clamp(1.7rem,3.4vw,2.5rem);color:var(--ink)}
+.sec-head p{margin-top:14px;font-size:1.1rem;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px}
+.card h3{font-size:1.3rem;margin-bottom:14px;color:var(--ink)}
+.checklist{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.checklist li{display:flex;gap:12px}
+.checklist .ic{color:#1F7A55;margin-top:3px}
+.card p{color:var(--muted)}
+.note{margin-top:22px;padding:18px 22px;border-left:4px solid var(--gold);background:#fff;border-radius:0 12px 12px 0;color:#4A3A12}
+.person{display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:22px;padding:36px}
+@media(max-width:700px){.person{grid-template-columns:1fr;padding:26px}}
+.photo{aspect-ratio:4/5;border-radius:16px;background:repeating-linear-gradient(135deg,#EFE9DC 0 12px,#F6F1E6 12px 24px);display:grid;place-items:center;text-align:center;font-size:.8rem;color:#7A6A4A;padding:12px}
+.person h3{font:800 1.6rem "Fixel Display",sans-serif;color:var(--ink)}
+.person blockquote{margin:16px 0 0;font-size:1.12rem;line-height:1.6}
+.person .meta{margin-top:14px;color:var(--muted);font-size:.92rem}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:20px;background:#fff;overflow:hidden}
+@media(max-width:1000px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.steps{grid-template-columns:1fr}}
+.step{padding:30px 26px;border-right:1px solid var(--line)}
+.step:last-child{border-right:0}
+@media(max-width:1000px){.step{border-bottom:1px solid var(--line)}}
+.step-top{display:flex;gap:10px;align-items:center;margin-bottom:16px}
+.step-n{font:800 2.4rem/1 "Fixel Display",sans-serif;color:var(--gold)}
+.tag{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1F7A55;background:#E7F4EE;padding:4px 9px;border-radius:6px}
+.step h3{margin-bottom:8px;color:var(--ink)}
+.step p{color:var(--muted);font-size:.98rem}
+.step-link{display:inline-block;margin-top:12px;font-weight:700;color:var(--ink);text-decoration-color:var(--gold);text-underline-offset:4px}
+.price-band{background:var(--ink);color:#E9F0F6}
+.price-box{display:grid;grid-template-columns:1.4fr .6fr;border:1px solid rgba(217,164,65,.5);border-radius:24px;overflow:hidden}
+@media(max-width:860px){.price-box{grid-template-columns:1fr}}
+.price-main{padding:44px}
+.price-main h2{font-size:clamp(1.5rem,3vw,2.2rem);color:#fff}
+.price-main p{margin-top:16px;color:#C9D6E2}
+.price-main .limits{padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:.96rem;color:#A9BCCF}
+.price-side{background:rgba(255,255,255,.04);padding:44px;display:flex;flex-direction:column;justify-content:center;gap:14px;border-left:1px solid rgba(217,164,65,.3)}
+.price-side .big{font:800 3.4rem/1 "Fixel Display",sans-serif;color:var(--gold)}
+.price-side p{color:#C9D6E2}
+.fine{margin-top:22px;color:#A9BCCF;font-size:.96rem}
+.fine b{color:#fff}
+.price-band .eyebrow{color:var(--gold)}
+.faq{max-width:900px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{padding:22px 48px 22px 0;font-weight:700;font-size:1.08rem;position:relative;color:var(--ink)}
+.faq summary::after{content:"+";position:absolute;right:6px;top:18px;font:800 1.5rem "Fixel Display";color:var(--gold)}
+.faq details[open] summary::after{content:"–"}
+.faq .answer{padding:0 0 22px;color:var(--muted);max-width:80ch}
+.faq ol{padding-left:1.3em;margin:10px 0 0}
+.faq li+li{margin-top:6px}
+.form-sec{background:var(--ink);color:#E9F0F6}
+.form-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:start}
+@media(max-width:940px){.form-grid{grid-template-columns:1fr}}
+.form-sec h2{font-size:clamp(1.7rem,3.4vw,2.5rem);color:#fff}
+.form-sec .sub{margin-top:12px;color:#C9D6E2}
+.form{margin-top:28px;background:var(--ink2);border:1px solid #27445F;border-radius:20px;padding:30px}
+.field label{font-weight:700;font-size:.9rem;margin-bottom:7px;color:#D3DEE8}
+.req{color:var(--gold)}.opt{font-weight:500;color:#A9BCCF}
+.field input,.field textarea{padding:13px 14px;border-radius:11px;border:1.5px solid #4F76A0;background:#0A1726;color:#fff}
+.field input::placeholder,.field textarea::placeholder{color:#8AA2B8}
+.field input[aria-invalid=true]{border-color:#FFB4AB}
+.hint{font-size:.83rem;color:#A9BCCF;margin-top:5px}
+.err{font-size:.88rem;font-weight:600;color:#FFB4AB;margin-top:5px}
+.check{font-size:.92rem;color:#C9D6E2}
+.check a{color:var(--gold)}
+.check input{accent-color:var(--gold)}
+.formmsg{margin-top:16px;padding:15px 18px;border-radius:11px;background:#E7F4EE;color:#145C40;font-weight:600}
+.form-note{margin-top:14px;font-size:.86rem;color:#A9BCCF}
+.btn-block{padding:1em}
+.contacts{background:var(--ink2);border:1px solid #27445F;border-radius:20px;padding:30px;margin-top:108px}
+@media(max-width:940px){.contacts{margin-top:0}}
+.contacts h3{color:#fff;font-size:1.3rem}
+.contacts>p{margin-top:8px;color:#C9D6E2;font-size:.97rem}
+.c-line{display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid #27445F}
+.c-line .ic{color:var(--gold)}
+.c-line .k{display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:#A9BCCF;font-weight:700}
+.c-line .v a{color:#fff;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(217,164,65,.5)}
+.c-line small a{color:#D3DEE8;font-size:.86rem}
+.executor{margin-top:14px;font-size:.86rem;color:#A9BCCF}
+.posts{background:var(--ivory);padding:48px 0;border-top:1px solid var(--line)}
+.posts-link a{font-weight:700;color:var(--ink)}
+.posts-note{color:var(--muted)}
+.footer{background:#07131F;color:#A9BCCF;padding:52px 0 34px;font-size:.93rem}
+.foot-top{display:flex;flex-wrap:wrap;gap:28px;justify-content:space-between}
+.foot-about{max-width:52ch}.foot-about p{margin-top:12px}
+.foot-about a,.foot-links a,.foot-bottom a,.foot-privacy a{color:#D3DEE8;text-decoration:none}
+.foot-links{display:flex;flex-wrap:wrap;gap:10px 22px}
+.foot-privacy{margin-top:24px}
+.foot-bottom{margin-top:24px;padding-top:20px;border-top:1px solid #23405C;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+.mobilebar{background:rgba(11,27,43,.97);color:#E9F0F6;border-top:1px solid #23405C}
+.mobilebar .btn{padding:.8em 1.1em}
+.zd{background:var(--gold);color:#241602;box-shadow:0 10px 24px -8px rgba(0,0,0,.5)}
+
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap nav"><a href="#top" class="logo" aria-label="TenderWin — на початок сторінки"><svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#173450"/><path d="M14 20h36M32 20v26M22 44h20" stroke="#e0a53c" stroke-width="6" stroke-linecap="round"/></svg><span class="logo-t">TENDER<span>WIN</span></span></a><nav class="nav-links" aria-label="Основні розділи"><a href="#rezultat">Що входить</a><a href="#khto">Хто відповідає</a><a href="#yak">Як замовити</a><a href="#vartist">Вартість</a><a href="#pytannya">Питання</a><a href="#kontakty">Контакти</a></nav><div class="nav-cta"><a class="nav-phone" href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a><a class="btn btn-primary btn-sm" href="#zayavka">Замовити аналіз</a></div></div></header>
+<main id="top">
+<div class="hero"><div class="wrap hero-grid">
+  <div><p class="kicker">Для учасників публічних закупівель Prozorro</p><h1>Аналіз відхилення тендерної пропозиції за&nbsp;24&nbsp;години</h1><p class="lede">Допоможемо оцінити, чи є підстави оскаржувати відхилення. Перевіримо аргументи замовника за документами Вашої закупівлі, підготуємо письмовий висновок і пояснимо його на <span class="nw">30-хвилинній</span> консультації.</p>
+    <div class="m-only m-offer"><p class="offer-line"><b><span class="price">3&nbsp;499&nbsp;грн</span> за аналіз і консультацію</b><span class="sub">Письмовий аналіз протягом 24&nbsp;годин після оплати. Консультація після отримання висновку в погоджений час.</span></p></div><div class="actions"><a class="btn btn-primary" href="#zayavka">Замовити аналіз<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn btn-secondary" href="#rezultat">Що входить у послугу</a></div><p class="hero-note">Перед оплатою підтвердимо обсяг роботи та можливість виконати її вчасно.</p></div>
+  <div class="offer-card d-only"><p class="lbl">Пропозиція</p><p class="offer-line"><b><span class="price">3&nbsp;499&nbsp;грн</span> за аналіз і консультацію</b><span class="sub">Письмовий аналіз протягом 24&nbsp;годин після оплати. Консультація після отримання висновку в погоджений час.</span></p><p class="desc">Письмовий аналіз із посиланнями на документи, оцінка кожної підстави відхилення, рекомендації щодо наступних дій та одна консультація за результатами аналізу.</p><a class="btn btn-primary" href="#zayavka">Замовити аналіз</a></div>
+</div></div>
+<section id="rezultat"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow"><b>01</b>Що Ви отримаєте</p><h2>Письмовий висновок, який допомагає прийняти рішення</h2><p>У висновку розглянемо кожну підставу відхилення та покажемо, на яких документах ґрунтується оцінка.</p></div>
+  <div class="grid2"><div class="card"><h3>Структура висновку</h3><ul class="checklist"><li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 12.5 4 4L18 8"/></svg><span>Що саме зазначив замовник у рішенні про відхилення.</span></li><li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 12.5 4 4L18 8"/></svg><span>Яка вимога документації стосується цієї підстави.</span></li><li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 12.5 4 4L18 8"/></svg><span>Що міститься у відповідних документах Вашої пропозиції.</span></li><li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 12.5 4 4L18 8"/></svg><span>Які аргументи підтримують оскарження, а які послаблюють позицію.</span></li><li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 12.5 4 4L18 8"/></svg><span>Які наступні дії доцільно розглянути та які ризики врахувати.</span></li></ul></div>
+  <div class="card"><h3>30 хвилин для пояснення висновків</h3><p>На консультації розберемо незрозумілі моменти, відповімо на Ваші запитання щодо аналізу та обговоримо можливі наступні кроки. Консультація входить у ціну послуги.</p></div></div>
+  <p class="note">Якщо документи не дають достатніх підстав рекомендувати оскарження, пояснимо це у висновку. Якщо для оцінки бракує даних, прямо зазначимо обмеження.</p></div></section>
+<section id="khto" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow"><b>02</b>Хто працює з Вашим замовленням</p><h2>Хто відповідає за аналіз</h2></div>
+  <div class="person"><div class="photo">Місце для справжньої фотографії (за згодою)</div><div><h3>Віталій Щасливий</h3><blockquote>Я відповідаю за висновки TenderWin і проводжу консультацію за результатами аналізу. Моя мета — пояснити, на чому ґрунтується Ваша позиція, де є ризики та які наступні дії варто розглянути.</blockquote><p class="meta">Виконавець — ФОП Щасливий Віталій Олександрович.</p></div></div>
+</div></section>
+<section id="yak" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow"><b>03</b>Як замовити</p><h2>Як замовити аналіз і консультацію</h2></div><ol class="steps"><li class="step"><div class="step-top"><span class="step-n">1</span></div><h3>Заповніть заявку</h3><p>Укажіть закупівлю, учасника та контакти для зв’язку. Для багатолотової закупівлі зазначте потрібний лот.</p><a class="step-link" href="#zayavka">До заявки</a></li><li class="step"><div class="step-top"><span class="step-n">2</span></div><h3>Погодьте обсяг роботи та оплатіть рахунок</h3><p>Перевіримо вихідні дані й можливість виконати аналіз вчасно, погодимо умови та надішлемо рахунок на 3&nbsp;499&nbsp;грн.</p></li><li class="step"><div class="step-top"><span class="step-n">3</span><span class="tag">24 години</span></div><h3>Отримайте письмовий аналіз</h3><p>Підготуємо висновок протягом 24&nbsp;годин після зарахування оплати. Точний строк підтвердимо в листі.</p></li><li class="step"><div class="step-top"><span class="step-n">4</span><span class="tag">30 хвилин</span></div><h3>Обговоріть висновки на консультації</h3><p>Після передання аналізу погодимо час <span class="nw">30-хвилинної</span> консультації. Вона вже входить у сплачену вартість.</p></li></ol></div></section>
+<section id="vartist" class="price-band"><div class="wrap">
+  <p class="eyebrow"><b>04</b>Вартість послуги</p>
+  <div class="price-box"><div class="price-main"><h2>Аналіз відхилення та <span class="nw">30-хвилинна</span> консультація</h2><p>Письмовий аналіз із посиланнями на документи, оцінка кожної підстави відхилення, рекомендації щодо наступних дій та одна консультація за результатами аналізу.</p><p class="limits">Підготовка і подання скарги, представництво та плата за подання скарги до цієї послуги не входять. Рішення органу оскарження не залежить від TenderWin.</p></div>
+  <div class="price-side"><span class="big">3&nbsp;499 <small style="font-size:1.2rem">грн</small></span><p>Консультація входить у ціну послуги.</p><a class="btn btn-primary" href="#zayavka">Замовити аналіз</a></div></div>
+  <p class="fine"><b>Працюємо за договором. Надаємо рахунок і акт наданих послуг.</b> Працюємо дистанційно з учасниками закупівель по всій Україні.</p></div></section>
+<section id="pytannya"><div class="wrap"><div class="sec-head"><p class="eyebrow"><b>05</b>Питання</p><h2>Що зазвичай запитують</h2></div><div class="faq"><details open><summary>Як відбувається опрацювання моєї справи і коли я отримаю аналіз?</summary><div class="answer"><p>Після зарахування оплати ми беремо справу в роботу.</p><ol><li>Збираємо першоджерела з Prozorro: рішення замовника про відхилення, тендерну документацію, Вашу пропозицію та листування за закупівлею.</li><li>Розбираємо кожну підставу відхилення окремо: що написав замовник, що вимагала документація і що є у Ваших документах.</li><li>Якщо для висновку бракує даних, уточнюємо їх у Вас телефоном або в Telegram — тому вкажіть у заявці контакт, за яким Ви на зв’язку.</li><li>Перед надсиланням висновок проходить незалежну перевірку.</li><li>Готовий аналіз надсилаємо на Вашу електронну пошту окремим документом із посиланнями на джерела — до 24 годин з моменту зарахування оплати.</li></ol></div></details><details><summary>Коли відбудеться консультація?</summary><div class="answer"><p>Після того як Ви отримаєте письмовий висновок. Час і спосіб зв’язку погодимо з Вами. Одна <span class="nw">30-хвилинна</span> консультація за результатами аналізу входить у вартість 3&nbsp;499&nbsp;грн. Строк 24 години стосується підготовки письмового аналізу.</p></div></details><details><summary>Що потрібно для початку?</summary><div class="answer"><p>Заповніть заявку на сайті: укажіть ID або посилання на закупівлю, дані учасника й контакти. Якщо потрібного документа немає у відкритому доступі, узгодимо його передання до початку роботи.</p></div></details><details><summary>Чи підготуєте Ви скаргу?</summary><div class="answer"><p>Ця послуга включає аналіз відхилення та консультацію щодо висновків. Підготовка й подання скарги до неї не входять.</p></div></details><details><summary>Що буде, якщо підстав для оскарження недостатньо?</summary><div class="answer"><p>Ви отримаєте висновок із поясненням причин і ризиків. На консультації розберемо ці висновки та можливі наступні дії. Оцінка слабкої позиції також є результатом аналізу; ми не обіцяємо позитивної рекомендації незалежно від документів.</p></div></details><details><summary>Чи входить плата за подання скарги у 3&nbsp;499&nbsp;грн?</summary><div class="answer"><p>Ні. Це вартість аналізу та консультації. Якщо Ви вирішите подавати скаргу, плату за її подання потрібно врахувати окремо за правилами, що застосовуються до Вашої закупівлі.</p></div></details><details><summary>Що робити, якщо строк оскарження спливає?</summary><div class="answer"><p>Укажіть це в заявці та зв’яжіться з нами за контактами на сайті. До оплати потрібно перевірити строк саме Вашої процедури та можливість виконати аналіз вчасно. Звернення до TenderWin й оплата аналізу не зупиняють строку оскарження.</p></div></details><details><summary>Як оформлюється замовлення?</summary><div class="answer"><p>До оплати погоджуємо предмет, строк та умови послуги, після чого надсилаємо рахунок. Документи оформлюємо відповідно до погодженого договору.</p></div></details></div></div></section>
+<section id="zayavka" class="form-sec"><div class="wrap form-grid">
+  <div><p class="eyebrow" style="color:var(--gold)"><b>06</b>Заявка</p><h2>Замовити аналіз відхилення</h2><p class="sub">Аналіз і <span class="nw">30-хвилинна</span> консультація за 3&nbsp;499&nbsp;грн. Після заявки підтвердимо можливість виконання та надішлемо умови оплати.</p><form class="form" action="#" onsubmit="return false" novalidate>
+  <div class="row"><div class="field"><label for="f-name">Ім’я <span class="req" aria-hidden="true">*</span></label><input id="f-name" type="text" aria-describedby="f-name-err" required><span class="err" id="f-name-err"></span></div><div class="field"><label for="f-mail">Електронна пошта <span class="req" aria-hidden="true">*</span></label><input id="f-mail" type="email" aria-describedby="f-mail-hint f-mail-err" placeholder="name@company.ua" required><span class="hint" id="f-mail-hint">Для підтвердження заявки, рахунку й аналізу.</span><span class="err" id="f-mail-err"></span></div></div>
+  <div class="field"><label for="f-tender">ID або посилання на закупівлю <span class="req" aria-hidden="true">*</span></label><input id="f-tender" type="text" aria-describedby="f-tender-hint f-tender-err" aria-invalid="true" required><span class="hint" id="f-tender-hint">Формат ID: UA-РРРР-ММ-ДД-000000-a. Можна вставити посилання на закупівлю з Prozorro.</span><span class="err" id="f-tender-err">Вкажіть ID закупівлі у форматі UA-2026-09-30-000123-a або вставте посилання на закупівлю.</span></div>
+  <div class="field"><label for="f-org">Назва учасника / ПІБ ФОП <span class="req" aria-hidden="true">*</span></label><input id="f-org" type="text" aria-describedby="f-org-hint f-org-err" placeholder="ТОВ «…» або ФОП Прізвище Ім’я По батькові" required><span class="hint" id="f-org-hint">Як у тендерній пропозиції.</span><span class="err" id="f-org-err"></span></div>
+  <div class="field"><label for="f-code">Код ЄДРПОУ юридичної особи або РНОКПП ФОП <span class="req" aria-hidden="true">*</span></label><input id="f-code" type="text" aria-describedby="f-code-hint f-code-err" required><span class="hint" id="f-code-hint">8 цифр — код ЄДРПОУ, 10 цифр — РНОКПП (ідентифікаційний код) ФОП.</span><span class="err" id="f-code-err"></span></div>
+  <label class="check"><input type="checkbox"><span>Коду немає — уточню окремо</span></label>
+  <div class="row"><div class="field"><label for="f-lot">Лот  <span class="opt">(якщо закупівля багатолотова)</span></label><input id="f-lot" type="text" aria-describedby="f-lot-err" placeholder="Наприклад, лот 2"><span class="err" id="f-lot-err"></span></div><div class="field"><label for="f-contact">Телефон або Telegram для уточнень  <span class="opt">(рекомендовано)</span></label><input id="f-contact" type="text" aria-describedby="f-contact-err" placeholder="+380 … або @username"><span class="err" id="f-contact-err"></span></div></div>
+  <div class="field"><label for="f-msg">Коротко про ситуацію  <span class="opt">(необов’язково)</span></label><textarea id="f-msg" aria-describedby="f-msg-err" placeholder="Коли оприлюднено рішення про відхилення, чи спливає строк оскарження"></textarea><span class="err" id="f-msg-err"></span></div>
+  <label class="check"><input type="checkbox"><span>Рахунок оплачуватиме інша особа, ніж учасник (уточнимо дані платника до рахунку)</span></label>
+  <label class="check consent"><input type="checkbox" required><span>Погоджуюся на обробку моїх персональних даних для опрацювання цього звернення відповідно до <a href="#privacy">політики конфіденційності</a>.</span></label>
+  <button type="submit" class="btn btn-primary btn-block">Надіслати заявку</button>
+  <div class="formmsg" role="status" aria-live="polite"></div>
+  <p class="form-note">Надсилання заявки не є оплатою. Не вставляйте в поле повідомлення паролі, банківські дані або конфіденційні документи. За потреби погодимо спосіб передання матеріалів окремо.</p>
+</form></div>
+  <aside class="contacts" id="kontakty"><h3>Маєте запитання?</h3><p>Зателефонуйте за номером +380&nbsp;800&nbsp;357&nbsp;135, замовте зворотний дзвінок або напишіть нам у Telegram: @TenderWin_UA. Для оформлення замовлення заповніть заявку на сайті.</p><div class="c-line"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg><div><span class="k">Телефон</span><span class="v"><a href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a></span></div></div><div class="c-line"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg><div><span class="k">Пошта</span><span class="v"><a href="mailto:vitalii@tenderwin.com.ua">vitalii@tenderwin.com.ua</a></span></div></div><div class="c-line"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 4.5 2.8 11.6c-.9.4-.9 1.6 0 1.9l4.6 1.5 1.8 5.3c.3.8 1.3 1 1.9.4l2.6-2.5 4.7 3.5c.7.5 1.7.1 1.9-.8l3-14.9c.2-1-.8-1.8-1.8-1.5z"/></svg><div><span class="k">Telegram</span><span class="v"><a href="https://t.me/tenderwin_ua">@TenderWin_UA</a></span><small><a href="https://t.me/tenderwin_ua">Написати в Telegram</a></small></div></div><div class="c-line"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 8h10M7 12h10M7 16h6"/></svg><div><span class="k">Канал</span><span class="v"><a href="https://t.me/tenderwin_plus">Тендер+ — щотижневий розбір відхилень</a></span></div></div><div class="c-line"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><div><span class="k">Сайт</span><span class="v"><a href="https://tenderwin.in.ua/">tenderwin.in.ua</a></span></div></div><p class="executor">Виконавець — ФОП Щасливий Віталій Олександрович.</p></aside></div></section>
+<section class="posts" id="rozbory" aria-label="Останні розбори"><div class="wrap"><p class="eyebrow">Останні розбори</p><p class="posts-link"><a href="https://t.me/tenderwin_plus">Тендер+ — щотижневий розбір відхилень</a></p><p class="posts-note">Віджет постів каналу «Тендер+» з’явиться, коли в каналі буде 3–4 пости. До того — лише посилання на канал.</p></div></section>
+</main>
+<footer class="footer"><div class="wrap">
+  <div class="foot-top"><div class="foot-about"><a href="#top" class="logo" aria-label="TenderWin — на початок сторінки"><svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#173450"/><path d="M14 20h36M32 20v26M22 44h20" stroke="#e0a53c" stroke-width="6" stroke-linecap="round"/></svg><span class="logo-t">TENDER<span>WIN</span></span></a><p>TenderWin. Аналіз відхилення тендерної пропозиції та <span class="nw">30-хвилинна</span> консультація за 3&nbsp;499&nbsp;грн. Письмовий аналіз протягом 24&nbsp;годин після оплати погодженого замовлення.</p><p><a href="https://t.me/tenderwin_plus">Тендер+ — щотижневий розбір відхилень у Telegram.</a></p></div>
+  <nav class="foot-links" aria-label="Розділи сайту"><a href="#rezultat">Що входить</a><a href="#khto">Хто відповідає</a><a href="#yak">Як замовити</a><a href="#vartist">Вартість</a><a href="#pytannya">Питання</a><a href="#kontakty">Контакти</a></nav></div>
+  <p class="foot-privacy" id="privacy"><a href="#privacy">Політика конфіденційності та обробки персональних даних</a></p>
+  <div class="foot-bottom"><span>© 2026 TenderWin · ФОП Щасливий Віталій Олександрович</span>
+  <span><a href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a> · <a href="mailto:vitalii@tenderwin.com.ua">vitalii@tenderwin.com.ua</a> · <a href="https://t.me/tenderwin_ua">@TenderWin_UA</a></span></div>
+</div></footer>
+<nav class="mobilebar" aria-label="Замовлення"><span class="mb-text">3&nbsp;499&nbsp;грн · консультація включена</span><a class="btn btn-primary" href="#zayavka">Замовити аналіз</a></nav><div class="zd" aria-hidden="true" title="Місце віджета зворотного дзвінка Zadarma"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg><span class="zd-label">віджет Zadarma</span></div>
+</body>
+</html>
