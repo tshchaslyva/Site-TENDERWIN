@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Робочий інструмент — TenderWin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:"Fixel";src:url("/fonts/FixelText-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Fixel";src:url("/fonts/FixelText-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+:root{--ink:#0B1B2B;--line:#dfe6ee;--muted:#4f6274;--gold:#e0a53c;--soft:#f4f6f9;--red:#b42318;--green:#12684a;--warn:#7d5210}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Fixel",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.5;color:#0f1c2a;background:var(--soft)}
+header{background:var(--ink);color:#fff;padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+header b{font-size:1.05rem}
+header b span{color:var(--gold)}
+header nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+main{max-width:1180px;margin:0 auto;padding:20px}
+button,.btn{font:inherit;font-weight:700;border-radius:9px;border:1.5px solid #c9d4e0;background:#fff;color:var(--ink);padding:.5em .9em;cursor:pointer}
+button.primary{background:var(--gold);border-color:var(--gold);color:#2a1a02}
+button.danger{border-color:#e7b4ae;color:var(--red)}
+button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#2a1a02}
+header button{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+button:disabled{opacity:.6;cursor:progress}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input,select,textarea{font:inherit;padding:.5em .65em;border:1.5px solid #c9d4e0;border-radius:8px;background:#fff;max-width:100%}
+textarea{width:100%;min-height:60px}
+label{display:block;font-weight:700;font-size:.88rem;margin:10px 0 4px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+.card h2{font-size:1.15rem;margin:0 0 10px}
+.card h3{font-size:1rem;margin:16px 0 8px}
+.muted{color:var(--muted)}
+.alert{padding:12px 14px;border-radius:10px;margin-bottom:14px;font-weight:600}
+.alert.warn{background:#fdf6e8;border:1px solid #f0dcb4;color:#5a4208}
+.alert.err{background:#fdecea;border:1px solid #f3c4bf;color:var(--red)}
+.alert.ok{background:#e8f5ef;border:1px solid #b9dfcb;color:var(--green)}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+tbody tr.row{cursor:pointer}
+tbody tr.row:hover{background:#f8fafc}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--soft);border:1px solid var(--line);margin:0 4px 4px 0;white-space:nowrap}
+.tag.warn{background:#fdf6e8;border-color:#f0dcb4;color:var(--warn)}
+.tag.err{background:#fdecea;border-color:#f3c4bf;color:var(--red)}
+.tag.ok{background:#e8f5ef;border-color:#b9dfcb;color:var(--green)}
+dl{display:grid;grid-template-columns:minmax(140px,220px) 1fr;gap:6px 14px;margin:0}
+dt{color:var(--muted)}
+dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.actions .card{margin:0}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.login{max-width:420px;margin:60px auto}
+.login input{width:100%}
+.scroll{overflow-x:auto}
+@media(max-width:640px){ dl{grid-template-columns:1fr} dt{margin-top:6px} }
+</style>
+</head>
+<body>
+<header>
+  <b>TENDER<span>WIN</span> · робочий інструмент</b>
+  <nav id="tabs" hidden>
+    <button type="button" data-filter="open" aria-pressed="true">Відкриті</button>
+    <button type="button" data-filter="problems" aria-pressed="false">Потребують уваги</button>
+    <button type="button" data-filter="all" aria-pressed="false">Усі</button>
+    <button type="button" id="refresh">Оновити</button>
+    <button type="button" id="logout">Вийти</button>
+  </nav>
+</header>
+<main>
+  <noscript><p class="alert err">Для роботи потрібен JavaScript.</p></noscript>
+  <div id="flash" role="status" aria-live="polite"></div>
+
+  <form id="login" class="card login" hidden>
+    <h2>Вхід</h2>
+    <p class="muted">Пароль — значення секрету <b>ADMIN_TOKEN</b> у Cloudflare. Зберігається лише до закриття вкладки.</p>
+    <label for="token">Пароль</label>
+    <input id="token" type="password" autocomplete="current-password" required minlength="16">
+    <div class="row-btns"><button class="primary" type="submit">Увійти</button></div>
+  </form>
+
+  <section id="list" hidden></section>
+  <section id="detail" hidden></section>
+</main>
+<script src="/admin/admin.js" defer></script>
+</body>
+</html>

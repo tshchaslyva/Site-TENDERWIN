@@ -13,10 +13,23 @@ const GOLD = rgb(0.878, 0.647, 0.235);     // #E0A53C
 const LINE = rgb(0.84, 0.87, 0.91);
 const SOFT = rgb(0.96, 0.97, 0.98);
 
+const charsets = new WeakMap();
+/**
+ * Символи, яких немає у шрифті, у PDF зникли б непомітно.
+ * «ʼ» і «'» замінюємо типографським апострофом «’», решту відсутніх — знаком «?».
+ */
+function safe(font, s) {
+  let set = charsets.get(font);
+  if (!set) { set = new Set(font.getCharacterSet()); charsets.set(font, set); }
+  return [...String(s).replace(/[ʼ'`]/g, "’")]
+    .map((ch) => (ch === "\n" || ch === " " || set.has(ch.codePointAt(0)) ? ch : "?"))
+    .join("");
+}
+
 /** Розбиває текст на рядки, що вміщуються в ширину */
 function wrap(text, font, size, width) {
   const lines = [];
-  for (const para of String(text).split("\n")) {
+  for (const para of safe(font, text).split("\n")) {
     let line = "";
     for (const word of para.split(/\s+/).filter(Boolean)) {
       const test = line ? line + " " + word : word;
@@ -49,6 +62,7 @@ function wrap(text, font, size, width) {
  * @param {Date}   p.date
  * @param {Date}   p.validUntil
  * @param {{title:string, unit:string, qty:number, price:number}[]} p.items
+ * @param {{label:string, url:string}} [p.channel]  канал «Тендер+» для колонтитула
  * @param {string} p.purpose     призначення платежу
  * @returns {Promise<Uint8Array>}
  */
@@ -73,7 +87,7 @@ export async function buildInvoicePdf(p) {
   let y = page.getHeight() - M;
 
   const text = (s, x, yy, { font = R, size = 10, color = TEXT } = {}) =>
-    page.drawText(String(s), { x, y: yy, font, size, color });
+    page.drawText(safe(font, s), { x, y: yy, font, size, color });
   const para = (s, x, yy, width, { font = R, size = 10, color = TEXT, lh = 1.4 } = {}) => {
     const lines = wrap(s, font, size, width);
     lines.forEach((ln, i) => text(ln, x, yy - i * size * lh, { font, size, color }));
@@ -137,12 +151,12 @@ export async function buildInvoicePdf(p) {
 
   // ---------- таблиця ----------
   const cols = [
-    { t: "№", w: 26, a: "c" },
-    { t: "Найменування послуги", w: CW - 26 - 52 - 44 - 78 - 84, a: "l" },
-    { t: "Од.", w: 52, a: "c" },
-    { t: "К-сть", w: 44, a: "c" },
-    { t: "Ціна, грн", w: 78, a: "r" },
-    { t: "Сума, грн", w: 84, a: "r" },
+    { t: "№", w: 24, a: "c" },
+    { t: "Найменування послуги", w: CW - 24 - 50 - 58 - 76 - 82, a: "l" },
+    { t: "Од.", w: 50, a: "c" },
+    { t: "Кількість", w: 58, a: "c" },
+    { t: "Ціна, грн", w: 76, a: "r" },
+    { t: "Сума, грн", w: 82, a: "r" },
   ];
   const pad = 7;
   const cell = (s, i, x, yy, font = R, size = 9.5, color = TEXT) => {
@@ -190,7 +204,7 @@ export async function buildInvoicePdf(p) {
   totalRow("ПДВ:", "без ПДВ");
   page.drawLine({ start: { x: totalsX, y: y + 8 }, end: { x: W - M, y: y + 8 }, thickness: 0.8, color: LINE });
   y -= 4;
-  totalRow("Всього до сплати:", money(total) + " грн", true);
+  totalRow("Усього до сплати:", money(total) + " грн", true);
 
   y -= 6;
   y -= para(`Сума прописом: ${amountInWords(total)}, без ПДВ.`, M, y, CW, { font: B, size: 10 });
@@ -207,20 +221,19 @@ export async function buildInvoicePdf(p) {
   // ---------- примітки ----------
   const notes = [
     `Рахунок дійсний до ${dotDate(p.validUntil)} включно.`,
-    "Роботу розпочинаємо одразу після надходження оплати; аналіз — протягом 24 годин.",
-    "Договір та акт виконаних робіт підписуються через сервіс «Вчасно».",
+    "Письмовий аналіз — протягом 24 годин після зарахування оплати. Консультацію тривалістю 30 хвилин проводимо після передання висновку в погоджений час; окремо вона не оплачується.",
+    "Договір та акт наданих послуг підписуються через сервіс «Вчасно».",
+    "Рахунок сформовано в електронному вигляді, дійсний без підпису та печатки.",
   ];
   if (!p.seller.iban) notes.unshift("Реквізити для оплати буде надіслано окремо.");
-  notes.forEach((n) => { y -= para("•  " + n, M, y, CW, { size: 9.5, color: MUTED }); });
+  notes.forEach((n) => { y -= para("•  " + n, M, y, CW, { size: 9.5, color: MUTED }) + 2; });
 
-  // ---------- підпис ----------
-  y -= 30;
-  text("Виписав:", M, y, { size: 10, color: MUTED });
-  page.drawLine({ start: { x: M + 60, y: y - 2 }, end: { x: M + 230, y: y - 2 }, thickness: 0.8, color: LINE });
-  text(p.seller.signature || p.seller.name, M + 240, y, { size: 10 });
-
-  // низ сторінки
-  text(`${p.seller.site}  ·  ${p.number}`, M, 30, { size: 8, color: MUTED });
+  // низ сторінки: сайт, телефон, канал «Тендер+», номер рахунку
+  const foot = [p.seller.site, p.seller.phone, p.channel ? `${p.channel.label}: ${p.channel.url.replace(/^https:\/\//, "")}` : ""]
+    .filter(Boolean).join("  ·  ");
+  text(foot, M, 30, { size: 8, color: MUTED });
+  const numW = R.widthOfTextAtSize(p.number, 8);
+  text(p.number, W - M - numW, 30, { size: 8, color: MUTED });
 
   return pdf.save();
 }

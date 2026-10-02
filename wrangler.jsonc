@@ -1,6 +1,6 @@
 // Налаштування Cloudflare Workers для сайту TenderWin.
 //  - site/   — статичні файли сайту (Cloudflare віддає їх сам, безкоштовно й без ліміту)
-//  - worker/ — обробник заявок /api/zayavka: листи + PDF-рахунок
+//  - worker/ — обробник заявок /api/zayavka і робочий інструмент /api/admin/* (реєстр, листи, PDF-рахунок)
 // "name" має збігатися з назвою проєкту в Cloudflare (site-tenderwin).
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
@@ -25,28 +25,38 @@
     { "tag": "v1", "new_sqlite_classes": ["InvoiceRegistry"] }
   ],
   // ===================== РЕКВІЗИТИ ТА НАЛАШТУВАННЯ =====================
-  // Змінюються тут. Секрети (RESEND_API_KEY, CLARITY_API_KEY) — лише в
-  // панелі Cloudflare: site-tenderwin → Settings → Variables and secrets.
+  // Змінюються тут. Контакти (телефон, пошта, Telegram, канал) — у contacts.json.
+  // Секрети — лише в панелі Cloudflare: site-tenderwin → Settings →
+  // Runtime variables and secrets: RESEND_API_KEY (пошта), ADMIN_TOKEN (пароль /admin/).
   "vars": {
     "SELLER_NAME": "ФОП Щасливий Віталій Олександрович",
-    "SELLER_SIGNATURE": "Щасливий В. О.",
-    "SELLER_SIGNATURE_FULL": "Віталій Щасливий",
     "SELLER_RNOKPP": "2817712530",
+    // Адресу підтвердити за випискою з ЄДР (інструкція v2.0, розділ 22, п. 2).
     "SELLER_ADDRESS": "02002, м. Київ, вул. Нестайка Всеволода, 5, кв. 4",
-    // Поки IBAN порожній, рахунок не виписується: клієнт отримує лише подяку.
+    // Поки IBAN і банк порожні, рахунок не створюється: замовлення можна прийняти й надіслати рахунок вручну.
     "SELLER_IBAN": "",
     "SELLER_BANK": "",
+    // Підтвердити статус платника єдиного податку до публікації (розділ 22, п. 2).
     "SELLER_TAX_NOTE": "Платник єдиного податку 3 групи, не є платником ПДВ",
-    "SELLER_PHONE": "+380 50 310 14 92",
-    "SERVICE_TITLE": "Аналіз відхилення ТП",
+    // Ціна цього запуску. Інше значення блокує створення рахунків (захист від помилки в налаштуваннях).
     "PRICE_UAH": "3499",
-    "INVOICE_VALID_DAYS": "5",
+    // Версії складу послуги й умов, що зберігаються з кожною заявкою.
+    "SERVICE_VERSION": "2026-10-02: аналіз + 30-хвилинна консультація, 3 499 грн",
+    "TERMS_VERSION": "",
+    // Посилання на погоджені умови замовлення (додається в лист із рахунком, коли буде).
+    "TERMS_URL": "",
+    // Типова чинність рахунку в днях; у робочому інструменті можна вказати іншу дату для кожного замовлення.
+    "INVOICE_VALID_DAYS": "2",
     "MAIL_FROM": "TenderWin <info@tenderwin.in.ua>",
     "MAIL_OWNER": "vitalii@tenderwin.com.ua",
-    "SITE_DOMAIN": "tenderwin.in.ua",
     "ALLOWED_ORIGINS": "https://tenderwin.in.ua,https://www.tenderwin.in.ua,https://site-tenderwin.ppvetik1.workers.dev",
-    "LIMIT_PER_IP_HOUR": "3",
-    "LIMIT_PER_DAY": "40"
+    // Обмеження. Усі «24 години» — рухоме вікно, а не календарна доба.
+    "LIMIT_PER_IP_HOUR": "3",          // заявок з однієї IP-адреси за годину
+    "LIMIT_PER_EMAIL_24H": "3",        // автопідтверджень на одну адресу; далі — притримуються
+    "LIMIT_ROLLING_24H": "40",         // після цього заявки зберігаються, але автолисти клієнтам притримуються
+    "HARD_LIMIT_ROLLING_24H": "150",   // після цього сайт тимчасово не приймає заявки (захист від атаки)
+    // Скільки днів зберігати звернення, що не перейшли в замовлення (рішення Віталія; див. політику конфіденційності).
+    "RETENTION_DAYS": "365"
   },
   "observability": { "enabled": true }
 }

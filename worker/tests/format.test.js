@@ -2,7 +2,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  amountInWords, money, isValidEdrpou, isValidRnokpp, extractTenderId, titleCase, isoDay, longDate,
+  amountInWords, money, isValidEdrpou, isValidRnokpp, parseTenderId, normalizeContact, isValidIbanUa,
+  isoDay, longDate, kyivDateTime,
 } from "../format.js";
 
 test("сума прописом", () => {
@@ -24,15 +25,32 @@ test("контрольні цифри", () => {
   assert.ok(!isValidRnokpp("2817712531"));
 });
 
-test("ID закупівлі з посилання", () => {
-  assert.equal(extractTenderId("https://prozorro.gov.ua/tender/UA-2026-09-07-014600-a"), "UA-2026-09-07-014600-a");
-  assert.equal(extractTenderId("ua-2026-09-07-014600-A"), "UA-2026-09-07-014600-a");
-  assert.equal(extractTenderId("abc"), "");
+test("ID закупівлі: повний формат і реальна дата", () => {
+  const now = new Date("2026-10-02T12:00:00Z");
+  assert.equal(parseTenderId("https://prozorro.gov.ua/tender/UA-2026-09-07-014600-a", now), "UA-2026-09-07-014600-a");
+  assert.equal(parseTenderId("ua-2026-09-07-014600-A", now), "UA-2026-09-07-014600-a");
+  assert.equal(parseTenderId("UA-2026-09-07-014600", now), "");          // без суфікса
+  assert.equal(parseTenderId("UA-2026-99-99-000001-a", now), "");        // неможлива дата
+  assert.equal(parseTenderId("UA-2026-02-30-000001-a", now), "");        // 30 лютого
+  assert.equal(parseTenderId("UA-2014-01-10-000001-a", now), "");        // до запуску Prozorro
+  assert.equal(parseTenderId("UA-2028-01-10-000001-a", now), "");        // надто далеке майбутнє
+  assert.equal(parseTenderId("XUA-2026-09-07-014600-a", now), "");
+  assert.equal(parseTenderId("abc", now), "");
 });
 
-test("ПІБ з реєстру", () => {
-  assert.equal(titleCase("ГАРАГУЦ ЯРОСЛАВ ВАЛЕРІЙОВИЧ"), "Гарагуц Ярослав Валерійович");
-  assert.equal(titleCase("П’ЯТНИЦЬКА-КОВАЛЬ ОЛЕНА"), "П’ятницька-Коваль Олена");
+test("контакт для уточнень", () => {
+  assert.deepEqual(normalizeContact(""), { kind: "", value: "" });
+  assert.deepEqual(normalizeContact("+380 67 123 45 67"), { kind: "phone", value: "+380 67 123 45 67" });
+  assert.deepEqual(normalizeContact("@ivan_test"), { kind: "telegram", value: "@ivan_test" });
+  assert.deepEqual(normalizeContact("https://t.me/ivan_test"), { kind: "telegram", value: "@ivan_test" });
+  assert.equal(normalizeContact("12345"), null);
+  assert.equal(normalizeContact("<script>"), null);
+});
+
+test("IBAN", () => {
+  assert.ok(isValidIbanUa("UA74 3052 9900 0002 6007 2335 6600 1"));
+  assert.ok(!isValidIbanUa("UA753052990000026007233566001"));
+  assert.ok(!isValidIbanUa("UA74305299"));
 });
 
 test("дати за Києвом", () => {
@@ -40,4 +58,5 @@ test("дати за Києвом", () => {
   const d = new Date("2026-09-26T22:30:00Z");
   assert.equal(isoDay(d), "2026-09-27");
   assert.equal(longDate(d), "27 вересня 2026 р.");
+  assert.equal(kyivDateTime(d), "27 вересня 2026 р., 01:30");
 });

@@ -1,0 +1,21 @@
+{
+  "_comment": "Єдине джерело контактів TenderWin. Обробник (worker/) читає їх звідси; тест npm test перевіряє, що сайт (site/) показує ті самі значення. Номер SIM-картки Telegram-акаунта сюди не вносити.",
+  "phone": {
+    "display": "+380 800 357 135",
+    "e164": "+380800357135"
+  },
+  "email": "vitalii@tenderwin.com.ua",
+  "site": "tenderwin.in.ua",
+  "telegram": {
+    "username": "TenderWin_UA",
+    "url": "https://t.me/tenderwin_ua",
+    "prefill": "Доброго дня! Хочу замовити аналіз відхилення. ID закупівлі: UA-… ЄДРПОУ/РНОКПП: …"
+  },
+  "channel": {
+    "username": "tenderwin_plus",
+    "url": "https://t.me/tenderwin_plus",
+    "label": "Тендер+ — щотижневий розбір відхилень"
+  },
+  "person": "Віталій Щасливий",
+  "executor": "ФОП Щасливий Віталій Олександрович"
+}

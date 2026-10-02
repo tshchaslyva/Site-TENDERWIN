@@ -34,6 +34,12 @@ export function longDate(date = new Date()) {
   return `${Number(d)} ${MONTHS_GEN[Number(m) - 1]} ${y} р.`;
 }
 
+/** 3 жовтня 2026 р., 14:30 — дата й час за Києвом */
+export function kyivDateTime(date) {
+  const t = new Intl.DateTimeFormat("uk-UA", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hour12: false }).format(date);
+  return `${longDate(date)}, ${t}`;
+}
+
 /** Дата + N календарних днів */
 export function addDays(date, n) {
   return new Date(date.getTime() + n * 86400000);
@@ -121,18 +127,47 @@ export function isValidRnokpp(code) {
   return ((sum % 11) % 10) === d[9];
 }
 
-/** Витягує ID закупівлі з тексту чи посилання: UA-2026-09-07-014600-a */
-export function extractTenderId(text) {
-  const m = String(text || "").match(/UA-\d{4}-\d{2}-\d{2}-\d{6}(?:-[a-zA-Z])?/i);
-  return m ? m[0].replace(/^ua/i, "UA").replace(/-([A-Z])$/, (s, c) => "-" + c.toLowerCase()) : "";
+/**
+ * ID закупівлі Prozorro з тексту чи посилання: UA-2026-09-07-014600-a.
+ * Повний синтаксис (з літерою-суфіксом) і реальна календарна дата; інакше "".
+ * Це перевірка формату, а не доказ, що така закупівля існує.
+ */
+export function parseTenderId(text, now = new Date()) {
+  const m = String(text || "").match(/(?:^|[^A-Za-z0-9])(UA)-(\d{4})-(\d{2})-(\d{2})-(\d{6})-([a-z])(?![A-Za-z0-9])/i);
+  if (!m) return "";
+  const [, , y, mo, d, n, suffix] = m;
+  const year = Number(y), month = Number(mo), day = Number(d);
+  const dt = new Date(Date.UTC(year, month - 1, day));
+  if (dt.getUTCFullYear() !== year || dt.getUTCMonth() !== month - 1 || dt.getUTCDate() !== day) return "";
+  if (year < 2015 || year > now.getUTCFullYear() + 1) return "";
+  return `UA-${y}-${mo}-${d}-${n}-${suffix.toLowerCase()}`;
 }
 
-/** «ГАРАГУЦ ЯРОСЛАВ ВАЛЕРІЙОВИЧ» → «Гарагуц Ярослав Валерійович» */
-export function titleCase(s) {
-  return String(s || "")
-    .toLocaleLowerCase("uk-UA")
-    .replace(/(^|[\s\-’'ʼ(])(\p{L})/gu, (m, p, c) => p + c.toLocaleUpperCase("uk-UA"))
-    .replace(/([’'ʼ])(\p{Lu})/gu, (m, a, c) => a + c.toLocaleLowerCase("uk-UA"));
+/**
+ * Контакт для уточнень: телефон або Telegram.
+ * Повертає { kind: "phone" | "telegram", value } або null, якщо формат не підходить.
+ */
+export function normalizeContact(text) {
+  const s = String(text || "").trim();
+  if (!s) return { kind: "", value: "" };
+  const tg = s.match(/^(?:https?:\/\/)?(?:t\.me\/|telegram\.me\/|@)?([A-Za-z][A-Za-z0-9_]{4,31})\/?$/);
+  if (tg && !/^\d/.test(tg[1])) return { kind: "telegram", value: "@" + tg[1] };
+  if (/^\+?[\d\s()\-]{9,20}$/.test(s)) {
+    const digits = s.replace(/\D/g, "");
+    if (digits.length >= 9 && digits.length <= 15) return { kind: "phone", value: s.replace(/\s+/g, " ") };
+  }
+  return null;
+}
+
+/** IBAN України: UA + 27 цифр і правильна контрольна сума (mod 97) */
+export function isValidIbanUa(iban) {
+  const s = String(iban || "").replace(/\s+/g, "").toUpperCase();
+  if (!/^UA\d{27}$/.test(s)) return false;
+  const moved = s.slice(4) + s.slice(0, 4);
+  const digits = moved.replace(/[A-Z]/g, (c) => String(c.charCodeAt(0) - 55));
+  let rem = 0;
+  for (const ch of digits) rem = (rem * 10 + Number(ch)) % 97;
+  return rem === 1;
 }
 
 /** Екранування для HTML-листів */

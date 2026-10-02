@@ -1,4 +1,7 @@
-# Заголовки безпеки для Cloudflare Pages. Не видаляйте цей файл.
+# Заголовки безпеки для статичних файлів сайту (Cloudflare Workers static assets). Не видаляйте цей файл.
+# Відповіді обробника /api/* отримують свої заголовки в worker/index.js.
+# Коли буде код віджета Zadarma — додати його ТОЧНІ хости в script-src / connect-src / img-src / frame-src
+# (інструкція v2.0, розділ 19.3). Не використовувати «*».
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -6,6 +9,10 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Strict-Transport-Security: max-age=31536000
   Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.web3forms.com https://cloudflareinsights.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'
+
+/admin/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
 
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
