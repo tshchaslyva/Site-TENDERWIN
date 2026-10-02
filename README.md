@@ -7,8 +7,9 @@
 | **Сайт** (саме цю папку публікує хостинг) | [`site/`](site/) — тексти в `site/index.html` |
 | **Інструкція запуску й редагування** | [`docs/instrukciya-zapusku.md`](docs/instrukciya-zapusku.md) |
 | **Звіт етапу 1 (інструкція v2.0)** | [`docs/etap-1-zvit.md`](docs/etap-1-zvit.md) |
+| **Звіт етапу 2 (зібрано варіант дизайну 1)** | [`docs/etap-2-zvit.md`](docs/etap-2-zvit.md) |
 | **Заявки, листи, рахунки, робочий інструмент `/admin/`** | [`docs/rakhunky-nalashtuvannya.md`](docs/rakhunky-nalashtuvannya.md) |
-| **П’ять варіантів дизайну** | [`design/README.md`](design/README.md) |
+| **П’ять варіантів дизайну** (обрано варіант 1) | [`design/README.md`](design/README.md) |
 | **Порівняння хостингів** (Cloudflare + 5 альтернатив) | [`docs/hosting-porivnyannya.md`](docs/hosting-porivnyannya.md) |
 | Попередні матеріали (архів) | `tenderwin-sayt-perehlyad.html`, `TENDERWIN_sayt_instrukciya.pdf/.docx`, `Сайт.txt` |
 

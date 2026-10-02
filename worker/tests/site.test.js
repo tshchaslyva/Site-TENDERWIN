@@ -73,7 +73,7 @@ test("T25/TG06: JSON-LD валідний і збігається з видими
   assert.equal(biz.makesOffer.price, "3499");
   assert.equal(biz.makesOffer.priceCurrency, "UAH");
 
-  const faqHtml = index.slice(index.indexOf('<div class="faq">'), index.indexOf("<!-- ============ 7."));
+  const faqHtml = index.slice(index.indexOf('<div class="faq">'), index.indexOf("<section id=\"zayavka\""));
   const visible = [...faqHtml.matchAll(/<summary>([\s\S]*?)<\/summary>\s*<div class="answer">([\s\S]*?)<\/div>\s*<\/details>/g)]
     .map((m) => ({ q: text(m[1]), a: text(m[2].replace(/<li>/g, "<li>§")) }));
   assert.equal(faq.mainEntity.length, visible.length, "кількість питань");

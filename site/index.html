@@ -28,8 +28,8 @@
 
 <style>
 /* ============================================================
-   ОФОРМЛЕННЯ. Тексти сайту — нижче, між <body> і </body>.
-   Цей блок змінювати не потрібно.
+   ОФОРМЛЕННЯ — варіант 1 «Еволюція» (затверджено 02.10.2026).
+   Тексти сайту — нижче, між <body> і </body>. Цей блок змінювати не потрібно.
    ============================================================ */
 @font-face{font-family:"Fixel";src:url("fonts/FixelText-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:"Fixel";src:url("fonts/FixelText-SemiBold.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
@@ -37,356 +37,262 @@
 @font-face{font-family:"Fixel Display";src:url("fonts/FixelDisplay-ExtraBold.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
 
 :root{
-  --ink:#0B1B2B; --ink-2:#10263b; --ink-3:#173450; --ink-4:#21486b;
-  --paper:#ffffff; --paper-2:#f4f6f9; --paper-3:#e9eef4;
-  --line:#dfe6ee; --line-dark:#23405c;
-  --text:#0f1c2a; --muted:#4f6274; --muted-dark:#a9bdd0; --soft-dark:#c5d4e2;
-  --gold:#e0a53c; --gold-2:#f2c063; --gold-deep:#7d5210; --gold-soft:#fdf6e8; --gold-line:#f0dcb4;
-  --green:#12684a; --green-soft:#e8f5ef;
-  --red:#b42318; --red-soft:#fdecea; --red-dark:#ffb4ab;
-  --radius:16px; --radius-sm:11px;
-  --wrap:1160px;
-  --shadow:0 1px 2px rgba(16,29,43,.05), 0 10px 30px -14px rgba(16,29,43,.22);
-  --shadow-lg:0 2px 6px rgba(4,12,22,.18), 0 30px 60px -24px rgba(4,12,22,.55);
+  --ink:#0B1B2B; --ink-2:#112538; --ink-3:#173450; --line-dark:#27445F;
+  --gold:#D9A441; --gold-2:#ECC06A; --gold-deep:#7A5410;
+  --ivory:#FAF7F0; --paper:#ffffff; --line:#E4DED2;
+  --text:#13202D; --muted:#4C5D6E; --on-dark:#E9F0F6; --muted-dark:#C9D6E2; --soft-dark:#A9BCCF;
+  --green:#1F7A55; --green-soft:#E7F4EE; --red:#b42318; --red-soft:#fdecea; --red-dark:#ffb4ab;
+  --wrap:1200px;
   --font:"Fixel",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --font-head:"Fixel Display","Fixel",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth; scroll-padding-top:84px; -webkit-text-size-adjust:100%}
-body{
-  margin:0; background:var(--paper); color:var(--text);
-  font-family:var(--font); font-size:17px; line-height:1.62;
-  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-}
+body{margin:0; background:var(--ivory); color:var(--text); font-family:var(--font); font-size:17px; line-height:1.65;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
 img,svg{max-width:100%}
 a{color:inherit}
-h1,h2,h3,h4{line-height:1.14; letter-spacing:-.022em; margin:0; text-wrap:balance}
-h1,h2{font-family:var(--font-head); font-weight:800}
-h1{font-size:clamp(2.05rem,5vw,3.45rem)}
-h2{font-size:clamp(1.7rem,3.6vw,2.5rem)}
-h3{font-size:1.18rem; font-weight:700; letter-spacing:-.012em}
+h1,h2,h3{margin:0; text-wrap:balance}
+h1,h2{font-family:var(--font-head); font-weight:800; letter-spacing:-.025em; line-height:1.1}
+h3{font-size:1.15rem; line-height:1.3; letter-spacing:-.01em}
 p{margin:0}
 .wrap{max-width:var(--wrap); margin-inline:auto; padding-inline:20px}
-section{padding-block:clamp(60px,8vw,104px)}
-.eyebrow{
-  display:inline-flex; align-items:center; gap:10px;
-  font-size:.8rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--gold-deep); margin-bottom:16px;
-}
-.eyebrow::before{content:""; width:26px; height:2px; border-radius:2px; background:currentColor; opacity:.7}
-.dark .eyebrow{color:var(--gold)}
-.lede{font-size:clamp(1.04rem,1.9vw,1.2rem); color:var(--muted); max-width:62ch}
-.dark .lede{color:var(--muted-dark)}
-.dark{background:var(--ink); color:#eaf1f8}
-.dark h2,.dark h3{color:#fff}
-.alt{background:var(--paper-2)}
-.sec-head{max-width:760px; margin-bottom:clamp(30px,4vw,48px)}
-.sec-head .lede{margin-top:16px}
 .nowrap{white-space:nowrap}
 
 /* ---------- кнопки ---------- */
-.btn{
-  display:inline-flex; align-items:center; justify-content:center; gap:.6em;
-  padding:.9em 1.55em; border-radius:12px; font:inherit; font-weight:700; font-size:1rem;
-  text-decoration:none; border:1.5px solid transparent; cursor:pointer; line-height:1.2; text-align:center;
-  transition:transform .15s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease;
-}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.55em; padding:.95em 1.6em; border-radius:12px;
+  font:inherit; font-weight:700; font-size:1rem; line-height:1.2; text-align:center; text-decoration:none; cursor:pointer;
+  border:1.5px solid transparent; transition:background .2s ease, border-color .2s ease, transform .15s ease}
 .btn svg{width:18px; height:18px; flex-shrink:0}
 .btn:active{transform:translateY(1px)}
 .btn[disabled]{opacity:.7; cursor:progress}
-.btn-gold{background:var(--gold); color:#2a1a02; border-color:var(--gold); box-shadow:0 10px 24px -12px rgba(224,165,60,.8)}
-.btn-gold:hover{background:var(--gold-2); border-color:var(--gold-2); box-shadow:0 14px 30px -12px rgba(224,165,60,.9)}
-.btn-ghost{background:rgba(255,255,255,.04); color:#fff; border-color:rgba(255,255,255,.32)}
-.btn-ghost:hover{background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.55)}
-.btn-line{background:var(--paper); color:var(--ink); border-color:#c9d4e0}
+.btn-gold{background:var(--gold); color:#241602; border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold-2); border-color:var(--gold-2)}
+.btn-ghost{background:transparent; color:#fff; border-color:rgba(255,255,255,.35)}
+.btn-ghost:hover{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.6)}
+.btn-line{background:#fff; color:var(--ink); border-color:#c9d4e0}
 .btn-line:hover{border-color:var(--ink)}
-.btn-lg{padding:1.02em 1.8em; font-size:1.06rem}
-.btn:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--gold); outline-offset:2px}
+.btn-lg{padding:1em 1.7em; font-size:1.04rem}
+:focus-visible{outline:3px solid var(--gold); outline-offset:2px}
 
 /* ---------- шапка ---------- */
-.site-header{
-  position:sticky; top:0; z-index:50; background:rgba(11,27,43,.92);
-  -webkit-backdrop-filter:saturate(160%) blur(12px); backdrop-filter:saturate(160%) blur(12px);
-  border-bottom:1px solid rgba(255,255,255,.06); transition:box-shadow .2s ease, background .2s ease;
-}
-.site-header.scrolled{background:rgba(11,27,43,.97); box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
-.nav{display:flex; align-items:center; gap:22px; height:70px}
-.logo{display:flex; align-items:center; gap:10px; font-family:var(--font-head); font-weight:800; letter-spacing:-.01em;
-  font-size:1.22rem; color:#fff; text-decoration:none; flex-shrink:0}
+.site-header{position:sticky; top:0; z-index:50; background:rgba(11,27,43,.96); border-bottom:1px solid rgba(255,255,255,.07);
+  transition:box-shadow .2s ease}
+.site-header.scrolled{box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
+.nav{display:flex; align-items:center; gap:26px; height:72px}
+.logo{display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none; font-family:var(--font-head); font-weight:800;
+  font-size:1.2rem; letter-spacing:-.01em; flex-shrink:0}
 .logo-t span{color:var(--gold)}
 .logo svg{flex-shrink:0}
-.nav-links{display:flex; gap:22px; margin-left:auto; min-width:0; font-size:.95rem; font-weight:600}
-.nav-links a{color:#c3d2e0; text-decoration:none; white-space:nowrap; position:relative; padding-block:6px}
-.nav-links a::after{content:""; position:absolute; left:0; right:0; bottom:0; height:2px; border-radius:2px;
-  background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform .2s ease}
+.nav-links{display:flex; gap:24px; margin-left:auto; min-width:0; font-weight:600; font-size:.95rem}
+.nav-links a{color:#C7D4E1; text-decoration:none; white-space:nowrap}
 .nav-links a:hover{color:#fff}
-.nav-links a:hover::after{transform:scaleX(1)}
-.nav-cta{display:flex; align-items:center; gap:18px; flex-shrink:0; margin-left:6px}
-.nav-phone{color:#fff; text-decoration:none; font-weight:700; white-space:nowrap; font-size:.98rem}
+.nav-cta{display:flex; align-items:center; gap:18px; flex-shrink:0}
+.nav-phone{color:#fff; font-weight:700; text-decoration:none; white-space:nowrap}
 .nav-phone:hover{color:var(--gold)}
-.nav-cta .btn{padding:.66em 1.15em; font-size:.95rem}
-@media(max-width:1140px){ .nav-links{display:none} .nav-cta{margin-left:auto} }
-@media(max-width:640px){
-  .nav{height:62px; gap:12px}
-  .nav-cta .btn{display:none}
-  .logo{font-size:1.08rem}
-  .nav-phone{font-size:.94rem}
-}
+.nav-cta .btn{padding:.62em 1.1em; font-size:.94rem}
+@media(max-width:1120px){ .nav-links{display:none} .nav-cta{margin-left:auto} }
+@media(max-width:640px){ .nav{height:62px; gap:12px} .nav-cta .btn{display:none} .logo{font-size:1.06rem} .nav-phone{font-size:.94rem} }
 
 /* ---------- 1. перший екран ---------- */
-.hero{
-  position:relative; overflow:hidden; color:#eaf1f8;
-  background:
-    radial-gradient(900px 480px at 85% -10%, rgba(224,165,60,.2), transparent 62%),
-    radial-gradient(700px 460px at -5% 110%, rgba(64,140,205,.2), transparent 60%),
-    var(--ink);
-  padding-block:clamp(44px,7vw,96px) clamp(52px,7vw,104px);
+.hero{color:var(--on-dark); padding:84px 0 92px;
+  background:radial-gradient(800px 420px at 90% 0%,rgba(217,164,65,.16),transparent 60%),var(--ink)}
+.hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:64px; align-items:center}
+.hero-kicker{display:block; font-size:.84rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:20px}
+.hero h1{font-size:clamp(2rem,4.8vw,3.4rem); color:#fff}
+.hero .lede{margin-top:20px; font-size:1.14rem; color:var(--muted-dark); max-width:58ch}
+.hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:30px}
+.hero-note{margin-top:14px; font-size:.92rem; color:var(--soft-dark)}
+.m-offer{display:none}
+.offer-card{position:relative; background:#fff; color:var(--text); border-radius:22px; padding:34px 32px; box-shadow:0 30px 60px -28px rgba(0,0,0,.6)}
+.offer-card::before{content:""; position:absolute; inset:0 0 auto 0; height:5px; border-radius:22px 22px 0 0; background:var(--gold)}
+.offer-card .lbl{font-size:.8rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.offer-line b{display:block; font-family:var(--font-head); font-weight:800; font-size:1.5rem; line-height:1.25; letter-spacing:-.02em}
+.offer-card .offer-line b{margin-top:10px; color:var(--ink)}
+.offer-card .price{display:block; font-size:3.1rem; line-height:1}
+.offer-line .sub{display:block; margin-top:12px; color:var(--muted); font-size:1rem}
+.offer-card .desc{margin-top:18px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:.96rem}
+.offer-card .btn{margin-top:24px; width:100%}
+@media(max-width:980px){
+  .hero{padding:40px 0 56px}
+  .hero-grid{grid-template-columns:1fr; gap:0}
+  .offer-card{display:none}
+  .m-offer{display:block; margin-top:22px; padding:16px 18px; border:1px solid rgba(217,164,65,.55); border-radius:14px; background:rgba(255,255,255,.05)}
+  .m-offer b{font-size:1.2rem; color:#fff}
+  .m-offer .price{color:var(--gold)}
+  .m-offer .sub{color:var(--muted-dark); font-size:.95rem; margin-top:6px}
 }
-.hero::before{
-  content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
-  background-image:linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-                   linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-  background-size:44px 44px;
-  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 60% 30%, #000 30%, transparent 75%);
-          mask-image:radial-gradient(ellipse 80% 70% at 60% 30%, #000 30%, transparent 75%);
-}
-.hero .wrap{position:relative}
-.hero-grid{display:grid; grid-template-columns:1.18fr .82fr; gap:clamp(36px,5vw,72px); align-items:center}
-@media(max-width:980px){ .hero-grid{grid-template-columns:1fr} }
-.hero-kicker{display:inline-flex; align-items:center; gap:10px; margin-bottom:20px;
-  font-size:.9rem; font-weight:600; color:#d3dfeb}
-.hero-kicker::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 4px rgba(224,165,60,.25)}
-.hero h1{color:#fff}
-.hero .lede{margin-top:20px; font-size:clamp(1.04rem,1.9vw,1.2rem); color:#c9d7e4; max-width:60ch}
-.offer-line{
-  margin-top:26px; padding:18px 20px; border-radius:14px; max-width:600px;
-  background:rgba(255,255,255,.05); border:1px solid rgba(224,165,60,.45);
-}
-.offer-line b{display:block; font-family:var(--font-head); font-weight:800; font-size:clamp(1.25rem,2.4vw,1.5rem); color:#fff; letter-spacing:-.015em}
-.offer-line b .price{color:var(--gold)}
-.offer-line > span{display:block; margin-top:6px; color:#c9d7e4; font-size:.98rem}
-.hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:24px}
-.hero-note{margin-top:14px; font-size:.92rem; color:#a9bdd0; max-width:60ch}
 @media(max-width:520px){
-  .hero{padding-block:30px 48px}
-  .hero-kicker{margin-bottom:14px; font-size:.86rem}
+  .hero{padding:30px 0 46px}
+  .hero-kicker{margin-bottom:14px; font-size:.78rem}
   .hero .lede{margin-top:14px; font-size:1rem}
-  .offer-line{margin-top:18px; padding:14px 16px}
-  .offer-line > span{font-size:.93rem}
+  .m-offer{margin-top:18px; padding:14px 16px}
   .hero-actions{margin-top:18px; gap:10px}
   .hero-actions .btn{flex:1 1 100%; padding:.9em 1.2em}
   .hero-note{font-size:.88rem}
 }
-@media(max-width:380px){ h1{font-size:1.8rem} }
+@media(max-width:380px){ .hero h1{font-size:1.8rem} }
 
-/* схема висновку (декоративна: усе важливе є текстом поруч) */
-.hero-visual{position:relative; max-width:440px; width:100%; justify-self:center; margin:0}
-@media(max-width:980px){ .hero-visual{display:none} }
-.doc{position:relative; background:#fff; color:var(--text); border-radius:18px; padding:22px 22px 20px; box-shadow:var(--shadow-lg); transform:rotate(-1.2deg)}
-.doc::after{content:""; position:absolute; inset:14px -14px -14px 14px; z-index:-1; border-radius:18px;
-  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); transform:rotate(3deg)}
-.doc-head{display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:1px solid var(--line)}
-.doc-ico{width:40px; height:40px; border-radius:11px; background:var(--ink); display:grid; place-items:center; flex-shrink:0}
-.doc-ico svg{width:20px; height:20px; color:var(--gold)}
-.doc-head b{display:block; font-size:1rem; line-height:1.25}
-.doc-head small{display:block; color:var(--muted); font-size:.8rem; letter-spacing:.02em}
-.doc-badge{margin-left:auto; flex-shrink:0; font-size:.74rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
-  color:var(--green); background:var(--green-soft); padding:5px 9px; border-radius:7px; white-space:nowrap}
-.doc-sec{padding:16px 0 4px}
-.doc-sec-t{font-size:.76rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:10px}
-.doc-row{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:14px; align-items:center; padding:8px 0; border-bottom:1px dashed var(--line); font-size:.88rem; color:var(--muted); font-weight:600}
-.doc-row:last-child{border-bottom:0}
-.doc-row i{display:block; height:8px; border-radius:6px; width:var(--w,80%); background:linear-gradient(90deg,var(--paper-3),#f3f6f9)}
-.doc-row .src{font-style:normal; font-size:.78rem; font-weight:700; color:var(--ink-4); background:var(--paper-2); border:1px solid var(--line); border-radius:6px; padding:2px 7px; justify-self:start; white-space:nowrap}
-.doc-mini{display:flex; align-items:center; gap:10px; padding:12px 14px; margin-top:12px; border:1px solid var(--line); border-radius:10px; font-size:.84rem; font-weight:600; color:var(--muted)}
-.doc-mini i{flex:1; height:8px; border-radius:6px; background:var(--paper-3)}
-.doc-foot{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;
-  margin-top:16px; padding:14px 16px; border-radius:12px; background:var(--ink); color:#fff}
-.doc-foot span{font-size:.86rem; font-weight:600; color:#c5d4e2}
-.doc-foot .pill{display:inline-flex; gap:6px; align-items:center; font-weight:700; font-size:.86rem; color:#2a1a02; background:var(--gold); padding:5px 12px; border-radius:99px}
-.visual-caption{margin-top:30px; text-align:right; font-size:.86rem; color:#a9bdd0}
-
-/* ---------- сітки і картки ---------- */
-.grid{display:grid; gap:22px}
-.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-@media(max-width:860px){ .g2{grid-template-columns:1fr} }
-.card{position:relative; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:30px 28px; box-shadow:var(--shadow)}
-.card h3{margin-bottom:12px; font-size:1.3rem}
-.card p{color:var(--muted); font-size:1rem}
-.card p + p{margin-top:12px}
-.ico{width:48px; height:48px; border-radius:13px; background:var(--ink); display:grid; place-items:center; margin-bottom:20px}
-.ico svg{width:24px; height:24px; color:var(--gold)}
-.card-accent::before{content:""; position:absolute; left:28px; right:28px; top:-1px; height:3px; border-radius:0 0 3px 3px; background:var(--gold)}
+/* ---------- розділи ---------- */
+section{padding:96px 0}
+@media(max-width:700px){ section{padding:64px 0} }
+.sec-head{max-width:760px; margin-bottom:44px}
+.eyebrow{display:flex; align-items:center; gap:12px; font-size:.8rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold-deep); margin-bottom:14px}
+.eyebrow b{font-family:var(--font-head); font-weight:800; font-size:.95rem; letter-spacing:0; color:var(--gold-deep)}
+.dark .eyebrow,.dark .eyebrow b{color:var(--gold)}
+.sec-head h2{font-size:clamp(1.7rem,3.4vw,2.5rem); color:var(--ink)}
+.sec-head .lede{margin-top:14px; font-size:1.1rem; color:var(--muted); max-width:62ch}
+.dark{background:var(--ink); color:var(--on-dark)}
+.dark h2,.dark h3{color:#fff}
 
 /* ---------- 2. що Ви отримаєте ---------- */
-.result-list{list-style:none; margin:18px 0 0; padding:0; display:grid; gap:12px}
-.result-list li{display:flex; gap:12px; align-items:flex-start; color:var(--text); font-size:1rem}
-.result-list svg{width:22px; height:22px; flex-shrink:0; margin-top:1px; color:var(--green)}
-.note-line{display:flex; gap:14px; align-items:flex-start; margin-top:22px; padding:18px 20px; border-radius:14px;
-  background:var(--gold-soft); border:1px solid var(--gold-line); color:#4a3608; font-size:.98rem}
-.note-line svg{width:22px; height:22px; flex-shrink:0; color:var(--gold-deep); margin-top:1px}
+.grid2{display:grid; grid-template-columns:1.1fr .9fr; gap:24px}
+@media(max-width:860px){ .grid2{grid-template-columns:1fr} }
+.card{background:#fff; border:1px solid var(--line); border-radius:18px; padding:32px}
+@media(max-width:520px){ .card{padding:24px 20px} }
+.card h3{font-size:1.3rem; margin-bottom:14px; color:var(--ink)}
+.card p{color:var(--muted)}
+.result-list{list-style:none; margin:0; padding:0; display:grid; gap:12px}
+.result-list li{display:flex; gap:12px; align-items:flex-start}
+.result-list svg{width:22px; height:22px; flex-shrink:0; margin-top:2px; color:var(--green)}
+.note-line{margin-top:22px; padding:18px 22px; border-left:4px solid var(--gold); background:#fff; border-radius:0 12px 12px 0; color:#4A3A12}
 
-/* ---------- 3. хто відповідає ---------- */
-.person{display:grid; grid-template-columns:auto minmax(0,1fr); gap:clamp(20px,3vw,36px); align-items:start; max-width:900px}
-@media(max-width:600px){ .person{grid-template-columns:1fr} }
-.monogram{width:104px; height:104px; border-radius:28px; background:var(--ink); color:var(--gold); display:grid; place-items:center;
-  font-family:var(--font-head); font-weight:800; font-size:2.1rem; letter-spacing:-.02em}
-.person h3{font-size:1.45rem}
-.person .role{margin-top:4px; color:var(--muted); font-weight:600}
-.person blockquote{margin:18px 0 0; padding:0 0 0 18px; border-left:3px solid var(--gold); font-size:1.08rem; color:var(--text); max-width:62ch}
-.person .meta{margin-top:16px; font-size:.92rem; color:var(--muted)}
-
-/* ---------- 4. як замовити ---------- */
-.steps{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin:0; padding:0; list-style:none}
-@media(max-width:1020px){ .steps{grid-template-columns:repeat(2,minmax(0,1fr))} }
-@media(max-width:620px){ .steps{grid-template-columns:1fr} }
-.step{position:relative; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:26px 24px 24px; box-shadow:var(--shadow)}
-.step-top{display:flex; align-items:center; gap:12px; margin-bottom:16px}
-.step-n{width:46px; height:46px; border-radius:13px; background:var(--ink); color:var(--gold); display:grid; place-items:center;
-  font-family:var(--font-head); font-weight:800; font-size:1.2rem; flex-shrink:0}
-.step-time{font-size:.76rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:var(--green-soft); padding:4px 9px; border-radius:6px; white-space:nowrap}
-.step h3{margin-bottom:10px; font-size:1.13rem}
+/* ---------- 3. як замовити ---------- */
+#yak{padding-top:0}
+.steps{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+  border:1px solid var(--line); border-radius:20px; background:#fff; overflow:hidden}
+@media(max-width:1000px){ .steps{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media(max-width:600px){ .steps{grid-template-columns:1fr} }
+.step{padding:30px 26px; border-right:1px solid var(--line)}
+.step:last-child{border-right:0}
+@media(max-width:1000px){ .step{border-bottom:1px solid var(--line)} .step:nth-child(2n){border-right:0} .step:nth-last-child(-n+2){border-bottom:0} }
+@media(max-width:600px){ .step{border-right:0; border-bottom:1px solid var(--line)} .step:nth-last-child(2){border-bottom:1px solid var(--line)} .step:last-child{border-bottom:0} }
+.step-top{display:flex; align-items:center; gap:10px; margin-bottom:16px}
+.step-n{font-family:var(--font-head); font-weight:800; font-size:2.4rem; line-height:1; color:var(--gold)}
+.step-time{font-size:.74rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:var(--green-soft); padding:4px 9px; border-radius:6px; white-space:nowrap}
+.step h3{margin-bottom:8px; color:var(--ink)}
 .step p{color:var(--muted); font-size:.98rem}
-.step .step-link{display:inline-flex; margin-top:14px; font-weight:700; font-size:.95rem; color:var(--ink); text-decoration:none; border-bottom:2px solid var(--gold)}
-.step .step-link:hover{color:var(--gold-deep)}
+.step-link{display:inline-block; margin-top:12px; font-weight:700; color:var(--ink); text-decoration-color:var(--gold); text-decoration-thickness:2px; text-underline-offset:4px}
+.step-link:hover{color:var(--gold-deep)}
 
-/* ---------- 5. вартість ---------- */
-.offer{
-  position:relative; display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr); gap:0;
-  background:linear-gradient(180deg,#fff, #fbfcfd); color:var(--text); border-radius:22px; overflow:hidden;
-  box-shadow:0 0 0 2px var(--gold), 0 0 0 10px rgba(224,165,60,.1), var(--shadow-lg);
-}
-@media(max-width:860px){ .offer{grid-template-columns:1fr} }
-.offer-main{padding:clamp(26px,4vw,46px)}
-.offer-tag{display:inline-flex; align-items:center; gap:8px; font-size:.78rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  color:#2a1a02; background:var(--gold); padding:6px 12px; border-radius:8px; margin-bottom:18px}
-.offer-tag svg{width:15px; height:15px}
-.offer h2{color:var(--ink); font-size:clamp(1.5rem,3vw,2.15rem)}
-.offer-main p{margin-top:16px; color:var(--muted); font-size:1.04rem; max-width:62ch}
-.offer-main .limits{font-size:.96rem; padding-top:16px; border-top:1px solid var(--line)}
-.offer-side{display:flex; flex-direction:column; justify-content:center; gap:14px; padding:clamp(26px,4vw,46px);
-  background:var(--paper-2); border-left:1px solid var(--line)}
-@media(max-width:860px){ .offer-side{border-left:0; border-top:1px solid var(--line)} }
-.offer-price{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; color:var(--ink)}
-.offer-price .n{font-family:var(--font-head); font-weight:800; font-size:clamp(2.6rem,5vw,3.4rem); letter-spacing:-.04em; line-height:1}
-.offer-price .c{font-size:1.25rem; font-weight:700; color:var(--muted)}
-.offer-side .sub{font-size:.95rem; color:var(--muted); margin-top:-4px}
-.offer-side .btn{width:100%}
-.fineprint{display:flex; gap:16px; align-items:flex-start; margin-top:26px; padding:20px 22px; border-radius:14px;
-  background:rgba(255,255,255,.04); border:1px solid var(--line-dark); color:var(--muted-dark); font-size:.98rem}
-.fineprint svg{width:24px; height:24px; flex-shrink:0; color:var(--gold); margin-top:1px}
-.fineprint b{color:#fff}
+/* ---------- 4. вартість ---------- */
+.price-box{display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,.6fr); border:1px solid rgba(217,164,65,.5); border-radius:24px; overflow:hidden}
+@media(max-width:860px){ .price-box{grid-template-columns:1fr} }
+.price-main{padding:44px}
+.price-main h2{font-size:clamp(1.5rem,3vw,2.2rem); color:#fff}
+.price-main p{margin-top:16px; color:var(--muted-dark)}
+.price-main .limits{padding-top:16px; border-top:1px solid rgba(255,255,255,.12); font-size:.96rem; color:var(--soft-dark)}
+.price-side{display:flex; flex-direction:column; justify-content:center; gap:14px; padding:44px; background:rgba(255,255,255,.04); border-left:1px solid rgba(217,164,65,.3)}
+@media(max-width:860px){ .price-side{border-left:0; border-top:1px solid rgba(217,164,65,.3)} }
+@media(max-width:520px){ .price-main,.price-side{padding:28px 22px} }
+.price-side .big{font-family:var(--font-head); font-weight:800; font-size:3.4rem; line-height:1; letter-spacing:-.03em; color:var(--gold)}
+.price-side .big small{font-size:1.2rem; letter-spacing:0}
+.price-side p{color:var(--muted-dark)}
+.price-side .btn{width:100%}
+.fine{margin-top:22px; color:var(--soft-dark); font-size:.96rem}
+.fine b{color:#fff}
 
-/* ---------- 6. питання ---------- */
+/* ---------- 5. питання ---------- */
 .faq{max-width:900px}
-.faq details{border:1px solid var(--line); border-radius:14px; background:var(--paper); margin-bottom:12px; transition:border-color .2s, box-shadow .2s}
-.faq details[open]{border-color:#b9c7d6; box-shadow:var(--shadow)}
-.faq summary{cursor:pointer; padding:20px 60px 20px 24px; font-weight:700; font-size:1.06rem; list-style:none; position:relative; line-height:1.4}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer; list-style:none; position:relative; padding:22px 48px 22px 0; font-weight:700; font-size:1.08rem; line-height:1.4; color:var(--ink)}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary::after{
-  content:""; position:absolute; right:22px; top:50%; width:26px; height:26px; margin-top:-13px; border-radius:8px;
-  background:var(--paper-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230B1B2B' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M12 6v12M6 12h12'/%3E%3C/svg%3E") center/14px no-repeat;
-  transition:transform .2s ease, background-color .2s ease;
-}
-.faq details[open] summary::after{transform:rotate(45deg); background-color:var(--gold-soft)}
-.faq summary:hover{color:var(--ink-4)}
-.faq .answer{padding:0 24px 22px; color:var(--muted); font-size:1rem; max-width:80ch}
+.faq summary::after{content:"+"; position:absolute; right:6px; top:17px; font-family:var(--font-head); font-weight:800; font-size:1.5rem; line-height:1.2; color:var(--gold-deep)}
+.faq details[open] summary::after{content:"–"}
+.faq summary:hover{color:var(--ink-3)}
+.faq .answer{padding:0 0 22px; color:var(--muted); max-width:80ch}
 .faq .answer p + p,.faq .answer p + ol,.faq .answer ol + p{margin-top:12px}
 .faq .answer ol{margin:10px 0 0; padding-left:1.3em}
-.faq .answer li + li{margin-top:8px}
-.faq .answer a{color:var(--ink-4); font-weight:600}
+.faq .answer li + li{margin-top:6px}
+.faq .answer a{color:var(--ink-3); font-weight:600}
 
-/* ---------- 7. форма і 8. контакти ---------- */
-.form-sec{background:radial-gradient(800px 400px at 0% 0%, rgba(64,140,205,.14), transparent 60%), var(--ink)}
-.form-wrap{display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:clamp(32px,5vw,60px); align-items:start}
-@media(max-width:940px){ .form-wrap{grid-template-columns:1fr} }
-.form-head .lede{margin-top:14px}
-.form-card{margin-top:28px; background:var(--ink-2); border:1px solid var(--line-dark); border-radius:20px; padding:clamp(20px,3.4vw,34px)}
+/* ---------- 6. заявка і контакти ---------- */
+.form-sec{background:var(--ink); color:var(--on-dark)}
+.form-wrap{display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:56px; align-items:start}
+@media(max-width:940px){ .form-wrap{grid-template-columns:1fr; gap:32px} }
+.form-head h2{font-size:clamp(1.7rem,3.4vw,2.5rem)}
+.form-head .lede{margin-top:12px; color:var(--muted-dark); max-width:60ch}
+.form-card{margin-top:28px; background:var(--ink-2); border:1px solid var(--line-dark); border-radius:20px; padding:30px}
+@media(max-width:520px){ .form-card{padding:22px 18px} }
 form .row{display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-bottom:16px}
 @media(max-width:560px){ form .row{grid-template-columns:1fr} }
 .field{margin-bottom:16px}
 form .row .field{margin-bottom:0}
-.field label{display:block; font-size:.9rem; font-weight:700; margin-bottom:8px; color:var(--soft-dark)}
+.field label{display:block; font-size:.9rem; font-weight:700; margin-bottom:7px; color:#D3DEE8}
 .field label .req{color:var(--gold)}
-.field label .opt{font-weight:500; color:#9fb4c8}
-.field input,.field textarea{
-  width:100%; font:inherit; font-size:1rem; padding:13px 15px; border-radius:11px;
-  border:1.5px solid #4f76a0; background:#0a1726; color:#fff; transition:border-color .2s, background .2s;
-}
+.field label .opt{font-weight:500; color:var(--soft-dark)}
+.field input,.field textarea{width:100%; font:inherit; font-size:1rem; padding:13px 14px; border-radius:11px;
+  border:1.5px solid #4F76A0; background:#0A1726; color:#fff; transition:border-color .2s, background .2s}
 .field textarea{min-height:110px; resize:vertical}
-.field input::placeholder,.field textarea::placeholder{color:#8aa2b8}
-.field input:hover,.field textarea:hover{border-color:#6286ad}
-.field input:focus,.field textarea:focus{outline:none; border-color:var(--gold); background:#0c1b2c}
+.field input::placeholder,.field textarea::placeholder{color:#8AA2B8}
+.field input:hover,.field textarea:hover{border-color:#6286AD}
+.field input:focus,.field textarea:focus{outline:none; border-color:var(--gold); background:#0C1B2C}
+.field input:disabled{opacity:.55}
 .field input[aria-invalid="true"],.field textarea[aria-invalid="true"]{border-color:var(--red-dark)}
-.field .hint{display:block; font-size:.84rem; color:#a9bdd0; margin-top:6px}
+.field .hint{display:block; font-size:.84rem; color:var(--soft-dark); margin-top:6px}
 .field .err{display:block; font-size:.88rem; font-weight:600; color:var(--red-dark); margin-top:6px}
 .field .err:empty{display:none}
 .field .err.warn{color:var(--gold-2)}
-.check{display:flex; gap:12px; align-items:flex-start; font-size:.92rem; color:#c0d0de; cursor:pointer}
+.check{display:flex; gap:12px; align-items:flex-start; font-size:.92rem; color:var(--muted-dark); cursor:pointer}
+.field label.check{display:flex; font-weight:500; font-size:.92rem; color:var(--muted-dark); margin-bottom:0}
 .check input{margin-top:3px; width:18px; height:18px; accent-color:var(--gold); flex-shrink:0}
 .check a{color:var(--gold)}
-.field label.check{display:flex; font-weight:500; font-size:.92rem; color:#c0d0de; margin-bottom:0}
 .check-inline{margin-top:10px}
 .consent{margin:6px 0 4px}
 .hp{position:absolute; left:-9999px; opacity:0; height:0; width:0}
 .formmsg{display:none; margin-top:18px; padding:15px 18px; border-radius:11px; font-size:.98rem; font-weight:600}
-.formmsg.ok{display:block; background:var(--green-soft); color:var(--green)}
+.formmsg.ok{display:block; background:var(--green-soft); color:#145C40}
 .formmsg.err{display:block; background:var(--red-soft); color:var(--red)}
-.formmsg.info{display:block; background:var(--gold-soft); color:#5a4208}
+.formmsg.info{display:block; background:#fdf6e8; color:#5a4208}
 .formmsg a{color:inherit}
 .formmsg .more{display:block; margin-top:8px; font-weight:500}
 .formmsg button{margin-top:10px}
-.form-note{font-size:.88rem; color:#a9bdd0; margin-top:14px}
-.contact-card{background:var(--ink-2); border:1px solid var(--line-dark); border-radius:20px; padding:30px 28px}
-@media(min-width:941px){ .contact-card{position:sticky; top:96px; margin-top:110px} }
-.contact-card h3{color:#fff; margin-bottom:10px; font-size:1.3rem}
-.contact-card > p{color:var(--muted-dark); font-size:.98rem}
+.form-note{font-size:.86rem; color:var(--soft-dark); margin-top:14px}
+.contact-card{background:var(--ink-2); border:1px solid var(--line-dark); border-radius:20px; padding:30px}
+@media(min-width:941px){ .contact-card{position:sticky; top:96px; margin-top:108px} }
+@media(max-width:520px){ .contact-card{padding:24px 20px} }
+.contact-card h3{color:#fff; font-size:1.3rem; margin-bottom:8px}
+.contact-card > p{color:var(--muted-dark); font-size:.97rem}
 .contact-line{display:flex; gap:14px; align-items:center; padding:14px 0; border-bottom:1px solid var(--line-dark)}
-.contact-line:last-of-type{border-bottom:0}
 .contact-card .contact-line:first-of-type{margin-top:12px}
-.contact-line .ci{width:42px; height:42px; border-radius:12px; background:rgba(224,165,60,.12); display:grid; place-items:center; flex-shrink:0}
+.contact-line:last-of-type{border-bottom:0}
+.contact-line .ci{width:40px; height:40px; border-radius:11px; background:rgba(217,164,65,.12); display:grid; place-items:center; flex-shrink:0}
 .contact-line .ci svg{width:20px; height:20px; color:var(--gold)}
-.contact-line .k{display:block; font-size:.76rem; color:#a9bdd0; text-transform:uppercase; letter-spacing:.1em; font-weight:700}
+.contact-line .k{display:block; font-size:.74rem; letter-spacing:.1em; text-transform:uppercase; color:var(--soft-dark); font-weight:700}
 .contact-line .v{display:block; font-weight:700; font-size:1.04rem; color:#fff}
-.contact-line .v a{color:#fff; text-decoration:none; border-bottom:1px solid rgba(224,165,60,.5)}
+.contact-line .v a{color:#fff; text-decoration:none; border-bottom:1px solid rgba(217,164,65,.5)}
 .contact-line .v a:hover{color:var(--gold)}
-.contact-line small{display:block; font-weight:500; font-size:.86rem; color:#a9bdd0; margin-top:2px}
-.contact-line small a{color:#dce7f1}
-.contact-card .executor{margin-top:16px; padding-top:14px; border-top:1px dashed var(--line-dark); font-size:.88rem; color:#a9bdd0}
+.contact-line small{display:block; font-weight:500; font-size:.86rem; margin-top:2px}
+.contact-line small a{color:#D3DEE8}
+.contact-card .executor{margin-top:16px; padding-top:14px; border-top:1px dashed var(--line-dark); font-size:.88rem; color:var(--soft-dark)}
 
-/* ---------- 9. останні розбори (резерв) ---------- */
+/* ---------- останні розбори (резерв) ---------- */
 .posts[hidden]{display:none}
+.posts{padding:48px 0; border-top:1px solid var(--line)}
 
 /* ---------- футер ---------- */
-footer{background:#07131f; color:#a9bdd0; padding-block:52px 36px; border-top:1px solid var(--line-dark)}
+footer{background:#07131F; color:var(--soft-dark); padding:52px 0 34px; font-size:.93rem}
 .foot-top{display:flex; flex-wrap:wrap; gap:28px; justify-content:space-between; align-items:flex-start}
 .foot-about{max-width:52ch}
-.foot-about p{margin-top:12px; font-size:.94rem}
-.foot-about a{color:#dce7f1}
-.foot-links{display:flex; flex-wrap:wrap; gap:10px 24px; font-size:.94rem}
-.foot-links a{color:#c0d0de; text-decoration:none}
-.foot-links a:hover{color:#fff}
-.foot-bottom{margin-top:32px; padding-top:22px; border-top:1px solid var(--line-dark); font-size:.88rem;
-  display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between}
-.foot-bottom a{color:#c0d0de; text-decoration:none}
-.foot-bottom a:hover{color:#fff}
-footer details{margin-top:28px; font-size:.92rem; max-width:84ch}
-footer summary{cursor:pointer; color:#c0d0de; font-weight:700; padding:8px 0}
+.foot-about p{margin-top:12px}
+.foot-about a,.foot-links a,.foot-bottom a{color:#D3DEE8; text-decoration:none}
+.foot-about a:hover,.foot-links a:hover,.foot-bottom a:hover{color:#fff}
+.foot-links{display:flex; flex-wrap:wrap; gap:10px 22px}
+footer details{margin-top:26px; max-width:84ch}
+footer summary{cursor:pointer; color:#D3DEE8; font-weight:700; padding:8px 0}
 footer summary:hover{color:#fff}
 footer details p{margin-top:10px; line-height:1.7}
+.foot-bottom{margin-top:24px; padding-top:20px; border-top:1px solid #23405C; display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between}
 
 /* ---------- мобільна панель ---------- */
 .mobilebar{display:none}
 @media(max-width:740px){
-  .mobilebar{
-    display:flex; align-items:center; gap:10px; position:fixed; left:0; right:0; bottom:0; z-index:60;
-    padding:10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
-    background:rgba(11,27,43,.97); border-top:1px solid var(--line-dark);
-    -webkit-backdrop-filter:saturate(160%) blur(10px); backdrop-filter:saturate(160%) blur(10px);
-    transition:transform .2s ease;
-  }
+  .mobilebar{display:flex; align-items:center; gap:10px; position:fixed; left:0; right:0; bottom:0; z-index:60;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom, 0px)); background:rgba(11,27,43,.97); border-top:1px solid #23405C;
+    transition:transform .2s ease}
   .mobilebar.away{transform:translateY(110%)}
-  .mobilebar .mb-text{flex:1 1 auto; min-width:0; font-size:.86rem; line-height:1.3; color:#dce7f1; font-weight:600}
+  .mobilebar .mb-text{flex:1 1 auto; min-width:0; font-size:.86rem; line-height:1.3; color:#DCE7F1; font-weight:600}
   .mobilebar .btn{padding:.8em 1em; font-size:.96rem; white-space:nowrap}
   .mobilebar .mb-call{width:46px; height:46px; padding:0; flex-shrink:0}
   body{padding-bottom:84px}
@@ -403,11 +309,11 @@ footer details p{margin-top:10px; line-height:1.7}
 }
 
 /* ---------- захист від горизонтальної прокрутки ---------- */
-.grid > *, .form-wrap > *, .hero-grid > *, .steps > *, .offer > *, .person > * { min-width:0 }
+.hero-grid > *, .grid2 > *, .steps > *, .price-box > *, .form-wrap > *, .foot-top > * { min-width:0 }
 input, textarea { min-width:0; max-width:100% }
 .contact-line .v, .contact-line .v a, .foot-bottom a, .card p, .faq .answer, .formmsg { overflow-wrap:anywhere }
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
-.skip:focus{position:fixed; left:12px; top:12px; width:auto; height:auto; clip:auto; z-index:100; background:var(--gold); color:#2a1a02; padding:10px 14px; border-radius:10px; font-weight:700}
+.skip:focus{position:fixed; left:12px; top:12px; width:auto; height:auto; clip:auto; z-index:100; background:var(--gold); color:#241602; padding:10px 14px; border-radius:10px; font-weight:700}
 </style>
 </head>
 <body>
@@ -441,7 +347,6 @@ input, textarea { min-width:0; max-width:100% }
     </a>
     <nav class="nav-links" aria-label="Основні розділи">
       <a href="#rezultat">Що входить</a>
-      <a href="#khto">Хто відповідає</a>
       <a href="#yak">Як замовити</a>
       <a href="#vartist">Вартість</a>
       <a href="#pytannya">Питання</a>
@@ -465,9 +370,10 @@ input, textarea { min-width:0; max-width:100% }
       <p class="lede">Допоможемо оцінити, чи є підстави оскаржувати відхилення. Перевіримо аргументи
         замовника за документами Вашої закупівлі, підготуємо письмовий висновок і пояснимо його
         на <span class="nowrap">30-хвилинній</span> консультації.</p>
-      <p class="offer-line">
+      <!-- пропозиція для телефона: стоїть до кнопки (на широкому екрані — картка праворуч) -->
+      <p class="offer-line m-offer">
         <b><span class="price">3&nbsp;499&nbsp;грн</span> за аналіз і консультацію</b>
-        <span>Письмовий аналіз протягом 24&nbsp;годин після оплати. Консультація після отримання висновку в погоджений час.</span>
+        <span class="sub">Письмовий аналіз протягом 24&nbsp;годин після оплати. Консультація після отримання висновку в погоджений час.</span>
       </p>
       <div class="hero-actions">
         <a class="btn btn-gold btn-lg" href="#zayavka">Замовити аналіз
@@ -477,28 +383,16 @@ input, textarea { min-width:0; max-width:100% }
       <p class="hero-note">Перед оплатою підтвердимо обсяг роботи та можливість виконати її вчасно.</p>
     </div>
 
-    <figure class="hero-visual">
-      <div class="doc" aria-hidden="true">
-        <div class="doc-head">
-          <span class="doc-ico"><svg><use href="#i-doc"/></svg></span>
-          <div><b>Аналіз відхилення</b><small>Закупівля UA-…</small></div>
-          <span class="doc-badge">24 години</span>
-        </div>
-        <div class="doc-sec">
-          <div class="doc-sec-t">Підстава відхилення № 1</div>
-          <div class="doc-row"><span>Що зазначив замовник</span><i style="--w:92%"></i></div>
-          <div class="doc-row"><span>Вимога документації</span><em class="src">пункт, сторінка</em></div>
-          <div class="doc-row"><span>Що є у пропозиції</span><em class="src">файл, сторінка</em></div>
-          <div class="doc-row"><span>Аргументи і ризики</span><i style="--w:70%"></i></div>
-        </div>
-        <div class="doc-mini"><span>Підстава № 2</span><i></i></div>
-        <div class="doc-foot">
-          <span>Наступні дії</span>
-          <span class="pill">+ консультація 30 хв</span>
-        </div>
-      </div>
-      <figcaption class="visual-caption">Структура висновку. Це схема документа, а не виконаний кейс</figcaption>
-    </figure>
+    <div class="offer-card">
+      <p class="lbl">Пропозиція</p>
+      <p class="offer-line">
+        <b><span class="price">3&nbsp;499&nbsp;грн</span> за аналіз і консультацію</b>
+        <span class="sub">Письмовий аналіз протягом 24&nbsp;годин після оплати. Консультація після отримання висновку в погоджений час.</span>
+      </p>
+      <p class="desc">Письмовий аналіз із посиланнями на документи, оцінка кожної підстави відхилення,
+        рекомендації щодо наступних дій та одна консультація за результатами аналізу.</p>
+      <a class="btn btn-gold" href="#zayavka">Замовити аналіз</a>
+    </div>
   </div>
 </div>
 
@@ -506,13 +400,12 @@ input, textarea { min-width:0; max-width:100% }
 <section id="rezultat">
   <div class="wrap">
     <div class="sec-head" data-reveal>
-      <p class="eyebrow">Що Ви отримаєте</p>
+      <p class="eyebrow"><b>01</b>Що Ви отримаєте</p>
       <h2>Письмовий висновок, який допомагає прийняти рішення</h2>
       <p class="lede">У висновку розглянемо кожну підставу відхилення та покажемо, на яких документах ґрунтується оцінка.</p>
     </div>
-    <div class="grid g2">
-      <div class="card card-accent" data-reveal>
-        <span class="ico" aria-hidden="true"><svg><use href="#i-doc"/></svg></span>
+    <div class="grid2">
+      <div class="card" data-reveal>
         <h3>Структура висновку</h3>
         <ul class="result-list">
           <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Що саме зазначив замовник у рішенні про відхилення.</span></li>
@@ -522,44 +415,22 @@ input, textarea { min-width:0; max-width:100% }
           <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Які наступні дії доцільно розглянути та які ризики врахувати.</span></li>
         </ul>
       </div>
-      <div class="card card-accent" data-reveal>
-        <span class="ico" aria-hidden="true"><svg><use href="#i-chat"/></svg></span>
+      <div class="card" data-reveal>
         <h3>30 хвилин для пояснення висновків</h3>
         <p>На консультації розберемо незрозумілі моменти, відповімо на Ваші запитання щодо аналізу
           та обговоримо можливі наступні кроки. Консультація входить у ціну послуги.</p>
       </div>
     </div>
-    <p class="note-line" data-reveal><svg aria-hidden="true"><use href="#i-info"/></svg>
-      <span>Якщо документи не дають достатніх підстав рекомендувати оскарження, пояснимо це у висновку.
-        Якщо для оцінки бракує даних, прямо зазначимо обмеження.</span></p>
+    <p class="note-line" data-reveal>Якщо документи не дають достатніх підстав рекомендувати оскарження, пояснимо це у висновку.
+      Якщо для оцінки бракує даних, прямо зазначимо обмеження.</p>
   </div>
 </section>
 
-<!-- ============ 3. ХТО ВІДПОВІДАЄ ============ -->
-<section id="khto" class="alt">
-  <div class="wrap">
-    <div class="sec-head" data-reveal>
-      <p class="eyebrow">Хто працює з Вашим замовленням</p>
-      <h2>Хто відповідає за аналіз</h2>
-    </div>
-    <div class="person" data-reveal>
-      <div class="monogram" aria-hidden="true">ВЩ</div>
-      <div>
-        <h3>Віталій Щасливий</h3>
-        <p class="role">TenderWin</p>
-        <blockquote>Я відповідаю за висновки TenderWin і проводжу консультацію за результатами аналізу.
-          Моя мета — пояснити, на чому ґрунтується Ваша позиція, де є ризики та які наступні дії варто розглянути.</blockquote>
-        <p class="meta">Виконавець — ФОП Щасливий Віталій Олександрович.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 4. ЯК ЗАМОВИТИ ============ -->
+<!-- ============ 3. ЯК ЗАМОВИТИ ============ -->
 <section id="yak">
   <div class="wrap">
     <div class="sec-head" data-reveal>
-      <p class="eyebrow">Як замовити</p>
+      <p class="eyebrow"><b>02</b>Як замовити</p>
       <h2>Як замовити аналіз і консультацію</h2>
     </div>
     <ol class="steps">
@@ -588,38 +459,34 @@ input, textarea { min-width:0; max-width:100% }
   </div>
 </section>
 
-<!-- ============ 5. ВАРТІСТЬ ============ -->
+<!-- ============ 4. ВАРТІСТЬ ============ -->
 <section id="vartist" class="dark">
   <div class="wrap">
-    <p class="eyebrow" data-reveal>Вартість послуги</p>
-    <div class="offer" data-reveal>
-      <div class="offer-main">
-        <span class="offer-tag"><svg aria-hidden="true"><use href="#i-clock"/></svg>Аналіз за 24 години</span>
+    <p class="eyebrow" data-reveal><b>03</b>Вартість послуги</p>
+    <div class="price-box" data-reveal>
+      <div class="price-main">
         <h2>Аналіз відхилення та <span class="nowrap">30-хвилинна</span> консультація</h2>
         <p>Письмовий аналіз із посиланнями на документи, оцінка кожної підстави відхилення,
           рекомендації щодо наступних дій та одна консультація за результатами аналізу.</p>
         <p class="limits">Підготовка і подання скарги, представництво та плата за подання скарги до цієї послуги
           не входять. Рішення органу оскарження не залежить від TenderWin.</p>
       </div>
-      <div class="offer-side">
-        <div class="offer-price"><span class="n">3&nbsp;499</span><span class="c">грн</span></div>
-        <p class="sub">Консультація входить у ціну послуги.</p>
+      <div class="price-side">
+        <p class="big">3&nbsp;499&nbsp;<small>грн</small></p>
+        <p>Консультація входить у ціну послуги.</p>
         <a class="btn btn-gold btn-lg" href="#zayavka">Замовити аналіз</a>
       </div>
     </div>
-    <div class="fineprint" data-reveal>
-      <svg aria-hidden="true"><use href="#i-pen"/></svg>
-      <p><b>Працюємо за договором. Надаємо рахунок і акт наданих послуг.</b>
-        Працюємо дистанційно з учасниками закупівель по всій Україні.</p>
-    </div>
+    <p class="fine" data-reveal><b>Працюємо за договором. Надаємо рахунок і акт наданих послуг.</b>
+      Працюємо дистанційно з учасниками закупівель по всій Україні.</p>
   </div>
 </section>
 
-<!-- ============ 6. ПИТАННЯ ============ -->
+<!-- ============ 5. ПИТАННЯ ============ -->
 <section id="pytannya">
   <div class="wrap">
     <div class="sec-head" data-reveal>
-      <p class="eyebrow">Питання</p>
+      <p class="eyebrow"><b>04</b>Питання</p>
       <h2>Що зазвичай запитують</h2>
     </div>
     <div class="faq">
@@ -691,13 +558,13 @@ input, textarea { min-width:0; max-width:100% }
   </div>
 </section>
 
-<!-- ============ 7. ЗАЯВКА  і  8. КОНТАКТИ ============ -->
+<!-- ============ 6. ЗАЯВКА  і  КОНТАКТИ ============ -->
 <section id="zayavka" class="dark form-sec">
   <div class="wrap">
     <div class="form-wrap">
       <div>
         <div class="form-head" data-reveal>
-          <p class="eyebrow">Заявка</p>
+          <p class="eyebrow"><b>05</b>Заявка</p>
           <h2>Замовити аналіз відхилення</h2>
           <p class="lede">Аналіз і <span class="nowrap">30-хвилинна</span> консультація за 3&nbsp;499&nbsp;грн. Після заявки підтвердимо можливість
             виконання та надішлемо умови оплати.</p>
@@ -819,7 +686,7 @@ input, textarea { min-width:0; max-width:100% }
   </div>
 </section>
 
-<!-- ============ 9. ОСТАННІ РОЗБОРИ (резерв) ============
+<!-- ============ 7. ОСТАННІ РОЗБОРИ (резерв) ============
      Увімкнути, коли в каналі «Тендер+» буде щонайменше 3–4 пости (інструкція v2.0, розділ 18.3):
      прибрати атрибут hidden, вставити віджет постів Telegram і додати https://telegram.org у CSP (site/_headers). -->
 <section id="rozbory" class="posts alt" hidden>
@@ -851,8 +718,7 @@ input, textarea { min-width:0; max-width:100% }
       </div>
       <nav class="foot-links" aria-label="Розділи сайту">
         <a href="#rezultat">Що входить</a>
-        <a href="#khto">Хто відповідає</a>
-        <a href="#yak">Як замовити</a>
+          <a href="#yak">Як замовити</a>
         <a href="#vartist">Вартість</a>
         <a href="#pytannya">Питання</a>
         <a href="#zayavka">Заявка</a>
