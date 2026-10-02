@@ -23,7 +23,7 @@ import fontDisplay from "./fonts/FixelDisplay-ExtraBold.ttf";
 import { buildInvoicePdf } from "./invoice.js";
 import { sendMail, toBase64, renderAck, renderOwner, renderInvoice, renderPaid, renderAlert, flagsText } from "./mail.js";
 import {
-  isoDay, dotDate, addDays, clean, parseTenderId, normalizeContact,
+  isoDay, dotDate, addDays, kyivEndOfDay, clean, parseTenderId, normalizeContact,
   isValidEdrpou, isValidRnokpp, isValidIbanUa,
 } from "./format.js";
 
@@ -431,7 +431,8 @@ export class InvoiceRegistry extends DurableObject {
       case "accept": {
         if (app.intake === "declined") return { ok: false, error: "Заявку відхилено раніше." };
         const blockers = invoiceBlockers(cfg);
-        const validUntil = Number(params.validUntil) || addDays(new Date(now), cfg.invoiceValidDays).getTime();
+        // «дійсний до» — кінець обраного дня за Києвом; типово — через INVOICE_VALID_DAYS днів
+        const validUntil = kyivEndOfDay(params.validUntilDate) || kyivEndOfDay(isoDay(addDays(new Date(now), cfg.invoiceValidDays)));
         if (validUntil < now) return { ok: false, error: "Дата чинності рахунку вже минула." };
         if (blockers.length) {
           if (!params.withoutInvoice) return { ok: false, error: "Рахунок не можна створити: " + blockers.join("; ") + ".", blockers };

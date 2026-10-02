@@ -261,7 +261,7 @@ async function main() {
     // T17: прийняття й рахунок
     const pi = base({ org: "Товариство з обмеженою відповідальністю «Дуже довга назва будівельної компанії з Полтавщини» ' ʼ — Їжак Ґудзик Єнот", lot: "лот 2" });
     const rp = await post("/api/zayavka", pi);
-    const acc = await act(rp.json.id, "accept", { validUntil: Date.now() + 2 * 86400000 });
+    const acc = await act(rp.json.id, "accept", { validUntilDate: new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Kyiv" }).format(new Date(Date.now() + 2 * 86400000)) });
     sent = await mock("/__sent");
     const inv = sent.sent.filter((x) => x.to === pi.email && /^Рахунок № TW-/.test(x.subject)).pop();
     check("T17", "Прийняття створює рахунок TW-…/N і лист із PDF; копія Віталію (bcc)", acc.json.ok && inv && inv.attachments.length === 1 && /\.pdf$/.test(inv.attachments[0].filename)

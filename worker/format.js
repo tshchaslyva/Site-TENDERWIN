@@ -40,6 +40,15 @@ export function kyivDateTime(date) {
   return `${longDate(date)}, ${t}`;
 }
 
+/** "2026-10-04" → мітка часу 23:59:59 цього дня за Києвом (з урахуванням літнього часу) */
+export function kyivEndOfDay(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || ""));
+  if (!m) return 0;
+  const utc = Date.UTC(+m[1], +m[2] - 1, +m[3], 23, 59, 59);
+  const kyivHour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(new Date(utc)));
+  return utc - ((kyivHour - 23 + 24) % 24) * 3600000;
+}
+
 /** Дата + N календарних днів */
 export function addDays(date, n) {
   return new Date(date.getTime() + n * 86400000);

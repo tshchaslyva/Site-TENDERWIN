@@ -44,6 +44,13 @@
   var INTAKE = { received: "нова", clarification_needed: "потрібні уточнення", accepted: "прийнято", declined: "відхилено" };
   var STAGE = { "new": "очікує рішення", awaiting_payment: "очікує оплату", analysis_in_progress: "аналіз у роботі", analysis_delivered: "аналіз передано" };
   var CONSULT = { "": "—", to_schedule: "погодити час", scheduled: "призначено", reschedule_requested: "перенесення", completed: "проведено" };
+  var EVENT = {
+    submitted: "заявку збережено", mail_accepted: "лист прийнято поштою", mail_retry: "лист: повтор пізніше", mail_failed: "лист не надіслано",
+    clarify: "потрібні уточнення", decline: "заявку відхилено", accept: "замовлення прийнято", accept_manual: "прийнято, рахунок вручну",
+    invoice_number: "номер рахунку", resend_invoice: "рахунок надіслано повторно", paid: "оплату зараховано", delivered: "аналіз передано",
+    consult_to_schedule: "консультація: погодити час", consult_scheduled: "консультацію призначено", consult_reschedule_requested: "консультація: перенесення",
+    consult_completed: "консультацію проведено", note: "нотатка", retry_mail: "повтор листа"
+  };
   var MAIL = { pending: "у черзі", sending: "надсилається", accepted: "прийнято поштою", failed: "не надіслано", held: "притримано" };
 
   function api(path, opts) {
@@ -193,14 +200,14 @@
       var pcode = h("input", { id: "p-code", value: a.code || "", inputmode: "numeric", maxlength: "10" });
       var plot = h("input", { id: "p-lot", value: a.lot || "", style: "width:100%" });
       var defDays = j.validDays || 2;
-      var until = h("input", { id: "p-until", type: "date", value: new Date(Date.now() + defDays * 86400000).toISOString().slice(0, 10) });
+      var until = h("input", { id: "p-until", type: "date", value: new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Kyiv" }).format(new Date(Date.now() + defDays * 86400000)) });
       var manual = j.blockers && j.blockers.length;
       var bAccept = h("button", { class: "primary", type: "button" }, manual ? "Прийняти (рахунок — вручну)" : "Прийняти й надіслати рахунок");
       bAccept.onclick = function () {
         if (!confirm(manual ? "Прийняти замовлення без автоматичного рахунку?" : "Створити рахунок і надіслати його клієнту на " + a.email + "?")) return;
         act(a.id, "accept", {
           buyerName: payer.value, buyerCode: pcode.value, lot: plot.value,
-          validUntil: until.value ? new Date(until.value + "T23:59:59").getTime() : undefined,
+          validUntilDate: until.value || undefined,
           withoutInvoice: !!manual
         }, bAccept);
       };
@@ -292,7 +299,7 @@
 
     // ----- журнал -----
     detail.appendChild(h("div", { class: "card" }, h("h2", { text: "Журнал" }),
-      h("ul", null, j.events.map(function (ev) { return h("li", { text: dt(ev.ts) + " — " + ev.action + (ev.detail ? ": " + ev.detail : "") }); }))));
+      h("ul", null, j.events.map(function (ev) { return h("li", { text: dt(ev.ts) + " — " + (EVENT[ev.action] || ev.action) + (ev.detail ? ": " + ev.detail : "") }); }))));
   }
 
   start();

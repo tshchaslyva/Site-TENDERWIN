@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   amountInWords, money, isValidEdrpou, isValidRnokpp, parseTenderId, normalizeContact, isValidIbanUa,
-  isoDay, longDate, kyivDateTime,
+  isoDay, longDate, kyivDateTime, kyivEndOfDay,
 } from "../format.js";
 
 test("сума прописом", () => {
@@ -59,4 +59,7 @@ test("дати за Києвом", () => {
   assert.equal(isoDay(d), "2026-09-27");
   assert.equal(longDate(d), "27 вересня 2026 р.");
   assert.equal(kyivDateTime(d), "27 вересня 2026 р., 01:30");
+  assert.equal(new Date(kyivEndOfDay("2026-10-04")).toISOString(), "2026-10-04T20:59:59.000Z");   // літній час, UTC+3
+  assert.equal(new Date(kyivEndOfDay("2026-12-04")).toISOString(), "2026-12-04T21:59:59.000Z");   // зимовий час, UTC+2
+  assert.equal(kyivEndOfDay("04.10.2026"), 0);
 });
