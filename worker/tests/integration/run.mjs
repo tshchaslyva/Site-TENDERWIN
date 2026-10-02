@@ -126,6 +126,8 @@ async function main() {
     check("T12", "Можна прийняти замовлення з ручним рахунком", acc2.status === 200 && acc2.json.ok, acc2.json.message);
     const sent = await mock("/__sent");
     check("T12", "Жодного листа не надіслано без ключа", sent.hits.length === 0, `${sent.hits.length}`);
+    const health = (await admin("/api/admin/applications?filter=all")).json.mail || {};
+    check("T12", "Робочий інструмент показує: пошту не налаштовано", health.configured === false && health.waiting >= 2, JSON.stringify(health));
   });
 
   // ---------------- B: повна конфігурація з тестовим IBAN ----------------
@@ -201,6 +203,9 @@ async function main() {
       && (await getApp(okLink.json.id)).app.tender === "UA-2026-09-30-000777-a");
     const chk = await post("/api/zayavka", base({ code: "14360571" }));
     check("R19", "Неправильна контрольна цифра — не блок, а позначка для Віталія", chk.status === 200 && /checksum/.test((await getApp(chk.json.id)).app.flags));
+
+    const hB = (await admin("/api/admin/applications?filter=all")).json.mail || {};
+    check("R07", "Стан пошти: ключ є, останній лист прийнято, помилок немає", hB.configured === true && hB.lastAcceptedAt > 0 && !hB.lastError, JSON.stringify(hB));
 
     // T13 / R03: швидке заповнення
     const fast = base({ elapsed: 100 });

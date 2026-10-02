@@ -392,7 +392,23 @@ export class InvoiceRegistry extends DurableObject {
       || (r.stage === "analysis_in_progress" && r.analysis_due_at && r.analysis_due_at - now < 3 * HOUR);
     const out = filter === "all" ? rows : filter === "problems" ? rows.filter(isProblem) : rows.filter(isOpen);
     const globalFailed = this.count("SELECT COUNT(*) AS c FROM outbox WHERE app_id IS NULL AND status = 'failed'");
-    return { items: out, globalFailed, blockers: invoiceBlockers(config(this.env)) };
+    return { items: out, globalFailed, blockers: invoiceBlockers(config(this.env)), mail: this.mailHealth() };
+  }
+
+  /** Стан пошти для робочого інструмента: чи є ключ і чи не повертає Resend помилок (значення секретів не показуються) */
+  mailHealth() {
+    const lastErr = this.one("SELECT last_error, updated FROM outbox WHERE last_error IS NOT NULL ORDER BY updated DESC LIMIT 1");
+    const lastOk = this.one("SELECT MAX(updated) AS t FROM outbox WHERE status = 'accepted'");
+    const okAt = lastOk && lastOk.t ? lastOk.t : null;
+    const errNewer = lastErr && (!okAt || lastErr.updated > okAt);
+    return {
+      configured: !!(this.env.RESEND_API_KEY && this.env.MAIL_FROM),
+      from: this.env.MAIL_FROM || "",
+      lastAcceptedAt: okAt,
+      lastError: errNewer ? lastErr.last_error : "",
+      lastErrorAt: errNewer ? lastErr.updated : null,
+      waiting: this.count("SELECT COUNT(*) AS c FROM outbox WHERE status IN ('pending', 'sending')"),
+    };
   }
 
   get(id) {

@@ -114,6 +114,7 @@
     api("/api/admin/applications?filter=" + encodeURIComponent(state.filter)).then(function (j) {
       clear(list);
       if (!j.ok) { say(j.error || "Помилка", "err"); return; }
+      list.appendChild(healthCard(j));
       if (j.blockers && j.blockers.length) list.appendChild(h("p", { class: "alert warn" }, "Автоматичні рахунки вимкнено: " + j.blockers.join("; ") + ". Замовлення можна прийняти й надіслати рахунок вручну."));
       if (j.globalFailed) list.appendChild(h("p", { class: "alert err" }, "Службових листів не надіслано: " + j.globalFailed + ". Перевірте ключ Resend."));
       var rows = (j.items || []).map(function (a) {
@@ -137,6 +138,33 @@
           ? h("table", null, h("thead", null, h("tr", null, h("th", { text: "Заявка" }), h("th", { text: "Учасник / контакт" }), h("th", { text: "Закупівля" }), h("th", { text: "Стан" }), h("th", { text: "Позначки" }))), h("tbody", null, rows))
           : h("p", { class: "muted", text: "Заявок немає." })));
     }).catch(function (e) { if (e.message !== "auth") say("Немає зв’язку з сервером.", "err"); });
+  }
+
+  /** Підказка до типових помилок Resend */
+  function mailHint(err) {
+    if (/RESEND_API_KEY/.test(err)) return "Додайте секрет RESEND_API_KEY: Cloudflare → site-tenderwin → Settings → Variables and Secrets (блок для роботи сайту, не Build) → Type: Secret → Deploy.";
+    if (/Resend 40[13]/.test(err) && /domain|домен/i.test(err)) return "Домен tenderwin.in.ua не підтверджено в Resend або ключ створено для іншого домену. Перевірте Resend → Domains (статус Verified) і права ключа.";
+    if (/Resend 40[13]/.test(err)) return "Resend не приймає ключ: він неправильний, видалений або без права надсилання. Створіть новий ключ (Sending access, домен tenderwin.in.ua) і замініть секрет RESEND_API_KEY.";
+    if (/Resend 422/.test(err)) return "Resend відхилив дані листа (адреса одержувача чи відправника). Перевірте адресу в заявці та MAIL_FROM у wrangler.jsonc.";
+    if (/Resend 429/.test(err)) return "Перевищено ліміт Resend (безкоштовно — 100 листів на добу). Листи повторяться автоматично пізніше.";
+    return "Листи повторюються автоматично; кнопка «Повторити» — у картці заявки.";
+  }
+
+  function healthCard(j) {
+    var m = j.mail || {};
+    var rows = [];
+    rows.push(h("p", null, h("b", { text: "Пошта: " }),
+      m.configured ? h("span", { class: "tag ok", text: "ключ є" }) : h("span", { class: "tag err", text: "не налаштовано" }),
+      m.from ? " відправник " + m.from : "",
+      m.lastAcceptedAt ? " · останній лист прийнято " + dt(m.lastAcceptedAt) : " · ще жодного прийнятого листа",
+      m.waiting ? " · у черзі: " + m.waiting : ""));
+    if (!m.configured) rows.push(h("p", { class: "alert err", text: mailHint("RESEND_API_KEY") }));
+    else if (m.lastError) rows.push(h("div", { class: "alert err" },
+      h("div", { text: "Остання помилка пошти (" + dt(m.lastErrorAt) + "): " + m.lastError }),
+      h("div", { style: "margin-top:6px;font-weight:500", text: mailHint(m.lastError) })));
+    rows.push(h("p", null, h("b", { text: "Рахунки: " }),
+      j.blockers && j.blockers.length ? h("span", { class: "tag warn", text: "вручну" }) : h("span", { class: "tag ok", text: "автоматично після «Прийняти»" })));
+    return h("div", { class: "card" }, h("h2", { text: "Стан налаштувань" }), rows);
   }
 
   // ---------------- картка заявки ----------------
