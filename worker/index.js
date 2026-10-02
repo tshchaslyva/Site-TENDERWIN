@@ -15,6 +15,7 @@
 // Налаштування — у wrangler.jsonc (vars), контакти — у contacts.json, секрети — у Cloudflare:
 //   RESEND_API_KEY — ключ Resend для листів
 //   ADMIN_TOKEN    — пароль робочого інструмента /admin/
+//   SELLER_RNOKPP, SELLER_ADDRESS, SELLER_IBAN, SELLER_BANK — реквізити для рахунку (репозиторій публічний)
 import { DurableObject } from "cloudflare:workers";
 import contacts from "../contacts.json";
 import fontRegular from "./fonts/FixelText-Regular.ttf";
@@ -93,11 +94,11 @@ function serviceItem(tender, lot) {
 /** Що ще заважає виставляти рахунки автоматично (порожній список — усе гаразд) */
 function invoiceBlockers(cfg) {
   const s = cfg.seller, out = [];
-  if (!s.iban) out.push("не вказано IBAN (SELLER_IBAN)");
+  if (!s.iban) out.push("не вказано IBAN (секрет SELLER_IBAN)");
   else if (!isValidIbanUa(s.iban)) out.push("IBAN має неправильний формат або контрольну суму");
-  if (!s.bank) out.push("не вказано банк (SELLER_BANK)");
-  if (!isValidRnokpp(s.rnokpp)) out.push("РНОКПП виконавця відсутній або некоректний");
-  if (!s.address) out.push("не вказано адресу виконавця");
+  if (!s.bank) out.push("не вказано банк (секрет SELLER_BANK)");
+  if (!isValidRnokpp(s.rnokpp)) out.push("РНОКПП виконавця відсутній або некоректний (секрет SELLER_RNOKPP)");
+  if (!s.address) out.push("не вказано адресу виконавця (секрет SELLER_ADDRESS)");
   if (!cfg.priceOk) out.push(`ціна в налаштуваннях не ${EXPECTED_PRICE} грн`);
   return out;
 }

@@ -21,8 +21,8 @@ test("гроші", () => {
 test("контрольні цифри", () => {
   assert.ok(isValidEdrpou("14360570"));   // ПриватБанк
   assert.ok(!isValidEdrpou("14360571"));
-  assert.ok(isValidRnokpp("2817712530"));
-  assert.ok(!isValidRnokpp("2817712531"));
+  assert.ok(isValidRnokpp("3040512344"));   // вигаданий номер
+  assert.ok(!isValidRnokpp("3040512345"));
 });
 
 test("ID закупівлі: повний формат і реальна дата", () => {

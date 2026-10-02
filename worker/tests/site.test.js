@@ -117,3 +117,10 @@ test("форма: ті самі межі на клієнті й сервері",
   assert.match(appJs, /MESSAGE_MAX = 2000/);
   assert.match(worker, /MESSAGE_MAX = 2000/);
 });
+
+test("публічний репозиторій: особистих реквізитів у конфігурації немає", () => {
+  const cfg = read("wrangler.jsonc");
+  for (const key of ["SELLER_RNOKPP", "SELLER_ADDRESS", "SELLER_IBAN", "SELLER_BANK", "RESEND_API_KEY", "ADMIN_TOKEN"]) {
+    assert.ok(!new RegExp(`"${key}"\\s*:`).test(cfg), `${key} має бути секретом у Cloudflare, а не в wrangler.jsonc`);
+  }
+});

@@ -105,6 +105,8 @@ const commonVars = {
   MAIL_API_URL: MOCK,
   ALLOWED_ORIGINS: BASE,
 };
+// вигадані реквізити для тестового рахунку (справжні задаються секретами в Cloudflare)
+const testSeller = { SELLER_RNOKPP: "3040512344", SELLER_ADDRESS: "01001, м. Київ, вул. Тестова, 1" };
 
 async function main() {
   const m = startProc("node", [new URL("./mock-resend.mjs", import.meta.url).pathname]);
@@ -128,7 +130,7 @@ async function main() {
 
   // ---------------- B: повна конфігурація з тестовим IBAN ----------------
   await withWorker("B: повна конфігурація (тестовий IBAN)", {
-    ...commonVars, RESEND_API_KEY: "re_test", ADMIN_TOKEN: ADMIN, SELLER_IBAN: TEST_IBAN, SELLER_BANK: "АТ «Тестовий банк»",
+    ...commonVars, ...testSeller, RESEND_API_KEY: "re_test", ADMIN_TOKEN: ADMIN, SELLER_IBAN: TEST_IBAN, SELLER_BANK: "АТ «Тестовий банк»",
   }, async () => {
     await mock("/__reset", {});
 
