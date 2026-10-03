@@ -184,9 +184,12 @@ GBAR_CSS = ("<style>.gbar{position:relative;z-index:300;display:flex;justify-con
 
 def gbar(n):
     nxt = n % 5 + 1
-    return (f'{GBAR_CSS}<div class="gbar"><a href="./">← Усі концепції</a>'
+    # на raw.githack.com немає сторінки за адресою «./», тому там ведемо на index.html
+    home_js = ('<script>if(/githack\\.com$/.test(location.hostname)||location.protocol==="file:")'
+               'document.querySelector(".gbar .home").href="index.html"</script>')
+    return (f'{GBAR_CSS}<div class="gbar"><a class="home" href="./">← Усі концепції</a>'
             f'<span>Концепція {n} з 5 · <b>«{NAMES[n]}»</b> · демонстраційний макет</span>'
-            f'<a href="c{nxt}.html">«{NAMES[nxt]}» →</a></div>')
+            f'<a href="c{nxt}.html">«{NAMES[nxt]}» →</a></div>{home_js}')
 
 
 if __name__ == "__main__":
