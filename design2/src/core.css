@@ -1,0 +1,64 @@
+/* ===== спільна основа концепцій (кожна концепція перевизначає вигляд) ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+img,svg,video{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit;cursor:pointer}
+.nw{white-space:nowrap}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{width:min(100% - 40px, var(--wrap, 1240px));margin-inline:auto}
+:focus-visible{outline:3px solid var(--focus, currentColor);outline-offset:3px;border-radius:4px}
+
+/* розбиті слова: анімація задається концепцією через .js [data-split] .w > span */
+[data-split] .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.12em .1em .1em 0;margin:-.12em -.1em -.1em 0}
+[data-split] .w>span{display:inline-block}
+
+/* поява */
+.js [data-r]{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.js [data-r].in{opacity:1;transform:none}
+
+/* FAQ */
+.faq details{overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.faq summary::-webkit-details-marker{display:none}
+.faq .ans{overflow:hidden;transition:height .32s cubic-bezier(.2,.7,.2,1),opacity .32s ease}
+.faq .ans ol{list-style:decimal;padding-left:1.3em;margin-top:10px}
+.faq .ans li+li{margin-top:6px}
+.faq .ans p+p,.faq .ans p+ol{margin-top:10px}
+
+/* форма */
+.tw-form{display:grid;gap:16px}
+.tw-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tw-form .fld{display:grid;gap:7px}
+.tw-form input,.tw-form textarea{width:100%;font:inherit;min-width:0}
+.tw-form textarea{min-height:110px;resize:vertical}
+.tw-form .hint{font-size:.84rem;opacity:.8}
+.tw-form .err{font-size:.86rem;font-weight:600;color:var(--err,#d64545)}
+.tw-form .err:empty{display:none}
+.tw-form .chk{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:.93rem}
+.tw-form .chk input{width:18px;height:18px;margin-top:3px;flex-shrink:0;accent-color:var(--accent,currentColor)}
+.tw-form .msg:empty{display:none}
+.tw-form .msg small{display:block;margin-top:6px;font-weight:500;opacity:.8}
+.tw-form .note{font-size:.84rem;opacity:.75}
+.tw-form button.loading{pointer-events:none;opacity:.75}
+.tw-form button.loading span::after{content:"…"}
+@media(max-width:600px){.tw-form .row2{grid-template-columns:1fr}}
+
+/* мобільна панель */
+.mbar{display:none}
+@media(max-width:760px){
+  .mbar{display:flex;align-items:center;gap:10px;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:80;
+    padding:8px 8px 8px 16px;border-radius:18px;transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .35s}
+  .mbar.away{transform:translateY(140%);opacity:0}
+  .mbar .t{flex:1;min-width:0;font-size:.84rem;line-height:1.25;font-weight:600}
+  .mbar a{white-space:nowrap}
+  body{padding-bottom:84px}
+}
+@media(max-width:359px){.mbar .t{display:none}.mbar .btn{flex:1}}
+
+/* менше руху */
+.rm *,.rm *::before,.rm *::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+.rm [data-r]{opacity:1 !important;transform:none !important}

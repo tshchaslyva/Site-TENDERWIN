@@ -1,0 +1,223 @@
+<title>TenderWin: п'ять концепцій</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* Макет: вітрина студії — вступ, п'ять концепцій (кадр сайту + текст), порівняння, рекомендація */
+:root{
+  --bg:#F4F5F7; --card:#FFFFFF; --fg:#13151B; --muted:#5D6371; --line:#DCDFE5; --soft:#ECEEF2; --btn:#13151B; --btnfg:#FFFFFF;
+  --disp:"Fixel Display","Fixel",system-ui,sans-serif; --sans:"Fixel",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --c1:#C99A3A; --c2:#FF4A1C; --c3:#1FBF92; --c4:#A07A3F; --c5:#2E3BFF;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0E1014;--card:#161920;--fg:#ECEEF2;--muted:#9BA2AF;--line:#272B34;--soft:#1C2028;--btn:#ECEEF2;--btnfg:#0E1014;--c1:#E2B451;--c2:#FF6A42;--c3:#45F0BF;--c4:#C29A5B;--c5:#7C86FF;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1014;--card:#161920;--fg:#ECEEF2;--muted:#9BA2AF;--line:#272B34;--soft:#1C2028;--btn:#ECEEF2;--btnfg:#0E1014;--c1:#E2B451;--c2:#FF6A42;--c3:#45F0BF;--c4:#C29A5B;--c5:#7C86FF;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16.5px/1.6 var(--sans);margin:0;-webkit-font-smoothing:antialiased}
+.page{max-width:1240px;margin:0 auto;padding-inline:clamp(16px,4vw,40px);padding-block:44px 80px}
+h1,h2,h3{font-family:var(--disp);font-weight:800;letter-spacing:-.025em;line-height:1.06;margin:0;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+.lbl{font:500 .74rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+:focus-visible{outline:3px solid var(--c5);outline-offset:3px;border-radius:6px}
+
+/* вступ */
+.intro{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:end;padding-bottom:36px;border-bottom:1px solid var(--line)}
+.intro h1{font-size:clamp(2.4rem,6vw,4.6rem);margin-top:14px}
+.intro .lede{margin-top:18px;font-size:1.12rem;color:var(--muted);max-width:60ch}
+.same{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.same h2{font-size:1.02rem;letter-spacing:-.01em}
+.same ul{margin:12px 0 0;padding-left:1.1em;color:var(--muted);font-size:.93rem;display:grid;gap:5px}
+@media(max-width:900px){.intro{grid-template-columns:1fr;gap:26px}}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.toc a{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);text-decoration:none;font-weight:600;font-size:.92rem}
+.toc a i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.toc a:hover{border-color:var(--c)}
+.how{margin-top:16px;font-size:.9rem;color:var(--muted)}
+
+/* концепція */
+.cpt{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);padding-block:64px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+@media(max-width:980px){.cpt{grid-template-columns:1fr}}
+.media{position:relative;min-width:0}
+.frame{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--card);box-shadow:0 30px 60px -40px rgba(10,12,20,.55)}
+.frame .bar{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-bottom:1px solid var(--line);background:var(--soft)}
+.frame .bar i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.frame .bar span{margin-left:10px;font:500 .7rem var(--mono);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frame img{display:block;width:100%;height:auto;aspect-ratio:1200/750;object-fit:cover}
+.phone{position:absolute;right:-14px;bottom:-34px;width:23%;min-width:96px;max-width:100%;border-radius:22px;overflow:hidden;border:6px solid #0B0C10;box-shadow:0 24px 50px -20px rgba(10,12,20,.6);background:#0B0C10}
+.phone img{display:block;width:100%;height:auto;aspect-ratio:390/844;object-fit:cover}
+@media(max-width:560px){.phone{right:-4px;bottom:-24px;width:30%}}
+.sig{margin-top:56px;display:grid;gap:8px}
+.sig .frame img{aspect-ratio:1200/750}
+.sig p{font-size:.86rem;color:var(--muted)}
+.txt{min-width:0;display:flex;flex-direction:column;gap:18px}
+.num{display:flex;align-items:center;gap:12px}
+.num b{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--c);color:#fff;font:800 1.05rem var(--disp)}
+.txt h2{font-size:clamp(2rem,4vw,3rem)}
+.txt .thesis{font-size:1.15rem;line-height:1.5}
+.txt h3{font-family:var(--mono);font-weight:500;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.txt .blk p{color:var(--fg);font-size:.97rem}
+.txt ul{margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:.95rem}
+.sw{display:flex;flex-wrap:wrap;gap:8px}
+.sw span{display:inline-flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border-radius:999px;border:1px solid var(--line);background:var(--card);font:500 .74rem var(--mono)}
+.sw span i{width:20px;height:20px;border-radius:50%;border:1px solid rgba(128,128,128,.35)}
+.go{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:12px;font-weight:700;font-size:.95rem;text-decoration:none;border:1px solid var(--line);background:var(--card)}
+.btn.p{background:var(--btn);color:var(--btnfg);border-color:var(--btn)}
+.btn.p:hover{background:var(--c);border-color:var(--c);color:#fff}
+.btn:not(.p):hover{border-color:var(--c)}
+
+/* порівняння */
+.cmp{padding-block:64px 20px}
+.cmp h2{font-size:clamp(1.8rem,3.4vw,2.6rem)}
+.tw{margin-top:24px;overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:880px;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:14px 16px;border-bottom:1px solid var(--line)}
+thead th{font-family:var(--disp);font-weight:800;font-size:1rem;letter-spacing:-.01em}
+thead th i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:8px}
+tbody th{font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);width:150px}
+tr:last-child th,tr:last-child td{border-bottom:0}
+.rec{margin-top:40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media(max-width:860px){.rec{grid-template-columns:1fr}}
+.rec>div{border-radius:18px;padding:26px;border:1px solid var(--line);background:var(--card)}
+.rec>div.main{border-color:var(--c1);box-shadow:inset 0 0 0 1px var(--c1)}
+.rec h3{font-size:1.3rem;margin:8px 0 10px}
+.rec p{color:var(--muted)}
+.next{margin-top:40px;font-size:1.05rem;max-width:70ch}
+.next b{font-weight:700}
+@media (prefers-reduced-motion: no-preference){.btn,.toc a{transition:background .25s,border-color .25s,color .25s}}
+</style>
+
+<div class="page">
+  <header class="intro">
+    <div>
+      <p class="lbl">TenderWin · ребрендинг сайту · жовтень 2026</p>
+      <h1>П'ять концепцій сайту TenderWin</h1>
+      <p class="lede">Кожна концепція — повноцінна жива сторінка з анімаціями, прикладами висновку й демо-формою. Тексти однакові й дослівні, різниться подача. Відкрийте кожну, прокрутіть до кінця й переключіть приклади справ.</p>
+      <nav class="toc" aria-label="Концепції">
+        <a href="#c1" style="--c:var(--c1)"><i></i>1 · Протокол</a>
+        <a href="#c2" style="--c:var(--c2)"><i></i>2 · Кінетика</a>
+        <a href="#c3" style="--c:var(--c3)"><i></i>3 · Аналізатор</a>
+        <a href="#c4" style="--c:var(--c4)"><i></i>4 · Атлас</a>
+        <a href="#c5" style="--c:var(--c5)"><i></i>5 · Ясно</a>
+      </nav>
+      <p class="how">Найкраще дивитися на комп'ютері, повільно прокручуючи сторінку. На телефоні все теж працює, з мобільною панеллю «Замовити аналіз».</p>
+    </div>
+    <aside class="same">
+      <h2>Однакове в усіх п'яти</h2>
+      <ul>
+        <li>Затверджені тексти й FAQ із ТЗ v2.0, дослівно</li>
+        <li>Три демонстраційні справи з різним висновком: сильна, середня й слабка позиція</li>
+        <li>PDF-приклад висновку на 2 сторінки</li>
+        <li>Демо-форма заявки з перевіркою полів (нічого не надсилає)</li>
+        <li>Режим «менше руху» для тих, кому анімації заважають</li>
+        <li>Без бібліотек і трекерів, сторінка ≈ 80 КБ + шрифти; ширина від 320 px без горизонтальної прокрутки</li>
+      </ul>
+    </aside>
+  </header>
+
+  <article class="cpt" id="c1" style="--c:var(--c1)">
+    <div class="media">
+      <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Концепція 1 · Протокол</span></div><img src="shots/c1-d.webp" alt="Перший екран концепції «Протокол»: темний фон, заголовок, документ рішення з виділенням, нитки до вимоги й пропозиції, печатка" width="1200" height="750"></div>
+      <div class="phone"><img src="shots/c1-m.webp" alt="Мобільна версія концепції «Протокол»" width="390" height="844" loading="lazy"></div>
+      <div class="sig"><div class="frame"><img src="shots/c1-s.webp" alt="Розділ прикладів висновку в концепції «Протокол»" width="1200" height="750" loading="lazy"></div><p>Приклади висновку: справа з індикатором сили позиції та шістьма рядками звіту.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>1</b><span class="lbl">Темна · преміальна</span></div>
+      <h2>Протокол</h2>
+      <p class="thesis">Перший екран показує саму роботу: рішення замовника, виділене спірне речення, золоті нитки до вимоги документації й до Вашої пропозиції, а потім печатка «Є підстави оскаржувати».</p>
+      <div class="blk"><h3>Враження</h3><p>Строгість і доказовість, як у юридичній експертизі. Графіт і золото передають ціну правильного рішення.</p></div>
+      <div class="blk"><h3>Анімації</h3><ul><li>документ розгортається в 3D, маркер виділяє підставу</li><li>нитки-зв'язки малюються до посилань, ставиться печатка</li><li>метод із закріпленою колонкою й великими цифрами 01–04</li><li>рамка ціни обертається, напис у футері заповнюється золотом</li></ul></div>
+      <div class="blk"><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#07090D"></i>#07090D</span><span><i style="background:#EDE7DA"></i>#EDE7DA</span><span><i style="background:#E2B451"></i>#E2B451</span><span><i style="background:#4CC594"></i>#4CC594</span></div><p style="margin-top:8px;color:var(--muted);font-size:.9rem">Fixel (український шрифт MacPaw) і JetBrains Mono</p></div>
+      <div class="go"><a class="btn p" href="c1.html">Відкрити концепцію →</a></div>
+    </div>
+  </article>
+
+  <article class="cpt" id="c2" style="--c:var(--c2)">
+    <div class="media">
+      <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Концепція 2 · Кінетика</span></div><img src="shots/c2-d.webp" alt="Перший екран концепції «Кінетика»: світлий фон із видимою сіткою, величезний чорний заголовок, «за 24 години» кіноварним кольором" width="1200" height="750" loading="lazy"></div>
+      <div class="phone"><img src="shots/c2-m.webp" alt="Мобільна версія концепції «Кінетика»" width="390" height="844" loading="lazy"></div>
+      <div class="sig"><div class="frame"><img src="shots/c2-s.webp" alt="Горизонтальна прокрутка розділу «Метод» у концепції «Кінетика»" width="1200" height="750" loading="lazy"></div><p>Розділ «Метод»: вертикальна прокрутка рухає картки вбік.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>2</b><span class="lbl">Світла · смілива</span></div>
+      <h2>Кінетика</h2>
+      <p class="thesis">Типографіка як головна графіка: величезний заголовок, видимі колонки швейцарської сітки, числа 3 499 / 24 / 30, що прокручуються, як на табло.</p>
+      <div class="blk"><h3>Враження</h3><p>Упевненість і сучасність, як у провідних європейських дизайн-студій. Чорне на світлому з одним яскравим акцентом.</p></div>
+      <div class="blk"><h3>Анімації</h3><ul><li>колонки сітки прокреслюються, слова виїжджають з-під маски</li><li>стрічка слів, швидкість і нахил якої залежать від прокрутки</li><li>горизонтальний розділ «Метод»</li><li>покажчик справ: рядок розгортається у звіт «Вимога → Пропозиція»</li></ul></div>
+      <div class="blk"><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#F3F1EC"></i>#F3F1EC</span><span><i style="background:#0D0D0D"></i>#0D0D0D</span><span><i style="background:#FF4A1C"></i>#FF4A1C</span><span><i style="background:#12A150"></i>#12A150</span></div><p style="margin-top:8px;color:var(--muted);font-size:.9rem">Geologica — один шрифт на все</p></div>
+      <div class="go"><a class="btn p" href="c2.html">Відкрити концепцію →</a></div>
+    </div>
+  </article>
+
+  <article class="cpt" id="c3" style="--c:var(--c3)">
+    <div class="media">
+      <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Концепція 3 · Аналізатор</span></div><img src="shots/c3-d.webp" alt="Перший екран концепції «Аналізатор»: темно-синій фон зі світінням, заголовок по центру з градієнтом" width="1200" height="750" loading="lazy"></div>
+      <div class="phone"><img src="shots/c3-m.webp" alt="Мобільна версія концепції «Аналізатор»" width="390" height="844" loading="lazy"></div>
+      <div class="sig"><div class="frame"><img src="shots/c3-s.webp" alt="Приклади висновку як застосунок у концепції «Аналізатор»" width="1200" height="750" loading="lazy"></div><p>Приклади висновку як застосунок: порівняння «Вимога ↔ Пропозиція» і прилад сили позиції.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>3</b><span class="lbl">Темна · технологічна</span></div>
+      <h2>Аналізатор</h2>
+      <p class="thesis">Послуга подана як продукт. У «консолі» вводиться ID закупівлі, по черзі проходять етапи перевірки, з'являється висновок. Підпис чесно пояснює: висновок готує фахівець, а не автомат.</p>
+      <div class="blk"><h3>Враження</h3><p>Технологічність і точність, як у сучасних сервісів. Підходить, якщо хочете виглядати як інструмент, а не агенція.</p></div>
+      <div class="blk"><h3>Анімації</h3><ul><li>консоль вирівнюється з 3D-нахилу під час прокрутки</li><li>сценарій перевірки: друк ID, етапи, прилад зі стрілкою</li><li>плитки з підсвіткою за курсором, кільце 24 год, хвиля консультації</li><li>лінія кроків заповнюється, рамка ціни переливається</li></ul></div>
+      <div class="blk"><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#060A14"></i>#060A14</span><span><i style="background:#E7ECF5"></i>#E7ECF5</span><span><i style="background:#45F0BF"></i>#45F0BF</span><span><i style="background:#7C8CFF"></i>#7C8CFF</span></div><p style="margin-top:8px;color:var(--muted);font-size:.9rem">Onest і JetBrains Mono</p></div>
+      <div class="go"><a class="btn p" href="c3.html">Відкрити концепцію →</a></div>
+    </div>
+  </article>
+
+  <article class="cpt" id="c4" style="--c:var(--c4)">
+    <div class="media">
+      <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Концепція 4 · Атлас</span></div><img src="shots/c4-d.webp" alt="Перший екран концепції «Атлас»: журнальний заголовок TenderWin, серифний шрифт, печатка з ціною, зміст випуску" width="1200" height="750" loading="lazy"></div>
+      <div class="phone"><img src="shots/c4-m.webp" alt="Мобільна версія концепції «Атлас»" width="390" height="844" loading="lazy"></div>
+      <div class="sig"><div class="frame"><img src="shots/c4-s.webp" alt="Журнальний розворот справи в концепції «Атлас»" width="1200" height="750" loading="lazy"></div><p>Справа як журнальний розворот: печатка вердикту й зноски на сторінки документів.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>4</b><span class="lbl">Світла · статусна</span></div>
+      <h2>Атлас</h2>
+      <p class="thesis">Сайт як випуск ділового журналу: масштабна шапка TenderWin, зміст, розділи I–V, а приклади висновку — розворот зі зносками на конкретні сторінки документів.</p>
+      <div class="blk"><h3>Враження</h3><p>Статус і спокій, як у дорогої юридичної фірми. Серифні шрифти, латунь і глибокий зелений.</p></div>
+      <div class="blk"><h3>Анімації</h3><ul><li>лінійки прокреслюються, печатка з текстом по колу малюється</li><li>заголовок піднімається рядками, римські цифри з паралаксом</li><li>розворот перегортається при зміні справи, печатка вердикту ставиться</li><li>тонка смуга прогресу читання</li></ul></div>
+      <div class="blk"><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#F6F2EA"></i>#F6F2EA</span><span><i style="background:#1C1B18"></i>#1C1B18</span><span><i style="background:#A07A3F"></i>#A07A3F</span><span><i style="background:#2F5D46"></i>#2F5D46</span></div><p style="margin-top:8px;color:var(--muted);font-size:.9rem">Playfair Display, Source Serif 4, IBM Plex Mono</p></div>
+      <div class="go"><a class="btn p" href="c4.html">Відкрити концепцію →</a></div>
+    </div>
+  </article>
+
+  <article class="cpt" id="c5" style="--c:var(--c5)">
+    <div class="media">
+      <div class="frame"><div class="bar"><i></i><i></i><i></i><span>Концепція 5 · Ясно</span></div><img src="shots/c5-d.webp" alt="Перший екран концепції «Ясно»: білий фон, синій і жовтий, приклад розмови в стилі месенджера й наліпки 3 499, 24, 30" width="1200" height="750" loading="lazy"></div>
+      <div class="phone"><img src="shots/c5-m.webp" alt="Мобільна версія концепції «Ясно»" width="390" height="844" loading="lazy"></div>
+      <div class="sig"><div class="frame"><img src="shots/c5-s.webp" alt="Спідометр шансів на оскарження в концепції «Ясно»" width="1200" height="750" loading="lazy"></div><p>Приклади висновку: спідометр «Шанси на оскарження» і чек-лист висновку.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>5</b><span class="lbl">Світла · дружня</span></div>
+      <h2>Ясно</h2>
+      <p class="thesis">Перший екран — приклад розмови в стилі месенджера: питання клієнта, відповідь, файл висновку й консультація. Зрозуміло навіть тим, хто вперше стикається з оскарженням.</p>
+      <div class="blk"><h3>Враження</h3><p>Простота й доброзичливість. Ультрамарин і соняшник, великі округлі форми, багато повітря.</p></div>
+      <div class="blk"><h3>Анімації</h3><ul><li>маркер підкреслює «за 24 години», повідомлення з'являються з набором</li><li>стрілка спідометра рухається до рівня шансів</li><li>картки кроків складаються в стос під час прокрутки</li><li>відповіді FAQ як повідомлення, конфеті після демо-заявки</li></ul></div>
+      <div class="blk"><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#FFFFFF"></i>#FFFFFF</span><span><i style="background:#0F1235"></i>#0F1235</span><span><i style="background:#2E3BFF"></i>#2E3BFF</span><span><i style="background:#FFC83D"></i>#FFC83D</span></div><p style="margin-top:8px;color:var(--muted);font-size:.9rem">Unbounded і Onest</p></div>
+      <div class="go"><a class="btn p" href="c5.html">Відкрити концепцію →</a></div>
+    </div>
+  </article>
+
+  <section class="cmp" aria-labelledby="cmp-h">
+    <p class="lbl">Порівняння</p>
+    <h2 id="cmp-h">Чим відрізняються концепції</h2>
+    <div class="tw">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col" style="--c:var(--c1)"><i></i>Протокол</th><th scope="col" style="--c:var(--c2)"><i></i>Кінетика</th><th scope="col" style="--c:var(--c3)"><i></i>Аналізатор</th><th scope="col" style="--c:var(--c4)"><i></i>Атлас</th><th scope="col" style="--c:var(--c5)"><i></i>Ясно</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Тема</th><td>Темна</td><td>Світла</td><td>Темна</td><td>Світла</td><td>Світла</td></tr>
+          <tr><th scope="row">Враження</th><td>Експертиза, доказовість</td><td>Сміливість, сучасність</td><td>Технологічність, точність</td><td>Статус, спокій</td><td>Простота, доброзичливість</td></tr>
+          <tr><th scope="row">Головний момент</th><td>Документ, нитки до посилань і печатка</td><td>Табло цифр і горизонтальний «Метод»</td><td>Консоль перевірки справи</td><td>Журнальний розворот справи</td><td>Розмова й спідометр шансів</td></tr>
+          <tr><th scope="row">Приклади висновку</th><td>Справа з шістьма рядками звіту</td><td>Покажчик справ, що розгортається</td><td>Застосунок із порівнянням документів</td><td>Розворот зі зносками</td><td>Шанси + чек-лист</td></tr>
+          <tr><th scope="row">Кому найближче</th><td>Тендерні менеджери, юристи, керівники</td><td>Компанії, що цінують дизайн</td><td>IT-орієнтовані, молоді команди</td><td>Великі підрядники, консервативні клієнти</td><td>Малий бізнес, ФОП, новачки в тендерах</td></tr>
+          <tr><th scope="row">Перенесення на сайт</th><td>2–3 дні</td><td>2–3 дні</td><td>3–4 дні</td><td>2–3 дні</td><td>2–3 дні</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rec">
+      <div class="main"><p class="lbl">Моя рекомендація</p><h3>1 · Протокол</h3><p>Єдина концепція, яка в першому кадрі показує суть послуги: як із рішення замовника виходить висновок із посиланнями на сторінки. Клієнт за кілька секунд розуміє, за що платить 3 499 грн, а темна гама з золотом підкреслює експертизу.</p></div>
+      <div><p class="lbl">Альтернатива</p><h3>5 · Ясно</h3><p>Якщо головна аудиторія — малий бізнес і ФОП, які вперше отримали відхилення. Найпростіша для сприйняття, найменше «юридичного» тиску, синьо-жовта гама знайома й тепла.</p></div>
+    </div>
+    <p class="next"><b>Що далі.</b> Оберіть концепцію або поєднання (наприклад, перший екран з «Протоколу» й приклади справ з «Аналізатора»). Я перенесу її на робочий сайт: справжня форма заявки, обробник, листи й рахунки залишаються без змін.</p>
+  </section>
+</div>
