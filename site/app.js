@@ -12,9 +12,7 @@
     email: "vitalii@tenderwin.com.ua",
     telegramUser: "TenderWin_UA",
     telegramUrl: "https://t.me/tenderwin_ua",
-    telegramPrefill: "Доброго дня! Хочу замовити аналіз відхилення. ID закупівлі: UA-… ЄДРПОУ/РНОКПП: …",
-    channelUrl: "https://t.me/tenderwin_plus",
-    channelLabel: "Тендер+ — щотижневий розбір відхилень"
+    telegramPrefill: "Доброго дня! Хочу замовити аналіз відхилення. ID закупівлі: UA-… ЄДРПОУ/РНОКПП: …"
   };
   var MESSAGE_MAX = 2000;          // так само в обробнику (worker/index.js)
   var REQUEST_TIMEOUT = 15000;     // мс очікування відповіді обробника
@@ -54,7 +52,7 @@
     }
   } catch (e) { root.classList.remove("js"); }
 
-  /* ---------- Telegram: контакт @TenderWin_UA і канал «Тендер+» ---------- */
+  /* ---------- Telegram: контакт @TenderWin_UA ---------- */
   var TG_RE = /^https:\/\/t\.me\/[a-z][a-z0-9_]{4,31}$/;
   function setupTelegram(kind, url, prefill) {
     var ok = typeof url === "string" && TG_RE.test(url);
@@ -67,7 +65,6 @@
     return ok;
   }
   var tgOk = setupTelegram("contact", CONTACTS.telegramUrl, CONTACTS.telegramPrefill);
-  var chOk = setupTelegram("channel", CONTACTS.channelUrl, "");
 
   /* ---------- мобільна панель ховається біля форми, щоб не перекривати поля ---------- */
   var bar = document.getElementById("mobilebar");
@@ -121,11 +118,9 @@
     'Телефон: <a href="' + CONTACTS.phoneHref + '">' + CONTACTS.phone.replace(/ /g, "&nbsp;") + "</a>" +
     (tgOk ? ', Telegram: <a href="' + CONTACTS.telegramUrl + '" target="_blank" rel="noopener">@' + CONTACTS.telegramUser + "</a>" : "") +
     ', пошта: <a href="mailto:' + CONTACTS.email + '">' + CONTACTS.email + "</a>.";
-  var waitHtml = (tgOk || chOk)
-    ? '<span class="more">Поки чекаєте на відповідь: питання — у Telegram ' +
-      (tgOk ? '<a href="' + CONTACTS.telegramUrl + '" target="_blank" rel="noopener">@' + CONTACTS.telegramUser + "</a>" : "") +
-      (chOk ? '; свіжі розбори відхилень — у каналі <a href="' + CONTACTS.channelUrl + '" target="_blank" rel="noopener">Тендер+</a>' : "") +
-      ".</span>"
+  var waitHtml = tgOk
+    ? '<span class="more">Поки чекаєте на відповідь, питання можна поставити в Telegram: <a href="' + CONTACTS.telegramUrl +
+      '" target="_blank" rel="noopener">@' + CONTACTS.telegramUser + "</a>.</span>"
     : "";
 
   function say(html, kind) {

@@ -91,12 +91,13 @@ function serviceItem(tender, lot) {
   return `Аналіз відхилення тендерної пропозиції у закупівлі ${tender}${lot ? ` (${lot})` : ""} та консультація тривалістю 30 хвилин`;
 }
 
-/** Що ще заважає виставляти рахунки автоматично (порожній список — усе гаразд) */
+/**
+ * Що заважає створювати рахунки (порожній список — усе гаразд).
+ * IBAN і банк необов'язкові: без них рахунок виходить із приміткою, що реквізити для оплати надішлемо окремо.
+ */
 function invoiceBlockers(cfg) {
   const s = cfg.seller, out = [];
-  if (!s.iban) out.push("не вказано IBAN (секрет SELLER_IBAN)");
-  else if (!isValidIbanUa(s.iban)) out.push("IBAN має неправильний формат або контрольну суму");
-  if (!s.bank) out.push("не вказано банк (секрет SELLER_BANK)");
+  if (s.iban && !isValidIbanUa(s.iban)) out.push("IBAN має неправильний формат або контрольну суму (секрет SELLER_IBAN)");
   if (!isValidRnokpp(s.rnokpp)) out.push("РНОКПП виконавця відсутній або некоректний (секрет SELLER_RNOKPP)");
   if (!s.address) out.push("не вказано адресу виконавця (секрет SELLER_ADDRESS)");
   if (!cfg.priceOk) out.push(`ціна в налаштуваннях не ${EXPECTED_PRICE} грн`);
@@ -247,7 +248,8 @@ export class InvoiceRegistry extends DurableObject {
 
     // 4) запис заявки
     const day = isoDay(new Date(now));
-    const id = `Z-${day}/${this.nextNumber("Z:" + day)}`;
+    // номер заявки: 20261003-1 (лише цифри — без літер Z і V); рахунок окремо: TW-2026-10-03/1
+    const id = `${day.replace(/-/g, "")}-${this.nextNumber("app:" + day)}`;
     this.sql.exec(
       `INSERT INTO applications (id, created, updated, op_key, fp, name, email, contact, org, code, no_code, other_payer,
          tender, lot, message, service_version, terms_version, consent_at, flags, amount)
@@ -485,7 +487,6 @@ export class InvoiceRegistry extends DurableObject {
         const pdf = await buildInvoicePdf({
           fonts: { regular: fontRegular, bold: fontBold, display: fontDisplay },
           seller: cfg.seller,
-          channel: cfg.contacts.channel,
           buyer: { name: buyerName, code: buyerCode, codeLabel: buyerCode.length === 8 ? "Код ЄДРПОУ" : "РНОКПП" },
           number: inv.number,
           date: created,
