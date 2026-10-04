@@ -8,7 +8,7 @@
   try { state.token = sessionStorage.getItem(KEY) || ""; } catch (e) { /* */ }
 
   var $ = function (id) { return document.getElementById(id); };
-  var flash = $("flash"), loginForm = $("login"), list = $("list"), detail = $("detail"), tabs = $("tabs");
+  var flash = $("flash"), loginForm = $("login"), list = $("list"), detail = $("detail"), tabs = $("tabs"), statsSec = $("stats");
 
   /** h("tag", {attrs}, ...children) — безпечне створення елементів */
   function h(tag, attrs) {
@@ -72,7 +72,7 @@
   function logout(text) {
     state.token = "";
     try { sessionStorage.removeItem(KEY); } catch (e) { /* */ }
-    tabs.hidden = true; list.hidden = true; detail.hidden = true; loginForm.hidden = false;
+    tabs.hidden = true; list.hidden = true; detail.hidden = true; statsSec.hidden = true; loginForm.hidden = false;
     say(text || "", text ? "err" : "");
   }
 
@@ -93,6 +93,7 @@
       route();
     };
   });
+  $("statsBtn").onclick = function () { location.hash = "stats"; };
   window.addEventListener("hashchange", route);
 
   function start() {
@@ -103,7 +104,13 @@
 
   function route() {
     var id = decodeURIComponent(location.hash.slice(1));
-    if (id) showDetail(id); else showList();
+    $("statsBtn").setAttribute("aria-pressed", String(id === "stats"));
+    Array.prototype.forEach.call(tabs.querySelectorAll("[data-filter]"), function (x) {
+      x.setAttribute("aria-pressed", String(id !== "stats" && x.getAttribute("data-filter") === state.filter));
+    });
+    statsSec.hidden = id !== "stats";
+    if (id === "stats") { list.hidden = true; detail.hidden = true; showStats(); }
+    else if (id) showDetail(id); else showList();
   }
 
   // ---------------- список ----------------
@@ -328,6 +335,132 @@
     // ----- журнал -----
     detail.appendChild(h("div", { class: "card" }, h("h2", { text: "Журнал" }),
       h("ul", null, j.events.map(function (ev) { return h("li", { text: dt(ev.ts) + " — " + (EVENT[ev.action] || ev.action) + (ev.detail ? ": " + ev.detail : "") }); }))));
+  }
+
+  // ---------------- статистика відвідувань ----------------
+  var statDays = 30;
+  var dayFmt = new Intl.DateTimeFormat("uk-UA", { day: "2-digit", month: "2-digit" });
+  function dayLabel(iso) { return dayFmt.format(new Date(iso + "T12:00:00Z")); }
+  function num(n) { return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0"); }
+
+  function ownToggle() {
+    var off = false;
+    try { off = localStorage.getItem("tw-no-stats") === "1"; } catch (e) { /* */ }
+    var b = h("button", { type: "button" }, off ? "Знову враховувати мої відвідування" : "Не враховувати мої відвідування з цього браузера");
+    b.onclick = function () {
+      try { if (off) localStorage.removeItem("tw-no-stats"); else localStorage.setItem("tw-no-stats", "1"); } catch (e) { /* */ }
+      showStats();
+    };
+    return h("p", { class: "muted" }, off ? "Ваші відвідування з цього браузера не враховуються. " : "Ваші відвідування з цього браузера зараз враховуються. ", b);
+  }
+
+  /** Стовпчики «відвідувачі за день»; підказка при наведенні й фокусі */
+  function chart(series, width) {
+    var W = Math.max(300, Math.round(width || 720)), H = 220, L = 34, B = 24, T = 10;
+    var max = Math.max(1, Math.max.apply(null, series.map(function (d) { return d.visitors; })));
+    var step = Math.pow(10, Math.floor(Math.log10(max)));
+    var top = Math.ceil(max / step) * step; if (top / step > 5) step *= 2;
+    var bw = (W - L) / series.length;
+    var NS = "http://www.w3.org/2000/svg";
+    function sv(tag, attrs, text) {
+      var el = document.createElementNS(NS, tag);
+      Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+      if (text !== undefined) el.textContent = text;
+      return el;
+    }
+    var svg = sv("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Відвідувачі за день" });
+    for (var v = 0; v <= top; v += step) {
+      var y = T + (H - B - T) * (1 - v / top);
+      svg.appendChild(sv("line", { class: "grid", x1: L, x2: W, y1: y, y2: y }));
+      svg.appendChild(sv("text", { class: "ax", x: L - 6, y: y + 4, "text-anchor": "end" }, String(v)));
+    }
+    var every = Math.ceil(series.length / 8);
+    series.forEach(function (d, i) {
+      var hgt = (H - B - T) * d.visitors / top, x = L + i * bw + Math.max(1, bw * 0.15);
+      var w = Math.max(2, bw * 0.7);
+      svg.appendChild(sv("rect", { class: "bar", x: x, y: H - B - hgt, width: w, height: Math.max(0, hgt), rx: Math.min(4, w / 2), "data-i": i }));
+      var lastI = series.length - 1;
+      if (i === lastI || (i % every === 0 && lastI - i >= Math.ceil(every / 2))) svg.appendChild(sv("text", { class: "ax", x: i === lastI ? x + w : x + w / 2, y: H - 6, "text-anchor": i === lastI ? "end" : "middle" }, dayLabel(d.day)));
+    });
+    var tip = h("div", { class: "tip", role: "status" });
+    var wrap = h("div", { class: "chart", tabindex: "0", "aria-label": "Графік відвідувачів за день. Стрілками вліво й вправо — дні." }, svg, tip);
+    var cur = -1;
+    function show(i) {
+      if (i < 0 || i >= series.length) return;
+      cur = i;
+      var d = series[i], r = wrap.getBoundingClientRect();
+      Array.prototype.forEach.call(svg.querySelectorAll(".bar"), function (b) { b.setAttribute("class", "bar" + (Number(b.getAttribute("data-i")) === i ? " hl" : "")); });
+      tip.textContent = dayLabel(d.day) + ": відвідувачів " + d.visitors + ", переглядів " + d.views + (d.form_start ? ", почали форму " + d.form_start : "");
+      tip.style.display = "block";
+      tip.style.left = ((L + (i + 0.5) * bw) / W * r.width) + "px";
+      tip.style.top = "0px";
+    }
+    function hide() { tip.style.display = "none"; Array.prototype.forEach.call(svg.querySelectorAll(".bar.hl"), function (b) { b.setAttribute("class", "bar"); }); }
+    wrap.addEventListener("mousemove", function (e) {
+      var r = wrap.getBoundingClientRect();
+      show(Math.floor(((e.clientX - r.left) / r.width * W - L) / bw));
+    });
+    wrap.addEventListener("mouseleave", hide);
+    wrap.addEventListener("blur", hide);
+    wrap.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); show(Math.min(series.length - 1, cur + 1)); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); show(Math.max(0, cur < 0 ? series.length - 1 : cur - 1)); }
+    });
+    return wrap;
+  }
+
+  function topTable(title, rows, total, empty) {
+    return h("div", { class: "card scroll" }, h("h3", { text: title }),
+      rows && rows.length
+        ? h("table", null, h("tbody", null, rows.map(function (r) {
+            var share = total ? Math.round(r.n / total * 100) : 0;
+            return h("tr", null, h("td", null, h("span", { text: r.key || "—" }), h("div", { class: "meter" }, h("i", { style: "width:" + share + "%" }))),
+              h("td", { class: "num", text: num(r.n) }), h("td", { class: "num muted", text: share + "%" }));
+          })))
+        : h("p", { class: "muted", text: empty || "Ще немає даних." }));
+  }
+
+  function showStats() {
+    clear(statsSec);
+    statsSec.appendChild(h("p", { class: "muted", text: "Завантаження…" }));
+    api("/api/admin/stats?days=" + statDays).then(function (j) {
+      clear(statsSec);
+      if (!j.ok) { say(j.error || "Помилка", "err"); return; }
+      var t = j.totals, f = j.funnel;
+      var range = h("div", { class: "row-btns", style: "margin:0 0 14px" }, [7, 30, 90, 365].map(function (d) {
+        var b = h("button", { type: "button", "aria-pressed": String(d === statDays) }, d === 365 ? "Рік" : d + " днів");
+        b.onclick = function () { statDays = d; showStats(); };
+        return b;
+      }));
+      statsSec.appendChild(h("div", { class: "card" },
+        h("h2", { text: "Статистика відвідувань" }),
+        h("p", { class: "muted", text: "Бачите лише Ви (вхід за паролем). Без файлів cookie: рахуємо перегляди сторінки та дії. «Відвідувачі» — приблизна кількість різних людей за кожен день; IP-адреси не зберігаються. Пошукові роботи й попередній перегляд посилань у месенджерах не враховуються." }),
+        range, ownToggle()));
+      statsSec.appendChild(h("div", { class: "tiles" },
+        [[t.visitors, "відвідувачів"], [t.views, "переглядів сторінки"], [t.report, "відкрили зразок аналізу"],
+         [t.form_start, "почали заповнювати форму"], [f.applications, "заявок збережено"], [t.call + t.tg, "натиснули «дзвінок» або Telegram"]]
+          .map(function (x) { return h("div", { class: "tile" }, h("b", { text: num(x[0]) }), h("span", { text: x[1] })); })));
+      statsSec.appendChild(h("div", { class: "card" }, h("h3", { text: "Відвідувачі за день" }), chart(j.series, statsSec.clientWidth - 42)));
+      var steps = [["Відвідувачі", t.visitors], ["Відкрили зразок аналізу", t.report], ["Почали заповнювати форму", t.form_start],
+        ["Заявки збережено", f.applications], ["Замовлення прийнято", f.accepted], ["Рахунки створено", f.invoices],
+        ["Оплату зараховано", f.paid], ["Аналіз передано", f.delivered], ["Консультації проведено", f.consultations]];
+      statsSec.appendChild(h("div", { class: "card scroll" }, h("h3", { text: "Шлях клієнта за період" }),
+        h("p", { class: "muted", text: "Перші три рядки — з сайту (кожен відвідувач рахується один раз за день), решта — з реєстру заявок. Перехід до дзвінка не дорівнює розмові, а заявка — продажу." }),
+        h("table", null, h("tbody", null, steps.map(function (s) { return h("tr", null, h("td", { text: s[0] }), h("td", { class: "num", text: num(s[1]) })); })))));
+      statsSec.appendChild(h("div", { class: "two" },
+        topTable("Звідки приходять", j.refs, t.views, "Ще немає переходів."),
+        topTable("Пристрої", j.devices, t.views),
+        topTable("Країни", j.countries, t.views),
+        topTable("Сторінки", j.pages, t.views),
+        topTable("Мітки utm_source (реклама, розсилки)", j.sources, t.views, "Немає переходів із мітками utm_source.")));
+      var dayRows = j.series.slice().reverse().map(function (d) {
+        return h("tr", null, h("td", { text: dayLabel(d.day) }), h("td", { class: "num", text: num(d.visitors) }), h("td", { class: "num", text: num(d.views) }),
+          h("td", { class: "num", text: num(d.report) }), h("td", { class: "num", text: num(d.form_start) }), h("td", { class: "num", text: num(d.call + d.tg) }));
+      });
+      statsSec.appendChild(h("details", { class: "card scroll" }, h("summary", { text: "Таблиця за днями" }),
+        h("table", null, h("thead", null, h("tr", null, h("th", { text: "День" }), h("th", { class: "num", text: "Відвідувачі" }), h("th", { class: "num", text: "Перегляди" }),
+          h("th", { class: "num", text: "Зразок" }), h("th", { class: "num", text: "Почали форму" }), h("th", { class: "num", text: "Дзвінок / Telegram" }))), h("tbody", null, dayRows))));
+    }).catch(function (e) { if (e.message !== "auth") say("Немає зв’язку з сервером.", "err"); });
   }
 
   start();

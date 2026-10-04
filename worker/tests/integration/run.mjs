@@ -327,6 +327,31 @@ async function main() {
     check("T17", "Без IBAN рахунок створюється й надсилається з приміткою про реквізити", acc.json.ok && inv && inv.attachments.length === 1
       && /IBAN\) надішлемо окремим листом/.test(inv.text) && !/[ZV]/.test(inv.subject.replace("TenderWin", "")) && !/[ZV]/.test(inv.attachments[0].filename), acc.json.message);
     globalThis.__pdfNoIban = inv ? inv.attachments[0].content : "";
+
+    // ---- статистика відвідувань ----
+    const PC = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36";
+    const PHONE = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1";
+    const hit = (body, ua, ip, raw) => fetch(BASE + "/api/hit", { method: "POST", headers: { "Content-Type": "text/plain", Origin: BASE, "User-Agent": ua, "CF-Connecting-IP": ip }, body: raw || JSON.stringify(body) });
+    const h1 = await hit({ e: "view", p: "/", r: "https://www.google.com/search?q=x" }, PC, "10.5.5.1");
+    await hit({ e: "view", p: "/", r: "" }, PC, "10.5.5.1");
+    await hit({ e: "view", p: "/", r: "https://t.me/x" }, PHONE, "10.5.5.2");
+    await hit({ e: "report" }, PHONE, "10.5.5.2");
+    await hit({ e: "report" }, PHONE, "10.5.5.2");
+    await hit({ e: "form_start" }, PHONE, "10.5.5.2");
+    const hb = await hit({ e: "view", p: "/" }, "Googlebot/2.1 (+http://www.google.com/bot.html)", "10.5.5.3");
+    const hx = await hit({ e: "steal" }, PC, "10.5.5.4");
+    const hl = await hit(null, PC, "10.5.5.5", JSON.stringify({ e: "view", p: "/" + "a".repeat(3000) }));
+    check("S01", "Подія статистики приймається без відповіді для сторінки (204), роботи й сміття теж 204", h1.status === 204 && hb.status === 204 && hx.status === 204 && hl.status === 204);
+    const noTok = await admin("/api/admin/stats?days=7", { token: "wrong-token-but-long-enough-000" , ip: "10.9.9.8" });
+    check("S02", "Статистику без пароля не видно", noTok.status === 401);
+    const st = (await admin("/api/admin/stats?days=7")).json;
+    const t = st.totals || {};
+    check("S03", "Перегляди й відвідувачі пораховано, робот і невідома подія — ні", st.ok && t.views === 3 && t.visitors === 2, JSON.stringify(t));
+    check("S04", "Дію рахуємо один раз на відвідувача за день", t.report === 1 && t.form_start === 1, JSON.stringify(t));
+    const refs = (st.refs || []).map((x) => x.key), devs = (st.devices || []).map((x) => x.key);
+    check("S05", "Джерела — лише назва сайту; пристрої визначено", refs.includes("google.com") && refs.includes("t.me") && refs.includes("(прямий захід або закладка)")
+      && devs.includes("телефон") && devs.includes("комп’ютер"), refs.join(", ") + " | " + devs.join(", "));
+    check("S06", "У статистиці немає IP-адрес; заявки з реєстру — у шляху клієнта", !/10\.5\.5\./.test(JSON.stringify(st)) && st.funnel.applications >= 1 && st.series.length === 7);
   });
 
   // ---------------- C: малі ліміти — поріг автолистів і граничний ліміт ----------------

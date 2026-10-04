@@ -54,6 +54,23 @@ dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
 .login input{width:100%}
 .scroll{overflow-x:auto}
 @media(max-width:640px){ dl{grid-template-columns:1fr} dt{margin-top:6px} }
+/* статистика */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.tile b{display:block;font-size:1.7rem;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.tile span{display:block;font-size:.82rem;color:var(--muted);margin-top:4px}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:220px}
+.chart .bar{fill:#2f5b8a}
+.chart .bar.hl{fill:var(--gold)}
+.chart .grid{stroke:#e8edf3;stroke-width:1}
+.chart .ax{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.chart .tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:.82rem;padding:6px 9px;border-radius:8px;white-space:nowrap;transform:translateX(-50%);display:none}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.two .card{margin:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.meter{height:6px;border-radius:3px;background:#e8edf3;overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;background:#2f5b8a;border-radius:3px}
 </style>
 </head>
 <body>
@@ -63,6 +80,7 @@ dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
     <button type="button" data-filter="open" aria-pressed="true">Відкриті</button>
     <button type="button" data-filter="problems" aria-pressed="false">Потребують уваги</button>
     <button type="button" data-filter="all" aria-pressed="false">Усі</button>
+    <button type="button" id="statsBtn" aria-pressed="false">Статистика</button>
     <button type="button" id="refresh">Оновити</button>
     <button type="button" id="logout">Вийти</button>
   </nav>
@@ -81,6 +99,7 @@ dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
 
   <section id="list" hidden></section>
   <section id="detail" hidden></section>
+  <section id="stats" hidden></section>
 </main>
 <script src="/admin/admin.js" defer></script>
 </body>

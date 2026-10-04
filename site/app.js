@@ -19,6 +19,35 @@
 
   var root = document.documentElement;
 
+  /* ---------- знеособлена статистика відвідувань ----------
+     Без cookie. Надсилаємо лише назву дії, сторінку й сайт, з якого прийшли. Дані форми сюди не потрапляють.
+     Свої відвідування Віталій вимикає в /admin/ → «Статистика» (позначка в цьому браузері). */
+  var stat = (function () {
+    var off = false, sent = {};
+    try { off = window.localStorage.getItem("tw-no-stats") === "1"; } catch (e) { /* приватний режим */ }
+    return function (e) {
+      if (off || sent[e]) return;          // кожну дію рахуємо один раз за завантаження сторінки
+      sent[e] = 1;
+      var m = /[?&]utm_source=([^&#]+)/.exec(location.search);
+      var data = JSON.stringify({ e: e, p: location.pathname, r: e === "view" ? document.referrer : "", s: m ? decodeURIComponent(m[1]) : "" });
+      try { if (navigator.sendBeacon && navigator.sendBeacon("/api/hit", new Blob([data], { type: "text/plain" }))) return; } catch (x) { /* */ }
+      try { fetch("/api/hit", { method: "POST", body: data, keepalive: true, headers: { "Content-Type": "text/plain" } }); } catch (x) { /* */ }
+    };
+  })();
+  stat("view");
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest ? ev.target.closest("a, [data-stat]") : null;
+    if (!a) return;
+    var href = a.getAttribute("href") || "";
+    if (a.hasAttribute("data-stat")) stat(a.getAttribute("data-stat"));
+    else if (/^tel:/.test(href)) stat("call");
+    else if (/t\.me\//.test(href)) stat("tg");
+    else if (/\.pdf($|[?#])/i.test(href)) { stat("pdf"); stat("report"); }
+  });
+  document.addEventListener("focusin", function (ev) {
+    if (ev.target.closest && ev.target.closest("#leadform")) stat("form_start");
+  });
+
   /* ---------- рік у футері ---------- */
   var y = document.getElementById("year");
   if (y) y.textContent = String(new Date().getFullYear());
