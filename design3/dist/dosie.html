@@ -113,13 +113,15 @@ button{font:inherit;color:inherit}
 .cb-pop .cb-note{margin-top:10px;font-size:.82rem;color:#5f6670}
 .cb-pop .cb-x{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:8px;border:1px solid #e3e0d9;background:#fff;cursor:pointer}
 
-/* менше руху */
+/* менше руху (і без JS — за налаштуванням системи) */
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 .rm *,.rm *::before,.rm *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 .rm .pre{opacity:1!important;transform:none!important}
 
 /* ===== переглядач звіту: структура (кольори — змінні концепції) ===== */
 .rv{--rv-line:rgba(0,0,0,.14);--rv-fg:inherit;--rv-muted:#5f6670;--rv-accent:#1f4fd1;--rv-btn:#fff;--rv-frame:#e9e6df;--rv-radius:12px;
   --hl-pidstava:#e3a514;--hl-dokument:#2f6fd6;--hl-ryzyk:#cf3e36;--hl-rekomendatsiia:#1d8a5c;--hl-focus:transparent}
+.rv{min-width:0;max-width:100%}
 .rv svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .rv-docs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .rv-doc{display:grid;gap:2px;text-align:left;padding:10px 14px;border-radius:10px;border:1.5px solid var(--rv-line);background:var(--rv-btn);color:inherit;font:inherit;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
@@ -129,6 +131,7 @@ button{font:inherit;color:inherit}
 .rv-doc[aria-selected="true"]{border-color:var(--rv-accent);box-shadow:inset 0 0 0 1px var(--rv-accent)}
 .rv-kind{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.86rem;color:var(--rv-muted);margin:0 0 10px}
 .rv-badge{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:#fff1c7;color:#6b4a00;border:1px solid #e7cf86}
+.rv-badge.rv-draft{background:#e6f0ff;color:#1c3d7a;border-color:#a9c2ee}
 .rv-frame{position:relative;overflow:hidden;border-radius:var(--rv-radius);background:var(--rv-frame);border:1px solid var(--rv-line)}
 .rv-page .rv-frame{padding:clamp(10px,2.5vw,22px)}
 .rv-canvas{position:relative;transform-origin:0 0;will-change:transform}
@@ -139,10 +142,18 @@ button{font:inherit;color:inherit}
 .rv-img{display:block;width:100%;height:auto;user-select:none}
 .rv-layer{position:absolute;inset:0;pointer-events:none}
 .rv-hl{position:absolute;display:block;border-radius:4px;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 16%,transparent)}
-.rv-anim .rv-hl{animation:rvhl .22s ease-out both}
-@keyframes rvhl{from{opacity:0;transform:scale(1.02)}}
+.rv-anim .rv-hl{animation:rvhl .34s cubic-bezier(.3,.7,.3,1) both}
+@keyframes rvhl{from{clip-path:inset(0 100% 0 0);opacity:.4}to{clip-path:inset(0 0 0 0);opacity:1}}
+.rv-turn{animation:rvturn .24s ease-out both}
+@keyframes rvturn{from{opacity:.25;transform:translateY(6px)}}
+.rv-rail{max-width:100%;display:flex;gap:8px;overflow-x:auto;padding:10px 2px 6px;margin-top:8px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.rv-th{position:relative;flex:0 0 64px;padding:0;border:2px solid transparent;border-radius:6px;background:#fff;cursor:pointer;scroll-snap-align:center;transition:border-color .15s,transform .15s;box-shadow:0 2px 8px -4px rgba(0,0,0,.35)}
+.rv-th img{display:block;width:100%;height:auto;border-radius:4px}
+.rv-th span{position:absolute;right:3px;bottom:3px;min-width:18px;padding:0 4px;border-radius:4px;background:rgba(20,24,29,.78);color:#fff;font-size:.68rem;line-height:16px;text-align:center;font-variant-numeric:tabular-nums}
+.rv-th:hover{transform:translateY(-2px)}
+.rv-th[aria-current="page"]{border-color:var(--rv-accent)}
 .rv-hl-toc{--c:var(--rv-accent)}.rv-hl-pidstava{--c:var(--hl-pidstava)}.rv-hl-dokument{--c:var(--hl-dokument)}.rv-hl-ryzyk{--c:var(--hl-ryzyk)}.rv-hl-rekomendatsiia{--c:var(--hl-rekomendatsiia)}
-.rv-zoomhint{position:absolute;right:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;border:1px solid var(--rv-line);background:rgba(255,255,255,.94);color:#1b1f24;font:600 .8rem/1 inherit;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px -6px rgba(0,0,0,.35);transition:background .15s}
+.rv-zoomhint{position:absolute;right:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;border:1px solid var(--rv-line);background:rgba(255,255,255,.94);color:#1b1f24;font-family:inherit;font-weight:600;font-size:.8rem;line-height:1;cursor:pointer;box-shadow:0 4px 14px -6px rgba(0,0,0,.35);transition:background .15s}
 .rv-zoomhint:hover{background:#fff}
 .rv-page .rv-zoomhint{display:none}
 .rv-ctrl{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
@@ -152,7 +163,7 @@ button{font:inherit;color:inherit}
 .rv-ic{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1.5px solid var(--rv-line);background:var(--rv-btn);color:inherit;cursor:pointer;transition:border-color .15s,background .15s}
 .rv-ic:hover:not(:disabled){border-color:var(--rv-accent)}
 .rv-ic:disabled{opacity:.4;cursor:default}
-.rv-btn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 13px;border-radius:10px;border:1.5px solid var(--rv-line);background:var(--rv-btn);color:inherit;font:600 .88rem/1 inherit;font-family:inherit;text-decoration:none;cursor:pointer;transition:border-color .15s,background .15s}
+.rv-btn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 13px;border-radius:10px;border:1.5px solid var(--rv-line);background:var(--rv-btn);color:inherit;font-family:inherit;font-weight:600;font-size:.88rem;line-height:1;text-decoration:none;cursor:pointer;transition:border-color .15s,background .15s}
 .rv-btn:hover{border-color:var(--rv-accent)}
 @media(max-width:520px){.rv-act{width:100%}.rv-act .rv-btn{flex:1 1 auto;justify-content:center}.rv-nav{width:100%;justify-content:space-between}}
 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -273,6 +284,7 @@ section{padding:96px 0}
 .legend .it b{display:block;font-weight:700}
 .legend .it span{font-size:.92rem;color:var(--ink2)}
 .legend .it.chip-pidstava{--c:#e3a514}.legend .it.chip-dokument{--c:#2f6fd6}.legend .it.chip-ryzyk{--c:#cf3e36}.legend .it.chip-rekomendatsiia{--c:#1d8a5c}
+.sample .g>*{min-width:0}
 .sample .rv{--rv-frame:#ECE7DC;--rv-accent:var(--accent);--rv-radius:6px}
 .sample .pm{margin-top:12px}
 
@@ -361,11 +373,60 @@ section{padding:96px 0}
 .mbar .call{border:1.5px solid var(--line2);color:var(--ink)}
 .cb{background:var(--ink);color:#fff}
 .rv-fallback img{width:100%;height:auto;border:1px solid var(--line)}
+
+/* ===== жвавість: рух лише оздоблює — текст, ціна й кнопки видно одразу ===== */
+.progress{position:fixed;left:0;right:0;top:0;height:3px;z-index:120;background:var(--accent);transform-origin:0 50%;transform:scaleX(var(--sp,0));pointer-events:none}
+.mark{background:linear-gradient(var(--mark),var(--mark)) 0 88%/0% 36% no-repeat;animation:mark .9s .35s cubic-bezier(.6,.1,.3,1) forwards;padding:0 .04em}
+@keyframes mark{to{background-size:100% 36%}}
+.offer{border-top:0;position:relative}
+.offer::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--ink);transform-origin:left;animation:draw .7s .15s cubic-bezier(.6,.1,.3,1) both}
+@keyframes draw{from{transform:scaleX(0)}}
+.dossier{animation:rise .6s .05s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+.chips .chip{position:relative;animation:pop .34s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(.65s + var(--i,0) * 70ms)}
+@keyframes pop{from{opacity:0;transform:scale(.88)}}
+.chips .chip::after{content:"";position:absolute;inset:-2px;border-radius:999px;border:2px solid var(--c);opacity:0;animation:ring 1.4s 1.5s ease-out 1}
+@keyframes ring{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.18)}}
+.explain q{display:block;margin-top:8px;padding-left:12px;border-left:2px solid var(--line2);font-family:var(--serif);font-style:italic;color:var(--ink);quotes:"«" "»"}
+.explain{transition:background-color .2s}
+.explain.flash{animation:flash .5s ease-out}
+@keyframes flash{from{background:color-mix(in srgb,var(--mark) 45%,#fff)}}
+/* цифри прикладу */
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
+.facts>div{padding:18px 18px 18px 0;border-right:1px solid var(--line)}
+.facts>div+div{padding-left:18px}
+.facts>div:last-child{border-right:0}
+.facts b{display:block;font:600 clamp(1.9rem,3.4vw,2.7rem)/1 var(--serif);color:var(--accent);font-variant-numeric:tabular-nums}
+.facts span{display:block;margin-top:6px;font-size:.92rem;color:var(--ink2)}
+@media(max-width:820px){.facts{grid-template-columns:1fr 1fr}.facts>div:nth-child(2){border-right:0}.facts>div:nth-child(n+3){border-top:1px solid var(--line)}.facts>div:nth-child(3){padding-left:0}}
+/* лінійки заголовків, кроків — прокреслюються при появі */
+.sh .kick{border-top:0;position:relative}
+.sh .kick::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--ink);transform-origin:left;transition:transform .6s cubic-bezier(.6,.1,.3,1) .1s}
+.sh.pre .kick::before{transform:scaleX(0)}
+.sh.pre.in .kick::before{transform:none}
+.step::after{content:"";position:absolute;left:0;right:22px;top:-2px;height:2px;background:var(--accent);transform-origin:left;transition:transform .6s cubic-bezier(.6,.1,.3,1) .15s}
+.step.pre::after{transform:scaleX(0)}
+.step.pre.in::after{transform:none}
+.step:nth-child(2)::after{transition-delay:.27s}.step:nth-child(3)::after{transition-delay:.39s}.step:nth-child(4)::after{transition-delay:.51s}
+.res ol li{transition:transform .2s,background-color .2s}
+.res ol li:hover{transform:translateX(4px)}
+/* ціна: відблиск один раз */
+.price-b .amt{background:linear-gradient(100deg,#F5F2EB 42%,#F4DC7A 50%,#F5F2EB 58%) 0 0/300% 100% no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent}
+.price-b.pre.in .amt{animation:shine 1.3s .3s ease-out 1}
+@keyframes shine{from{background-position:100% 0}to{background-position:0 0}}
+/* кнопки */
+.btn-primary{position:relative;overflow:hidden;isolation:isolate}
+.btn-primary::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s}
+.btn-primary:hover::before{transform:translateX(120%)}
+.btn:hover{transform:translateY(-1px)}
+.cb{animation:rise .5s 1.4s both}
+.dossier .rv-frame{box-shadow:0 30px 60px -40px rgba(31,35,40,.55)}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">До змісту</a>
-<div class="proto"><a href="./">← Усі концепції</a><span>Прототип А · <b>«Відкрите досьє»</b> · етап 1, демонстрація</span><a href="shliakh.html">Б<span class="pn"> «Шлях до рішення»</span> →</a></div><script>if(/githack\.com$/.test(location.hostname)||location.protocol==="file:")document.querySelector(".proto a").href="index.html"</script>
+<div class="progress" aria-hidden="true"></div>
+<div class="proto"><a href="./">← Усі концепції</a><span>Прототип А · <b>«Відкрите досьє»</b> · етап 1, демонстрація</span><a href="rozvytok.html">Г<span class="pn"> «Розвиток чинного сайту»</span> →</a></div><script>if(/githack\.com$/.test(location.hostname)||location.protocol==="file:")document.querySelector(".proto a").href="index.html"</script>
 <header class="hdr" id="hdr">
   <div class="wrap in">
     <a class="logo" href="#top" aria-label="TenderWin — на початок"><span class="mk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M12 7v11M8 18h8"/></svg></span>TenderWin</a>
@@ -394,17 +455,25 @@ section{padding:96px 0}
     </div>
 
     <div class="dossier" aria-labelledby="dossier-h">
-      <div class="tab"><p class="note-m" id="dossier-h">Фрагмент звіту, який отримує клієнт · сторінка 1</p><button type="button" class="btn btn-ghost btn-sm" data-open-report="hero">Читати весь звіт</button></div>
-      <div id="hero" data-viewer data-doc="pos" data-mode="focus" data-docs="false" data-controls="false"><figure class="rv-fallback"><img src="report/pos/p1.webp" alt="Приклад 1: є підстави оскаржувати, сторінка 1" width="1000" height="1414" loading="lazy"><figcaption><a href="report/zrazok-analizu-1.pdf">Відкрити PDF (2 с.)</a></figcaption></figure></div>
+      <div class="tab"><p class="note-m" id="dossier-h">Фрагмент звіту, який отримує клієнт · сторінка <span id="hero-pg">1</span></p><button type="button" class="btn btn-ghost btn-sm" data-open-report="hero">Читати весь звіт</button></div>
+      <div id="hero" data-viewer data-doc="first" data-mode="focus" data-docs="false" data-controls="false"><figure class="rv-fallback"><img src="report/pos/p1.webp" alt="Приклад 1: є підстави оскаржувати, сторінка 1" width="1000" height="1414" loading="lazy"><figcaption><a href="report/zrazok-analizu-1.pdf">Відкрити PDF (2 с.)</a></figcaption></figure></div>
       <div class="chips" role="group" aria-label="Що подивитися у звіті"><button type="button" class="chip chip-pidstava" data-key="pidstava" aria-pressed="false"><i aria-hidden="true"></i>Підстава</button><button type="button" class="chip chip-dokument" data-key="dokument" aria-pressed="false"><i aria-hidden="true"></i>Документ</button><button type="button" class="chip chip-ryzyk" data-key="ryzyk" aria-pressed="false"><i aria-hidden="true"></i>Ризик</button><button type="button" class="chip chip-rekomendatsiia" data-key="rekomendatsiia" aria-pressed="false"><i aria-hidden="true"></i>Рекомендація</button></div>
       <p class="explain" id="hero-ex" aria-live="polite"><b>Висновок</b> — перше, що бачить клієнт: оцінка позиції коротко. Оберіть, що показати в документі.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="facts" id="facts" aria-label="Приклад звіту в цифрах">
+      <div><b data-n="2">2</b><span>сторінок у прикладі аналізу</span></div>
+      <div><b data-n="7">7</b><span>розділів у змісті документа</span></div>
+      <div><b>24&nbsp;год</b><span>письмовий аналіз після оплати</span></div>
+      <div><b>30&nbsp;хв</b><span>консультація за результатами</span></div>
     </div>
   </div>
 </section>
 
 <section class="sample" id="zrazok">
   <div class="wrap">
-    <div class="sh"><p class="kick">Приклад звіту</p><div><h2>Переглянути зразок аналізу</h2><p class="lede">Два приклади з різним висновком: з рекомендацією оскаржувати і без неї. Позначки показують, де у звіті підстава, документи, ризики й рекомендація. Документ не змінюється: підсвічування накладає лише переглядач.</p></div></div>
+    <div class="sh" data-r><p class="kick">Приклад звіту</p><div><h2>Переглянути зразок аналізу</h2><p class="lede">Документ у тому вигляді, який отримує клієнт. Позначки показують, де у звіті підстава, документи, ризики й рекомендація. Документ не змінюється: підсвічування накладає лише переглядач.</p></div></div>
     <div class="g">
       <div class="legend" role="group" aria-label="Пояснення до звіту">
         <button type="button" class="it chip-pidstava" data-key="pidstava" aria-pressed="false"><i aria-hidden="true"></i><span><b>Підстава</b>Дослівне формулювання замовника, з якого починається розбір.</span></button>
@@ -414,7 +483,7 @@ section{padding:96px 0}
         <p class="note-m">Повний PDF можна відкрити або завантажити без реєстрації.</p>
       </div>
       <div>
-        <div id="sample" data-viewer data-doc="pos" data-mode="page"><figure class="rv-fallback"><img src="report/pos/p1.webp" alt="Приклад 1: є підстави оскаржувати, сторінка 1" width="1000" height="1414" loading="lazy"><figcaption><a href="report/zrazok-analizu-1.pdf">Відкрити PDF (2 с.)</a></figcaption></figure></div>
+        <div id="sample" data-viewer data-doc="first" data-mode="page" data-thumbs="true"><figure class="rv-fallback"><img src="report/pos/p1.webp" alt="Приклад 1: є підстави оскаржувати, сторінка 1" width="1000" height="1414" loading="lazy"><figcaption><a href="report/zrazok-analizu-1.pdf">Відкрити PDF (2 с.)</a></figcaption></figure></div>
       </div>
     </div>
   </div>
@@ -422,7 +491,7 @@ section{padding:96px 0}
 
 <section class="res" id="rezultat">
   <div class="wrap">
-    <div class="sh"><p class="kick">Що перевіряється</p><div><h2>Письмовий висновок, який допомагає прийняти рішення</h2><p class="lede">У висновку розглянемо кожну підставу відхилення та покажемо, на яких документах ґрунтується оцінка.</p></div></div>
+    <div class="sh" data-r><p class="kick">Що перевіряється</p><div><h2>Письмовий висновок, який допомагає прийняти рішення</h2><p class="lede">У висновку розглянемо кожну підставу відхилення та покажемо, на яких документах ґрунтується оцінка.</p></div></div>
     <div class="g">
       <ol><li data-r><span class="i">01</span><span>Що саме зазначив замовник у рішенні про відхилення.</span></li><li data-r><span class="i">02</span><span>Яка вимога документації стосується цієї підстави.</span></li><li data-r><span class="i">03</span><span>Що міститься у відповідних документах Вашої пропозиції.</span></li><li data-r><span class="i">04</span><span>Які аргументи підтримують оскарження, а які послаблюють позицію.</span></li><li data-r><span class="i">05</span><span>Які наступні дії доцільно розглянути та які ризики врахувати.</span></li></ol>
       <div>
@@ -435,15 +504,15 @@ section{padding:96px 0}
 
 <section id="yak" style="padding-top:20px">
   <div class="wrap">
-    <div class="sh"><p class="kick">Як замовити</p><h2>Як замовити аналіз і консультацію</h2></div>
+    <div class="sh" data-r><p class="kick">Як замовити</p><h2>Як замовити аналіз і консультацію</h2></div>
     <ol class="steps"><li class="step" data-r><span class="n">01</span><h3>Заповніть заявку</h3><p>Укажіть закупівлю, учасника та контакти для зв’язку. Для багатолотової закупівлі зазначте потрібний лот.</p></li><li class="step" data-r><span class="n">02</span><h3>Погодьте обсяг роботи та оплатіть рахунок</h3><p>Перевіримо вихідні дані й можливість виконати аналіз вчасно, погодимо умови та надішлемо рахунок на 3&nbsp;499&nbsp;грн.</p><p class="iban"><b>Зараз:</b> Платіжні реквізити надамо додатково. До їх отримання оплату за цим рахунком здійснити неможливо.</p></li><li class="step" data-r><span class="n">03</span><span class="tag">24 години</span><h3>Отримайте письмовий аналіз</h3><p>Підготуємо висновок протягом 24&nbsp;годин після зарахування оплати. Точний строк підтвердимо в листі.</p></li><li class="step" data-r><span class="n">04</span><span class="tag">30 хвилин</span><h3>Обговоріть висновки на консультації</h3><p>Після передання аналізу погодимо час <span class="nw">30-хвилинної</span> консультації. Вона вже входить у сплачену вартість.</p></li></ol>
   </div>
 </section>
 
 <section id="vartist" style="padding-top:20px">
   <div class="wrap">
-    <div class="sh"><p class="kick">Вартість</p><h2>Аналіз відхилення та <span class="nw">30-хвилинна</span> консультація</h2></div>
-    <div class="price-b">
+    <div class="sh" data-r><p class="kick">Вартість</p><h2>Аналіз відхилення та <span class="nw">30-хвилинна</span> консультація</h2></div>
+    <div class="price-b" data-r>
       <div class="l"><p class="amt">3&nbsp;499<small>грн</small></p><p>за аналіз і <span class="nw">30-хвилинну</span> консультацію</p><a class="btn" href="#zayavka">Замовити аналіз</a></div>
       <div class="r"><p style="margin-top:0">Письмовий аналіз із посиланнями на документи, оцінка кожної підстави відхилення, рекомендації щодо наступних дій та одна консультація за результатами аналізу.</p><p class="lim">Підготовка і подання скарги, представництво та плата за подання скарги до цієї послуги не входять. Рішення органу оскарження не залежить від TenderWin.</p></div>
     </div>
@@ -501,7 +570,7 @@ section{padding:96px 0}
 <nav class="mbar" id="mbar" aria-label="Замовлення"><span class="t">3&nbsp;499&nbsp;грн · консультація включена</span><a class="btn btn-primary" href="#zayavka">Замовити аналіз</a><a class="call" href="tel:+380800357135" aria-label="Зателефонувати: +380 800 357 135"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg></a></nav>
 <button type="button" class="cb" id="cb" aria-expanded="false" aria-controls="cb-pop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg><span>Зворотний дзвінок</span></button><div class="cb-pop" id="cb-pop" role="dialog" aria-label="Зворотний дзвінок" hidden><button type="button" class="cb-x" aria-label="Закрити">✕</button><h2>Зателефонуйте мені, будь ласка</h2><label for="cb-tel">Телефон</label><input id="cb-tel" type="tel" placeholder="+380 …" disabled><button type="button" class="cb-send" disabled>Замовити дзвінок</button><p class="cb-note">Місце штатного віджета Zadarma. У прототипі дзвінок не замовляється; у робочій версії — після отримання коду віджета й графіка відповіді.</p></div>
 
-<script>window.TW_REPORTS = {"explain": {"pidstava": "Підстава: дослівне формулювання замовника, з якого починається розбір.", "dokument": "Документ: що вимагала документація і що є у Вашій пропозиції — з номером сторінки.", "ryzyk": "Ризик: що може послабити позицію або вплинути на рішення органу оскарження.", "rekomendatsiia": "Рекомендація: що робити далі й чому — оскаржувати чи ні."}, "documents": [{"id": "pos", "short": "Оскарження рекомендовано", "title": "Приклад 1: є підстави оскаржувати", "kind": "Заглушка — тут буде справжній знеособлений звіт", "placeholder": true, "pdf": "report/zrazok-analizu-1.pdf", "pdfKb": 35, "pageCount": 2, "pages": [{"n": 1, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 1 Висновок щодо відхилення тендерної пропозиції Закупівля UA-2026-08-14-004217-a (умовна) Предмет Поточний ремонт покрівлі навчального закладу Очікувана вартість 2 400 000 грн Учасник ТОВ «Умовна будівельна компанія» Рішення замовника протокол про відхилення від 21.08.2026 ВИСНОВОК Є підстави оскаржувати · сильна позиція Підстава відхилення не підтверджується документами пропозиції. Рекомендуємо розглянути подання скарги в межах строку. 1. Підстава відхилення (дослівно з рішення) «Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації.» 2. Зіставлення документів Що зазначив замовник Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації. Рішення про відхилення Вимога документації Довідка в довільній формі з переліком обладнання, яке учасник використовуватиме під час робіт. Додаток 1, п. 3.2 · с. 14 Що є в пропозиції Довідка з переліком 11 одиниць техніки й інструменту, підписана кваліфікованим електронним підписом. Файл «Довідка_техніка.pdf» · с. 3 3. Оцінка Підстава відхилення не підтверджується документами: довідка є у складі пропозиції й відповідає вимозі за змістом. Якщо замовник вважав документ неналежним, він мав зазначити невідповідність і дати можливість її виправити. 4. Ризики Замовник може послатися на назву чи формат файлу. До подання скарги варто перевірити чинність підпису й дату завантаження документа.", "src": "report/pos/p1.webp", "src2x": "report/pos/p1@2x.webp"}, {"n": 2, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 2 5. Рекомендовані дії Підготувати скаргу до органу оскарження в межах строку й урахувати плату за її подання. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних кроків. 6. Джерела • Рішення замовника про відхилення пропозиції (Prozorro) • Тендерна документація — Додаток 1, п. 3.2 · с. 14 • Пропозиція учасника — Файл «Довідка_техніка.pdf» · с. 3 Заглушка для макета сайту: закупівля умовна, дані вигадані. Висновок має інформаційний характер і не гарантує рішення органу оскарження.", "src": "report/pos/p2.webp", "src2x": "report/pos/p2@2x.webp"}], "focus": {"page": 1, "x": 6.048, "y": 9.289, "w": 86.928, "h": 63.258}, "highlights": [{"key": "pidstava", "page": 1, "x": 8.063, "y": 39.619, "w": 80.461, "h": 6.723}, {"key": "dokument", "page": 1, "x": 9.743, "y": 58.048, "w": 74.314, "h": 12.848}, {"key": "ryzyk", "page": 1, "x": 8.063, "y": 81.549, "w": 82.035, "h": 6.723}, {"key": "rekomendatsiia", "page": 2, "x": 8.063, "y": 12.626, "w": 80.293, "h": 8.505}], "toc": [{"title": "Висновок", "page": 1, "x": 8.399, "y": 10.952, "w": 53.063, "h": 3.323}, {"title": "Підстава відхилення", "page": 1, "x": 8.399, "y": 39.857, "w": 49.367, "h": 2.158}, {"title": "Зіставлення документів", "page": 1, "x": 8.399, "y": 46.746, "w": 29.929, "h": 2.158}, {"title": "Оцінка", "page": 1, "x": 8.399, "y": 73.115, "w": 11.008, "h": 2.158}, {"title": "Ризики", "page": 1, "x": 8.399, "y": 81.786, "w": 11.277, "h": 2.158}, {"title": "Рекомендовані дії", "page": 2, "x": 8.399, "y": 12.864, "w": 23.683, "h": 2.158}, {"title": "Джерела", "page": 2, "x": 8.399, "y": 21.535, "w": 13.33, "h": 2.158}]}, {"id": "neg", "short": "Оскарження не рекомендовано", "title": "Приклад 2: оскаржувати не варто", "kind": "Заглушка — тут буде справжній знеособлений звіт", "placeholder": true, "pdf": "report/zrazok-analizu-2.pdf", "pdfKb": 35, "pageCount": 2, "pages": [{"n": 1, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 1 Висновок щодо відхилення тендерної пропозиції Закупівля UA-2026-07-29-011384-a (умовна) Предмет Постачання ноутбуків для управління освіти, 38 одиниць Очікувана вартість 1 140 000 грн Учасник ТОВ «Умовна будівельна компанія» Рішення замовника протокол про відхилення від 21.08.2026 ВИСНОВОК Оскарження не рекомендовано · позиція замовника стійка Невідповідність підтверджується документами пропозиції. Подання скарги не рекомендуємо: шанси низькі, а плата за подання й час будуть витрачені. 1. Підстава відхилення (дослівно з рішення) «Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ.» 2. Зіставлення документів Що зазначив замовник Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ. Рішення про відхилення Вимога документації Оперативна пам’ять — не менше 16 ГБ. Додаток 2 «Технічна специфікація», рядок 4 · с. 22 Що є в пропозиції «8 ГБ з можливістю розширення до 16 ГБ». Технічна пропозиція учасника, рядок 4 · с. 2 3. Оцінка Невідповідність стосується характеристики самого товару, а не оформлення документа. Можливість розширення пам’яті не означає, що запропонований товар відповідає мінімальній вимозі. 4. Ризики Скарга з високою ймовірністю не дасть результату, а плата за її подання та час будуть витрачені. 5. Рекомендовані дії Не подавати скаргу. Для наступних закупівель — звіряти мінімальні параметри специфікації до подання пропозиції. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних", "src": "report/neg/p1.webp", "src2x": "report/neg/p1@2x.webp"}, {"n": 2, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 2 кроків. 6. Джерела • Рішення замовника про відхилення пропозиції (Prozorro) • Тендерна документація — Додаток 2 «Технічна специфікація», рядок 4 · с. 22 • Пропозиція учасника — Технічна пропозиція учасника, рядок 4 · с. 2 Заглушка для макета сайту: закупівля умовна, дані вигадані. Висновок має інформаційний характер і не гарантує рішення органу оскарження.", "src": "report/neg/p2.webp", "src2x": "report/neg/p2@2x.webp"}], "focus": {"page": 1, "x": 6.048, "y": 9.289, "w": 86.928, "h": 63.258}, "highlights": [{"key": "pidstava", "page": 1, "x": 8.063, "y": 39.619, "w": 83.349, "h": 6.723}, {"key": "dokument", "page": 1, "x": 9.743, "y": 56.385, "w": 60.037, "h": 9.997}, {"key": "ryzyk", "page": 1, "x": 8.063, "y": 75.728, "w": 79.433, "h": 4.941}, {"key": "rekomendatsiia", "page": 1, "x": 8.063, "y": 80.836, "w": 80.293, "h": 8.505}], "toc": [{"title": "Висновок", "page": 1, "x": 8.399, "y": 10.952, "w": 53.063, "h": 3.323}, {"title": "Підстава відхилення", "page": 1, "x": 8.399, "y": 39.857, "w": 49.367, "h": 2.158}, {"title": "Зіставлення документів", "page": 1, "x": 8.399, "y": 46.746, "w": 29.929, "h": 2.158}, {"title": "Оцінка", "page": 1, "x": 8.399, "y": 69.077, "w": 11.008, "h": 2.158}, {"title": "Ризики", "page": 1, "x": 8.399, "y": 75.966, "w": 11.277, "h": 2.158}, {"title": "Рекомендовані дії", "page": 1, "x": 8.399, "y": 81.074, "w": 23.683, "h": 2.158}, {"title": "Джерела", "page": 2, "x": 8.399, "y": 14.646, "w": 13.33, "h": 2.158}]}]};</script>
+<script>window.TW_REPORTS = {"explain": {"pidstava": "Підстава: дослівне формулювання замовника, з якого починається розбір.", "dokument": "Документ: що вимагала документація і що є у Вашій пропозиції — з номером сторінки.", "ryzyk": "Ризик: що може послабити позицію або вплинути на рішення органу оскарження.", "rekomendatsiia": "Рекомендація: що робити далі й чому — оскаржувати чи ні."}, "documents": [{"id": "pos", "short": "Оскарження рекомендовано", "title": "Приклад 1: є підстави оскаржувати", "kind": "Заглушка — тут буде справжній знеособлений звіт", "placeholder": true, "draft": false, "pdf": "report/zrazok-analizu-1.pdf", "pdfKb": 35, "pageCount": 2, "pages": [{"n": 1, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 1 Висновок щодо відхилення тендерної пропозиції Закупівля UA-2026-08-14-004217-a (умовна) Предмет Поточний ремонт покрівлі навчального закладу Очікувана вартість 2 400 000 грн Учасник ТОВ «Умовна будівельна компанія» Рішення замовника протокол про відхилення від 21.08.2026 ВИСНОВОК Є підстави оскаржувати · сильна позиція Підстава відхилення не підтверджується документами пропозиції. Рекомендуємо розглянути подання скарги в межах строку. 1. Підстава відхилення (дослівно з рішення) «Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації.» 2. Зіставлення документів Що зазначив замовник Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації. Рішення про відхилення Вимога документації Довідка в довільній формі з переліком обладнання, яке учасник використовуватиме під час робіт. Додаток 1, п. 3.2 · с. 14 Що є в пропозиції Довідка з переліком 11 одиниць техніки й інструменту, підписана кваліфікованим електронним підписом. Файл «Довідка_техніка.pdf» · с. 3 3. Оцінка Підстава відхилення не підтверджується документами: довідка є у складі пропозиції й відповідає вимозі за змістом. Якщо замовник вважав документ неналежним, він мав зазначити невідповідність і дати можливість її виправити. 4. Ризики Замовник може послатися на назву чи формат файлу. До подання скарги варто перевірити чинність підпису й дату завантаження документа.", "src": "report/pos/p1.webp", "src2x": "report/pos/p1@2x.webp", "srcT": "report/pos/p1-t.webp"}, {"n": 2, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 2 5. Рекомендовані дії Підготувати скаргу до органу оскарження в межах строку й урахувати плату за її подання. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних кроків. 6. Джерела • Рішення замовника про відхилення пропозиції (Prozorro) • Тендерна документація — Додаток 1, п. 3.2 · с. 14 • Пропозиція учасника — Файл «Довідка_техніка.pdf» · с. 3 Заглушка для макета сайту: закупівля умовна, дані вигадані. Висновок має інформаційний характер і не гарантує рішення органу оскарження.", "src": "report/pos/p2.webp", "src2x": "report/pos/p2@2x.webp", "srcT": "report/pos/p2-t.webp"}], "focus": {"page": 1, "x": 6.048, "y": 9.289, "w": 86.928, "h": 63.258}, "highlights": [{"key": "pidstava", "page": 1, "x": 8.063, "y": 39.619, "w": 80.461, "h": 6.723, "text": "1. Підстава відхилення (дослівно з рішення) «Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації.»"}, {"key": "dokument", "page": 1, "x": 9.743, "y": 58.048, "w": 74.314, "h": 12.848, "text": "Вимога документації Довідка в довільній формі з переліком обладнання, яке учасник використовуватиме під час робіт. Додаток 1, п. 3.2 · с. 14 Що є в пропозиції Довідка з переліком 11 одиниць техніки й інструменту, підписана кваліфікованим електронним підписом. Файл «Довідка_техніка.pdf» · с. 3"}, {"key": "ryzyk", "page": 1, "x": 8.063, "y": 81.549, "w": 82.035, "h": 6.723, "text": "4. Ризики Замовник може послатися на назву чи формат файлу. До подання скарги варто перевірити чинність підпису й дату завантаження документа."}, {"key": "rekomendatsiia", "page": 2, "x": 8.063, "y": 12.626, "w": 80.293, "h": 8.505, "text": "5. Рекомендовані дії Підготувати скаргу до органу оскарження в межах строку й урахувати плату за її подання. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних кроків."}], "toc": [{"title": "Висновок", "page": 1, "x": 8.399, "y": 10.952, "w": 53.063, "h": 3.323}, {"title": "Підстава відхилення", "page": 1, "x": 8.399, "y": 39.857, "w": 49.367, "h": 2.158}, {"title": "Зіставлення документів", "page": 1, "x": 8.399, "y": 46.746, "w": 29.929, "h": 2.158}, {"title": "Оцінка", "page": 1, "x": 8.399, "y": 73.115, "w": 11.008, "h": 2.158}, {"title": "Ризики", "page": 1, "x": 8.399, "y": 81.786, "w": 11.277, "h": 2.158}, {"title": "Рекомендовані дії", "page": 2, "x": 8.399, "y": 12.864, "w": 23.683, "h": 2.158}, {"title": "Джерела", "page": 2, "x": 8.399, "y": 21.535, "w": 13.33, "h": 2.158}]}, {"id": "neg", "short": "Оскарження не рекомендовано", "title": "Приклад 2: оскаржувати не варто", "kind": "Заглушка — тут буде справжній знеособлений звіт", "placeholder": true, "draft": false, "pdf": "report/zrazok-analizu-2.pdf", "pdfKb": 35, "pageCount": 2, "pages": [{"n": 1, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 1 Висновок щодо відхилення тендерної пропозиції Закупівля UA-2026-07-29-011384-a (умовна) Предмет Постачання ноутбуків для управління освіти, 38 одиниць Очікувана вартість 1 140 000 грн Учасник ТОВ «Умовна будівельна компанія» Рішення замовника протокол про відхилення від 21.08.2026 ВИСНОВОК Оскарження не рекомендовано · позиція замовника стійка Невідповідність підтверджується документами пропозиції. Подання скарги не рекомендуємо: шанси низькі, а плата за подання й час будуть витрачені. 1. Підстава відхилення (дослівно з рішення) «Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ.» 2. Зіставлення документів Що зазначив замовник Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ. Рішення про відхилення Вимога документації Оперативна пам’ять — не менше 16 ГБ. Додаток 2 «Технічна специфікація», рядок 4 · с. 22 Що є в пропозиції «8 ГБ з можливістю розширення до 16 ГБ». Технічна пропозиція учасника, рядок 4 · с. 2 3. Оцінка Невідповідність стосується характеристики самого товару, а не оформлення документа. Можливість розширення пам’яті не означає, що запропонований товар відповідає мінімальній вимозі. 4. Ризики Скарга з високою ймовірністю не дасть результату, а плата за її подання та час будуть витрачені. 5. Рекомендовані дії Не подавати скаргу. Для наступних закупівель — звіряти мінімальні параметри специфікації до подання пропозиції. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних", "src": "report/neg/p1.webp", "src2x": "report/neg/p1@2x.webp", "srcT": "report/neg/p1-t.webp"}, {"n": 2, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 2 кроків. 6. Джерела • Рішення замовника про відхилення пропозиції (Prozorro) • Тендерна документація — Додаток 2 «Технічна специфікація», рядок 4 · с. 22 • Пропозиція учасника — Технічна пропозиція учасника, рядок 4 · с. 2 Заглушка для макета сайту: закупівля умовна, дані вигадані. Висновок має інформаційний характер і не гарантує рішення органу оскарження.", "src": "report/neg/p2.webp", "src2x": "report/neg/p2@2x.webp", "srcT": "report/neg/p2-t.webp"}], "focus": {"page": 1, "x": 6.048, "y": 9.289, "w": 86.928, "h": 63.258}, "highlights": [{"key": "pidstava", "page": 1, "x": 8.063, "y": 39.619, "w": 83.349, "h": 6.723, "text": "1. Підстава відхилення (дослівно з рішення) «Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ.»"}, {"key": "dokument", "page": 1, "x": 9.743, "y": 56.385, "w": 60.037, "h": 9.997, "text": "Вимога документації Оперативна пам’ять — не менше 16 ГБ. Додаток 2 «Технічна специфікація», рядок 4 · с. 22 Що є в пропозиції «8 ГБ з можливістю розширення до 16 ГБ». Технічна пропозиція учасника, рядок 4 · с. 2"}, {"key": "ryzyk", "page": 1, "x": 8.063, "y": 75.728, "w": 79.433, "h": 4.941, "text": "4. Ризики Скарга з високою ймовірністю не дасть результату, а плата за її подання та час будуть витрачені."}, {"key": "rekomendatsiia", "page": 1, "x": 8.063, "y": 80.836, "w": 80.293, "h": 8.505, "text": "5. Рекомендовані дії Не подавати скаргу. Для наступних закупівель — звіряти мінімальні параметри специфікації до подання пропозиції. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних"}], "toc": [{"title": "Висновок", "page": 1, "x": 8.399, "y": 10.952, "w": 53.063, "h": 3.323}, {"title": "Підстава відхилення", "page": 1, "x": 8.399, "y": 39.857, "w": 49.367, "h": 2.158}, {"title": "Зіставлення документів", "page": 1, "x": 8.399, "y": 46.746, "w": 29.929, "h": 2.158}, {"title": "Оцінка", "page": 1, "x": 8.399, "y": 69.077, "w": 11.008, "h": 2.158}, {"title": "Ризики", "page": 1, "x": 8.399, "y": 75.966, "w": 11.277, "h": 2.158}, {"title": "Рекомендовані дії", "page": 1, "x": 8.399, "y": 81.074, "w": 23.683, "h": 2.158}, {"title": "Джерела", "page": 2, "x": 8.399, "y": 14.646, "w": 13.33, "h": 2.158}]}]};</script>
 <script>/* TenderWin — переглядач справжнього звіту (спільний для трьох концепцій).
    Дані — window.TW_REPORTS (готує design3/report/prepare.py): сторінки-зображення, фрагменти, зміст.
    Підсвічування — окремий шар поверх зображення; PDF не змінюється. Сторінки самі не гортаються.
@@ -590,6 +659,26 @@ section{padding:96px 0}
     var dl = h("a", { class: "rv-btn rv-dl", "data-stat": "pdf", html: ICON.dl + "<span>Завантажити</span>" });
     var ctrl = h("div", { class: "rv-ctrl" }, [h("div", { class: "rv-nav" }, [prev, pn, next]), h("div", { class: "rv-act" }, [full, pdf, dl])]);
     root.appendChild(ctrl);
+    /* мініатюри сторінок: швидкий перехід, поточна сторінка позначена */
+    var rail = null, railDoc = null;
+    if (opts.thumbs) { rail = h("div", { class: "rv-rail", role: "group", "aria-label": "Сторінки документа" }); root.appendChild(rail); }
+    function paintRail() {
+      if (!rail) return;
+      var d = doc();
+      if (railDoc !== d.id) {
+        railDoc = d.id; rail.innerHTML = "";
+        d.pages.forEach(function (p) {
+          rail.appendChild(h("button", { type: "button", class: "rv-th", "aria-label": "Сторінка " + p.n, "data-n": p.n, onclick: function () { ctl.page(p.n); } },
+            [h("img", { src: p.srcT || p.src, alt: "", loading: "lazy", decoding: "async", style: "aspect-ratio:1 / " + p.ratio }), h("span", { text: String(p.n) })]));
+        });
+      }
+      Array.prototype.forEach.call(rail.children, function (b) {
+        var on = Number(b.getAttribute("data-n")) === st.page;
+        if (on) { b.setAttribute("aria-current", "page"); var l = b.offsetLeft - rail.clientWidth / 2 + b.clientWidth / 2; rail.scrollTo({ left: l, behavior: RM ? "auto" : "smooth" }); }
+        else b.removeAttribute("aria-current");
+      });
+    }
+    var lastPage = null, lastDoc = null;
 
     function doc() { return byId[st.doc]; }
     function hlFor(key) { return key ? doc().highlights.filter(function (x) { return x.key === key; })[0] : null; }
@@ -628,6 +717,7 @@ section{padding:96px 0}
       });
       kind.innerHTML = "";
       if (d.placeholder) kind.appendChild(h("span", { class: "rv-badge", text: "Заглушка" }));
+      else if (d.draft) kind.appendChild(h("span", { class: "rv-badge rv-draft", text: "Чорнетка" }));
       kind.appendChild(h("span", { text: (d.placeholder ? "Тут буде справжній знеособлений звіт · " : d.kind + " · ") + kindLine(d) }));
       if (st.mode === "page") {
         var want = (frame.clientWidth || 600) * (window.devicePixelRatio || 1) > 1100 ? p.src2x : p.src;
@@ -635,6 +725,10 @@ section{padding:96px 0}
         canvas.style.aspectRatio = "1 / " + p.ratio;
       }
       img.alt = d.title + ". Сторінка " + st.page + " з " + d.pageCount + ". Текст сторінки — нижче, для читачів екрана.";
+      if (!RM && lastPage !== null && (lastPage !== st.page || lastDoc !== st.doc) && st.mode === "page") {
+        canvas.classList.remove("rv-turn"); void canvas.offsetWidth; canvas.classList.add("rv-turn");
+      }
+      lastPage = st.page; lastDoc = st.doc;
       desc.textContent = "Текст сторінки " + st.page + ": " + p.text;
       var hl = hlFor(st.key);
       var rects = hl && hl.page === st.page ? [hl] : (st.mode === "focus" && !hl ? [] : []);
@@ -644,6 +738,7 @@ section{padding:96px 0}
       prev.disabled = st.page <= 1; next.disabled = st.page >= d.pageCount;
       pdf.href = d.pdf; dl.href = d.pdf; dl.setAttribute("download", pdfName(d));
       ctrl.hidden = st.mode === "focus" && opts.focusControls === false;
+      paintRail();
       fit();
       if (emit !== false) root.dispatchEvent(new CustomEvent("rv:change", { detail: { doc: st.doc, page: st.page, key: st.key } }));
     }
@@ -930,7 +1025,8 @@ section{padding:96px 0}
   if (window.RV) Array.prototype.forEach.call(document.querySelectorAll("[data-viewer]"), function (el) {
     TW.viewers[el.id || ("v" + Object.keys(TW.viewers).length)] = window.RV.mount(el, {
       doc: el.getAttribute("data-doc") || "pos", mode: el.getAttribute("data-mode") || "page",
-      docs: el.getAttribute("data-docs") !== "false", focusControls: el.getAttribute("data-controls") !== "false"
+      docs: el.getAttribute("data-docs") !== "false", focusControls: el.getAttribute("data-controls") !== "false",
+      thumbs: el.getAttribute("data-thumbs") === "true"
     });
   });
   Array.prototype.forEach.call(document.querySelectorAll("[data-open-report]"), function (b) {
@@ -946,8 +1042,31 @@ section{padding:96px 0}
 <script>
 (function () {
   "use strict";
-  var hdr = document.getElementById("hdr");
-  addEventListener("scroll", function () { hdr.classList.toggle("scrolled", scrollY > 8); }, { passive: true });
+  var hdr = document.getElementById("hdr"), root = document.documentElement, tick = false;
+  function onScroll() {
+    if (tick) return; tick = true;
+    requestAnimationFrame(function () {
+      hdr.classList.toggle("scrolled", scrollY > 8);
+      var hgt = root.scrollHeight - innerHeight;
+      root.style.setProperty("--sp", hgt > 0 ? (scrollY / hgt).toFixed(4) : 0);
+      tick = false;
+    });
+  }
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  /* маркер на «за 24 години» у заголовку */
+  var h1 = document.querySelector(".hero h1");
+  if (h1) h1.innerHTML = h1.innerHTML.replace(/за(&nbsp;|\u00a0)24(&nbsp;|\u00a0)години/, '<span class="mark">$&</span>');
+  Array.prototype.forEach.call(document.querySelectorAll(".chips .chip"), function (c, i) { c.style.setProperty("--i", i); });
+  /* цифри прикладу: підрахунок при появі */
+  function countUp(el) {
+    var n = Number(el.getAttribute("data-n")); if (!n || TW.RM) return;
+    var t0 = performance.now(), dur = 900;
+    (function f(t) { var k = Math.min(1, (t - t0) / dur); el.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(t0);
+  }
+  if ("IntersectionObserver" in window) {
+    var fo = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { Array.prototype.forEach.call(e.target.querySelectorAll("[data-n]"), countUp); fo.disconnect(); } }); }, { threshold: .6 });
+    fo.observe(document.getElementById("facts"));
+  }
   var EX = window.TW_REPORTS.explain, NAMES = { pidstava: "Підстава", dokument: "Документ", ryzyk: "Ризик", rekomendatsiia: "Рекомендація" };
   /* перший екран: пояснення наводять фрагмент у документі */
   var hero = TW.viewers.hero, ex = document.getElementById("hero-ex");
@@ -957,9 +1076,16 @@ section{padding:96px 0}
       Array.prototype.forEach.call(document.querySelectorAll(".dossier .chip"), function (x) { x.setAttribute("aria-pressed", String(x === b && on)); });
       hero.highlight(on ? k : null);
       var hl = on ? hero.doc().highlights.filter(function (x) { return x.key === k; })[0] : null;
-      ex.innerHTML = on ? "<b>" + NAMES[k] + "</b> · сторінка " + hl.page + ". " + EX[k].replace(/^[^:]+:\s*/, "") : "<b>Висновок</b> — перше, що бачить клієнт: оцінка позиції коротко. Оберіть, що показати в документі.";
+      var q = hl && hl.text ? hl.text.replace(/^\d+(\.\d+)*\.\s*/, "") : "";
+      if (q.length > 190) q = q.slice(0, 190).replace(/\s+\S*$/, "").replace(/[.,;:—–-]+$/, "") + "…";
+      document.getElementById("hero-pg").textContent = on ? hl.page : hero.doc().focus.page;
+      ex.innerHTML = on ? "<b>" + NAMES[k] + "</b> · сторінка " + hl.page + ". " + EX[k].replace(/^[^:]+:\s*/, "") + (q ? "<q></q>" : "") : "<b>Висновок</b> — перше, що бачить клієнт: оцінка позиції коротко. Оберіть, що показати в документі.";
+      if (q) ex.querySelector("q").textContent = q;
+      ex.classList.remove("flash"); void ex.offsetWidth; ex.classList.add("flash");
     });
   });
+  /* після появи документа — обвести висновок, щоб було видно, з чого почати */
+  if (!TW.RM) setTimeout(function () { if (!hero.state.key) hero.mark(hero.doc().focus); }, 1100);
   /* зразок: легенда підсвічує фрагмент на сторінці */
   var sample = TW.viewers.sample, items = document.querySelectorAll(".legend .it");
   Array.prototype.forEach.call(items, function (b) {

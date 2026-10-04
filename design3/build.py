@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Збірка трьох прототипів етапу 1 (інструкція v3.0): design3/src/*.html → design3/dist/*.html
+Збірка прототипів етапу 1 (інструкція v3.0): design3/src/*.html → design3/dist/*.html
   dosie.html   — А «Відкрите досьє»
+  rozvytok.html — Г «Розвиток чинного сайту» (шаблон готує make_rozvytok.py із site/index.html)
   shliakh.html — Б «Шлях до рішення»
   spokii.html  — В «Точність і спокій»
   index.html / gallery.html — порівняння
@@ -9,15 +10,18 @@
 Запуск:  python3 design3/build.py
 Прототипи ізольовані: форма нічого не надсилає, віджет дзвінка не підключено, статистика не збирається, noindex.
 """
-import json, os, re, sys
+import json, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC, DIST = os.path.join(HERE, "src"), os.path.join(HERE, "dist")
+PRIVATE = "--private" in sys.argv   # справжні звіти клієнтів: лише design3/dist-private/ (у .gitignore)
+SRC, PUB = os.path.join(HERE, "src"), os.path.join(HERE, "dist")
+DIST = os.path.join(HERE, "dist-private") if PRIVATE else PUB
 sys.path.insert(0, HERE)
 from content import T, RES_LIST, STEPS, FAQ  # noqa: E402
 
 PAGES = {
     "dosie.html": ("А", "Відкрите досьє"),
+    "rozvytok.html": ("Г", "Розвиток чинного сайту"),
     "shliakh.html": ("Б", "Шлях до рішення"),
     "spokii.html": ("В", "Точність і спокій"),
 }
@@ -106,7 +110,7 @@ def reslist_html():
 
 
 def rv_fallback(doc_id):
-    d = next(x for x in REPORTS["documents"] if x["id"] == doc_id)
+    d = next((x for x in REPORTS["documents"] if x["id"] == doc_id), REPORTS["documents"][0])
     return (f'<figure class="rv-fallback"><img src="{d["pages"][0]["src"]}" alt="{d["title"]}, сторінка 1" width="1000" height="{int(1000 * d["pages"][0]["ratio"])}" loading="lazy">'
             f'<figcaption><a href="{d["pdf"]}">Відкрити PDF ({d["pageCount"]} с.)</a></figcaption></figure>')
 
@@ -157,6 +161,7 @@ PRELOAD = {   # шрифти першого екрана (кирилиця + л�
                    "Onest-400-normal-latin.woff2", "IBMPlexMono-500-normal-cyrillic.woff2", "IBMPlexMono-500-normal-latin.woff2"],
     "shliakh.html": ["Geologica-800-normal-cyrillic.woff2", "Geologica-800-normal-latin.woff2", "Geologica-400-normal-cyrillic.woff2", "Geologica-400-normal-latin.woff2"],
     "spokii.html": ["FixelDisplay-ExtraBold.woff2", "FixelText-Regular.woff2"],
+    "rozvytok.html": ["FixelDisplay-ExtraBold.woff2", "FixelText-Regular.woff2", "FixelText-Bold.woff2"],
 }
 
 
@@ -177,6 +182,8 @@ def render(name):
         "CORE_CSS": read("core3.css"), "VIEWER_CSS": read("viewer.css"), "CORE_JS": read("core3.js"), "VIEWER_JS": read("viewer.js"),
         "REPORTS_JSON": json.dumps(REPORTS, ensure_ascii=False), "FAQ": faq_html(), "FAQ_JSONLD": faq_jsonld(), "CONTACTS": contacts_html(),
         "STEPS": steps_html(), "RESLIST": reslist_html(), "CHIPS": chips_html(), "CALLBACK": callback_html(), "PRIVACY": privacy_html(),
+        "DOC_FOCUS_PAGE": str(REPORTS["documents"][0]["focus"]["page"]), "DOC_PAGES": str(REPORTS["documents"][0]["pageCount"]), "DOC_SECTIONS": str(len(REPORTS["documents"][0]["toc"])),
+        "ROZVYTOK_CSS": read("rozvytok.css"), "ROZVYTOK_JS": read("rozvytok.js"),
         "PROTO": proto_bar(name) + HOME_JS, "PROTO_CSS": PROTO_CSS, "ICON_ARROW": ICON_ARROW, "ICON_PHONE": ICON_PHONE,
     })
     s = re.sub(r"\{\{FORM:([^}]*)\}\}", lambda m: form_html(m.group(1)), s)
@@ -192,15 +199,28 @@ def render(name):
     return re.sub(r"\{\{([A-Z0-9_]+)\}\}", sub, s)
 
 
+REPORT_NOTE_PUBLIC = ("<b>Публічна версія.</b> Замість звіту — позначена заглушка з вигаданими даними. Чорнетка справжнього аналізу містить дані клієнта, "
+                      "тому показується лише в приватній версії за окремим посиланням. Після погодження концепції її замінять два чистові знеособлені аналізи: "
+                      "з рекомендацією оскаржувати і без неї.")
+REPORT_NOTE_PRIVATE = ("<b>Приватна версія — не пересилайте стороннім.</b> У переглядачі всіх прототипів першою стоїть чорнетка справжнього аналізу "
+                       "(оскаржувати не рекомендовано) з даними клієнта; друга вкладка — заглушка з вигаданими даними. Це чорнетка: після погодження концепції "
+                       "її замінять два чистові знеособлені аналізи — з рекомендацією оскаржувати і без неї. Знімки на цій сторінці — з публічної версії.")
+
+
 if __name__ == "__main__":
     built = []
+    if PRIVATE:   # спільні файли (шрифти, знімки) — з публічної збірки
+        for item in ("fonts", "shots", "fonts.css"):
+            src, dst = os.path.join(PUB, item), os.path.join(DIST, item)
+            if os.path.isdir(src): shutil.copytree(src, dst, dirs_exist_ok=True)
+            elif os.path.exists(src): shutil.copy(src, dst)
     for f in ORDER:
         if os.path.exists(os.path.join(SRC, f)):
             open(os.path.join(DIST, f), "w", encoding="utf-8").write(render(f))
             built.append(f)
     g = os.path.join(SRC, "gallery.html")
     if os.path.exists(g):
-        body = open(g, encoding="utf-8").read()
+        body = open(g, encoding="utf-8").read().replace("{{REPORT_NOTE}}", REPORT_NOTE_PRIVATE if PRIVATE else REPORT_NOTE_PUBLIC)
         open(os.path.join(DIST, "gallery.html"), "w", encoding="utf-8").write(body)
         open(os.path.join(DIST, "index.html"), "w", encoding="utf-8").write(
             '<!DOCTYPE html>\n<html lang="uk">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n'

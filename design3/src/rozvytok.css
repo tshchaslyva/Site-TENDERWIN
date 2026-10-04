@@ -1,0 +1,193 @@
+/* ============================================================
+   «Розвиток»: нові частини (приклад звіту, примітка до кроку 2, зворотний дзвінок, демонстрація форми)
+   у токенах чинного сайту + жвавіший рух. Рух лише оздоблює: текст, ціна й кнопки видно одразу;
+   приховані стани — тільки під класом .js (його ставить скрипт, якщо рух дозволено).
+   ============================================================ */
+
+/* ---------- прогрес прочитання ---------- */
+.progress{position:fixed; left:0; right:0; top:0; height:3px; z-index:120; pointer-events:none;
+  background:linear-gradient(90deg,var(--gold-deep),var(--gold) 40%,var(--gold-2)); transform-origin:0 50%; transform:scaleX(var(--sp,0))}
+
+/* ---------- шапка: логотип прокреслюється, підкреслення пунктів, активний розділ ---------- */
+.site-header .logo path{stroke-dasharray:40; animation:tw-draw .9s .15s cubic-bezier(.6,.1,.3,1) both}
+@keyframes tw-draw{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
+.nav-links a{position:relative; padding:6px 0; transition:color .2s}
+.nav-links a::after{content:""; position:absolute; left:0; right:0; bottom:0; height:2px; border-radius:2px; background:var(--gold);
+  transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(.6,.1,.3,1)}
+.nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1)}
+.nav-links a.is-active{color:#fff}
+
+/* ---------- перший екран ---------- */
+.hero{position:relative; overflow:hidden; isolation:isolate}
+.hero::before{content:""; position:absolute; z-index:-1; right:-10%; top:-30%; width:70%; height:120%; pointer-events:none;
+  background:radial-gradient(closest-side,rgba(217,164,65,.14),transparent 70%); animation:tw-glow 1.6s .1s ease-out both}
+@keyframes tw-glow{from{opacity:0; transform:scale(.85)}}
+.hero .mark{background:linear-gradient(var(--gold),var(--gold)) 0 94%/0% .09em no-repeat; animation:tw-mark .9s .45s cubic-bezier(.6,.1,.3,1) forwards; padding-bottom:.04em}
+@keyframes tw-mark{to{background-size:100% .09em}}
+.offer-card{animation:tw-rise .7s .1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes tw-rise{from{opacity:0; transform:translateY(22px)}}
+.offer-card::before{transform-origin:left; animation:tw-scale .8s .5s cubic-bezier(.6,.1,.3,1) both}
+@keyframes tw-scale{from{transform:scaleX(0)}}
+.offer-card .price,.m-offer .price,.price-side .big{background-repeat:no-repeat; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.offer-card .price{background-image:linear-gradient(100deg,var(--ink) 42%,var(--gold) 50%,var(--ink) 58%); background-size:260% 100%; background-position:100% 0;
+  animation:tw-shine 1.3s 1s ease-in-out both}
+.m-offer .price{background-image:linear-gradient(100deg,var(--gold) 42%,#fff6dc 50%,var(--gold) 58%); background-size:260% 100%; background-position:100% 0;
+  animation:tw-shine 1.3s .7s ease-in-out both}
+@keyframes tw-shine{from{background-position:0 0}to{background-position:100% 0}}
+.m-offer{animation:tw-fade .6s .2s ease-out both}
+@keyframes tw-fade{from{opacity:0}}
+
+/* ---------- кнопки: відблиск і стрілка (лише при наведенні) ---------- */
+.btn-gold{position:relative; overflow:hidden; isolation:isolate}
+.btn-gold::after{content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%); transform:translateX(-120%); transition:transform .6s ease}
+.btn-gold:hover::after{transform:translateX(120%)}
+.btn svg{transition:transform .2s ease}
+.btn:hover svg{transform:translateX(3px)}
+.btn-ghost:hover{transform:translateY(-1px)}
+
+/* ---------- розділи: рисочка біля номера, поява з відступом ---------- */
+.eyebrow::after{content:""; width:40px; height:1.5px; background:currentColor; opacity:.55; transform-origin:left; transition:transform .7s .25s cubic-bezier(.6,.1,.3,1)}
+.js [data-reveal]:not(.in) .eyebrow::after,.js .eyebrow[data-reveal]:not(.in)::after{transform:scaleX(0)}
+.js [data-reveal]{transition:opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1)}
+
+/* результат: позначки «з’являються» по черзі */
+.js .card[data-reveal] .result-list li{opacity:0; transform:translateX(-10px); transition:opacity .4s ease, transform .4s cubic-bezier(.2,.7,.2,1);
+  transition-delay:calc(.15s + var(--i,0) * 90ms)}
+.js .card[data-reveal] .result-list svg{transform:scale(.3); transition:transform .45s cubic-bezier(.3,1.5,.5,1); transition-delay:calc(.25s + var(--i,0) * 90ms)}
+.js .card.in .result-list li{opacity:1; transform:none}
+.js .card.in .result-list svg{transform:none}
+.card{transition:border-color .2s, box-shadow .25s, transform .25s}
+.card:hover{border-color:#D8CDB8; box-shadow:0 18px 40px -28px rgba(11,27,43,.35)}
+.note-line{position:relative}
+.js .note-line[data-reveal]{border-left-color:transparent}
+.js .note-line[data-reveal]::before{content:""; position:absolute; left:-4px; top:0; bottom:0; width:4px; background:var(--gold); transform:scaleY(0); transform-origin:top;
+  transition:transform .6s .25s cubic-bezier(.6,.1,.3,1)}
+.js .note-line.in::before{transform:none}
+
+/* ---------- приклад звіту ---------- */
+.sample{padding-bottom:96px}
+@media(max-width:700px){ .sample{padding-bottom:64px} }
+.sample-grid{display:grid; grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr); gap:28px; align-items:start}
+.sample-grid > *{min-width:0}
+@media(max-width:980px){ .sample-grid{grid-template-columns:1fr; gap:20px} }
+.legend{display:grid; gap:10px; position:sticky; top:96px}
+@media(max-width:980px){ .legend{position:static; grid-template-columns:repeat(2,minmax(0,1fr))} .legend .facts,.legend .legend-note{grid-column:1/-1} }
+@media(max-width:520px){ .legend{grid-template-columns:1fr} }
+.legend .it{all:unset; box-sizing:border-box; cursor:pointer; display:grid; grid-template-columns:14px 1fr; gap:12px; padding:14px 16px; min-width:0;
+  border:1.5px solid var(--line); border-radius:14px; background:#fff; transition:border-color .2s, background .2s, transform .2s, box-shadow .2s}
+.legend .it:hover{border-color:var(--c); transform:translateY(-1px); box-shadow:0 12px 26px -20px rgba(11,27,43,.45)}
+.legend .it:focus-visible{outline:3px solid var(--gold); outline-offset:2px}
+.legend .it[aria-pressed="true"]{border-color:var(--c); background:color-mix(in srgb,var(--c) 9%,#fff); box-shadow:inset 4px 0 0 var(--c)}
+.legend .it i{position:relative; width:14px; height:14px; border-radius:50%; background:var(--c); margin-top:5px}
+.legend .it[aria-pressed="true"] i::after{content:""; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--c); animation:tw-ring 1s ease-out both}
+@keyframes tw-ring{from{opacity:.9; transform:scale(.6)}to{opacity:0; transform:scale(1.6)}}
+.legend .it b{display:block; font-weight:700; color:var(--ink)}
+.legend .it span{font-size:.93rem; line-height:1.5; color:var(--muted)}
+.legend .it.chip-pidstava{--c:#C98A0E}.legend .it.chip-dokument{--c:#2F6FD6}.legend .it.chip-ryzyk{--c:#CF3E36}.legend .it.chip-rekomendatsiia{--c:#1D8A5C}
+.js .legend:not(.in) .it{opacity:0; transform:translateY(10px)}
+.js .legend .it{transition:opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1), border-color .2s, background .2s, box-shadow .2s; transition-delay:calc(var(--i,0) * 80ms), calc(var(--i,0) * 80ms), 0s, 0s, 0s}
+.js .legend.in .it:hover{transition-delay:0s}
+.facts{display:grid; grid-template-columns:1fr 1fr; margin-top:6px; border-top:1px solid var(--line)}
+.facts > div{padding:14px 14px 4px 0}
+.facts > div + div{padding-left:16px; border-left:1px solid var(--line)}
+.facts b{display:block; font-family:var(--font-head); font-weight:800; font-size:2.2rem; line-height:1; letter-spacing:-.02em; color:var(--gold-deep); font-variant-numeric:tabular-nums}
+.facts span{display:block; margin-top:6px; font-size:.9rem; color:var(--muted)}
+.legend-note{font-size:.9rem; color:var(--muted)}
+.viewer-card{background:#fff; border:1px solid var(--line); border-radius:20px; padding:20px; min-width:0; box-shadow:0 30px 60px -44px rgba(11,27,43,.45)}
+@media(max-width:520px){ .viewer-card{padding:14px 12px; border-radius:16px} }
+.js .viewer-card:not(.in){opacity:0; transform:translateY(24px) scale(.985)}
+.js .viewer-card{transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1)}
+.viewer-card .rv{--rv-line:var(--line); --rv-muted:var(--muted); --rv-accent:var(--ink-3); --rv-btn:#fff; --rv-frame:#F1ECE1; --rv-radius:14px;
+  --hl-pidstava:#C98A0E; --hl-dokument:#2F6FD6; --hl-ryzyk:#CF3E36; --hl-rekomendatsiia:#1D8A5C; color:var(--text)}
+.viewer-card .rv-doc[aria-selected="true"]{background:#FBF6EA}
+.viewer-card .rv-btn,.viewer-card .rv-ic{border-radius:10px}
+.viewer-card .rv-th[aria-current="page"]{border-color:var(--gold)}
+.rv-fallback{margin:0}
+.rv-fallback img{width:100%; height:auto; border:1px solid var(--line); border-radius:12px}
+.rv-fallback figcaption{margin-top:10px; font-weight:700}
+
+/* ---------- як замовити: лінія ходу, цифри, примітка до кроку 2 ---------- */
+.steps{position:relative}
+.steps::before{content:""; position:absolute; left:0; right:0; top:0; height:3px; z-index:1; background:linear-gradient(90deg,var(--gold),var(--gold-2));
+  transform-origin:left; transition:transform 1.4s .2s cubic-bezier(.6,.1,.3,1)}
+.js .steps:not(.in)::before{transform:scaleX(0)}
+.js .step[data-reveal] .step-n{display:inline-block; transform:scale(.4) rotate(-8deg); opacity:0; transition:transform .5s cubic-bezier(.3,1.5,.5,1) .15s, opacity .3s ease .15s}
+.js .step.in .step-n{transform:none; opacity:1}
+.step{transition:background .25s}
+.step:hover{background:#FFFCF5}
+.step-note{display:flex; gap:9px; align-items:flex-start; margin-top:14px; padding:10px 12px; border-radius:10px; background:#FDF6E8; color:#5A4208;
+  font-size:.9rem; line-height:1.5; border:1px solid rgba(217,164,65,.45)}
+.step-note::before{content:"i"; flex:0 0 18px; height:18px; margin-top:1px; border-radius:50%; background:var(--gold); color:#241602;
+  font:800 .72rem/18px var(--font-head); text-align:center}
+.step p.step-note{color:#5A4208}
+
+/* ---------- вартість ---------- */
+.price-side .big{background-image:linear-gradient(100deg,var(--gold) 42%,#FFF3D6 50%,var(--gold) 58%); background-size:260% 100%; background-position:100% 0}
+.js .price-box.in .price-side .big{animation:tw-shine 1.4s .5s ease-in-out both}
+.price-box{transition:box-shadow .3s, border-color .3s}
+.price-box:hover{border-color:rgba(217,164,65,.8); box-shadow:0 30px 70px -40px rgba(217,164,65,.35)}
+
+/* ---------- питання: плавне розкриття ---------- */
+.faq details{position:relative}
+.faq details::before{content:""; position:absolute; left:-16px; top:22px; bottom:22px; width:3px; border-radius:3px; background:var(--gold);
+  transform:scaleY(0); transform-origin:top; transition:transform .3s cubic-bezier(.6,.1,.3,1)}
+.faq details[open]::before{transform:none}
+@media(max-width:700px){ .faq details::before{display:none} }
+.faq summary::after{transition:transform .25s ease}
+.faq details[open] summary::after{transform:rotate(180deg)}
+.faq .answer{overflow:hidden}
+.faq .answer.anim{transition:height .26s ease}
+
+/* ---------- заявка: стани форми ---------- */
+.field input,.field textarea{transition:border-color .2s, background .2s, box-shadow .2s}
+.field input:focus,.field textarea:focus{box-shadow:0 0 0 4px rgba(217,164,65,.18)}
+.field input[aria-invalid="true"],.field textarea[aria-invalid="true"]{animation:tw-nudge .3s ease}
+@keyframes tw-nudge{25%{transform:translateX(-4px)}75%{transform:translateX(3px)}}
+.formmsg.warn{display:block; background:#fdf6e8; color:#5a4208}
+.formmsg.ok,.formmsg.err,.formmsg.info,.formmsg.warn{animation:tw-msg .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes tw-msg{from{opacity:0; transform:translateY(-6px)}}
+.formmsg .demo-tag{display:block; margin-top:6px; font-weight:500; font-size:.86rem; opacity:.85}
+.btn.loading::before{content:""; width:16px; height:16px; border-radius:50%; border:2px solid rgba(36,22,2,.35); border-top-color:#241602; animation:tw-spin .7s linear infinite}
+@keyframes tw-spin{to{transform:rotate(360deg)}}
+.demo-states{margin-top:16px; padding:12px 14px; border-radius:12px; border:1.5px dashed var(--line-dark); font-size:.88rem; color:var(--soft-dark)}
+.demo-states p{margin-bottom:8px; font-weight:700; color:#D3DEE8}
+.demo-states div{display:flex; flex-wrap:wrap; gap:6px}
+.demo-states button{padding:6px 11px; border-radius:8px; border:1.5px solid #4F76A0; background:transparent; color:#D3DEE8; font:inherit; font-size:.85rem; cursor:pointer;
+  transition:border-color .15s, color .15s}
+.demo-states button:hover{border-color:var(--gold); color:#fff}
+
+/* контакти: рядки з’являються по черзі */
+.js .contact-card:not(.in) .contact-line{opacity:0; transform:translateY(10px)}
+.js .contact-card .contact-line{transition:opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * 70ms)}
+.contact-line .ci{transition:transform .25s, background .25s}
+.contact-line:hover .ci{transform:scale(1.08); background:rgba(217,164,65,.22)}
+
+/* ---------- місце віджета Zadarma (у прототипі — лише показ) ---------- */
+.cb{display:none}
+@media(min-width:768px){
+  .cb{display:flex; position:fixed; right:20px; bottom:20px; z-index:70; align-items:center; gap:8px; min-height:52px; padding:0 18px 0 14px;
+    border-radius:999px; border:1px solid rgba(217,164,65,.55); background:var(--ink); color:#fff; font:700 .95rem/1 var(--font); cursor:pointer;
+    box-shadow:0 14px 34px -12px rgba(0,0,0,.55); transition:transform .2s, opacity .2s, background .2s; animation:tw-rise .5s 1.2s cubic-bezier(.2,.7,.2,1) both}
+  .cb:hover{transform:translateY(-2px); background:var(--ink-3)}
+  .cb.away{opacity:0; pointer-events:none; transform:translateY(20px)}
+  .cb svg{width:20px; height:20px; fill:none; stroke:var(--gold); stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+  .cb::after{content:""; position:absolute; inset:-1px; border-radius:inherit; border:2px solid var(--gold); opacity:0; pointer-events:none; animation:tw-ring2 1.6s 2s ease-out 1}
+}
+@keyframes tw-ring2{0%{opacity:.8; transform:scale(1)}100%{opacity:0; transform:scale(1.25)}}
+.cb-pop{position:fixed; right:20px; bottom:84px; z-index:71; width:min(340px,100vw - 40px); padding:20px; border-radius:16px; background:#fff; color:var(--text);
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.5); border:1px solid var(--line); animation:tw-msg .25s ease both}
+.cb-pop[hidden]{display:none}
+.cb-pop h2{font-family:var(--font-head); font-size:1.15rem; margin-bottom:12px; color:var(--ink); padding-right:36px}
+.cb-pop label{display:block; font-size:.88rem; font-weight:700; margin-bottom:6px}
+.cb-pop input{width:100%; min-height:46px; padding:10px 12px; border-radius:11px; border:1.5px solid #c9d4e0; font:inherit}
+.cb-pop .cb-send{width:100%; margin-top:10px; min-height:46px; border-radius:11px; border:0; background:#d9dee5; color:#3a4048; font:700 1rem var(--font); cursor:not-allowed}
+.cb-pop .cb-note{margin-top:10px; font-size:.84rem; line-height:1.5; color:var(--muted)}
+.cb-pop .cb-x{position:absolute; right:12px; top:12px; width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:#fff; cursor:pointer}
+@media(max-width:767px){ .cb-pop{right:12px; left:12px; width:auto; bottom:96px} }
+
+/* ---------- менше руху: усе видно одразу, без анімацій ---------- */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important; animation-delay:0s!important; animation-iteration-count:1!important; transition-duration:.01ms!important; transition-delay:0s!important}
+}
+.rm *,.rm *::before,.rm *::after{animation-duration:.01ms!important; animation-delay:0s!important; animation-iteration-count:1!important; transition-duration:.01ms!important; transition-delay:0s!important}

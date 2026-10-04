@@ -97,6 +97,7 @@ button{font:inherit;color:inherit}
 .cb-pop .cb-note{margin-top:10px;font-size:.82rem;color:#5f6670}
 .cb-pop .cb-x{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:8px;border:1px solid #e3e0d9;background:#fff;cursor:pointer}
 
-/* менше руху */
+/* менше руху (і без JS — за налаштуванням системи) */
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 .rm *,.rm *::before,.rm *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 .rm .pre{opacity:1!important;transform:none!important}

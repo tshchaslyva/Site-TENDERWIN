@@ -86,6 +86,26 @@
     var dl = h("a", { class: "rv-btn rv-dl", "data-stat": "pdf", html: ICON.dl + "<span>Завантажити</span>" });
     var ctrl = h("div", { class: "rv-ctrl" }, [h("div", { class: "rv-nav" }, [prev, pn, next]), h("div", { class: "rv-act" }, [full, pdf, dl])]);
     root.appendChild(ctrl);
+    /* мініатюри сторінок: швидкий перехід, поточна сторінка позначена */
+    var rail = null, railDoc = null;
+    if (opts.thumbs) { rail = h("div", { class: "rv-rail", role: "group", "aria-label": "Сторінки документа" }); root.appendChild(rail); }
+    function paintRail() {
+      if (!rail) return;
+      var d = doc();
+      if (railDoc !== d.id) {
+        railDoc = d.id; rail.innerHTML = "";
+        d.pages.forEach(function (p) {
+          rail.appendChild(h("button", { type: "button", class: "rv-th", "aria-label": "Сторінка " + p.n, "data-n": p.n, onclick: function () { ctl.page(p.n); } },
+            [h("img", { src: p.srcT || p.src, alt: "", loading: "lazy", decoding: "async", style: "aspect-ratio:1 / " + p.ratio }), h("span", { text: String(p.n) })]));
+        });
+      }
+      Array.prototype.forEach.call(rail.children, function (b) {
+        var on = Number(b.getAttribute("data-n")) === st.page;
+        if (on) { b.setAttribute("aria-current", "page"); var l = b.offsetLeft - rail.clientWidth / 2 + b.clientWidth / 2; rail.scrollTo({ left: l, behavior: RM ? "auto" : "smooth" }); }
+        else b.removeAttribute("aria-current");
+      });
+    }
+    var lastPage = null, lastDoc = null;
 
     function doc() { return byId[st.doc]; }
     function hlFor(key) { return key ? doc().highlights.filter(function (x) { return x.key === key; })[0] : null; }
@@ -124,6 +144,7 @@
       });
       kind.innerHTML = "";
       if (d.placeholder) kind.appendChild(h("span", { class: "rv-badge", text: "Заглушка" }));
+      else if (d.draft) kind.appendChild(h("span", { class: "rv-badge rv-draft", text: "Чорнетка" }));
       kind.appendChild(h("span", { text: (d.placeholder ? "Тут буде справжній знеособлений звіт · " : d.kind + " · ") + kindLine(d) }));
       if (st.mode === "page") {
         var want = (frame.clientWidth || 600) * (window.devicePixelRatio || 1) > 1100 ? p.src2x : p.src;
@@ -131,6 +152,10 @@
         canvas.style.aspectRatio = "1 / " + p.ratio;
       }
       img.alt = d.title + ". Сторінка " + st.page + " з " + d.pageCount + ". Текст сторінки — нижче, для читачів екрана.";
+      if (!RM && lastPage !== null && (lastPage !== st.page || lastDoc !== st.doc) && st.mode === "page") {
+        canvas.classList.remove("rv-turn"); void canvas.offsetWidth; canvas.classList.add("rv-turn");
+      }
+      lastPage = st.page; lastDoc = st.doc;
       desc.textContent = "Текст сторінки " + st.page + ": " + p.text;
       var hl = hlFor(st.key);
       var rects = hl && hl.page === st.page ? [hl] : (st.mode === "focus" && !hl ? [] : []);
@@ -140,6 +165,7 @@
       prev.disabled = st.page <= 1; next.disabled = st.page >= d.pageCount;
       pdf.href = d.pdf; dl.href = d.pdf; dl.setAttribute("download", pdfName(d));
       ctrl.hidden = st.mode === "focus" && opts.focusControls === false;
+      paintRail();
       fit();
       if (emit !== false) root.dispatchEvent(new CustomEvent("rv:change", { detail: { doc: st.doc, page: st.page, key: st.key } }));
     }

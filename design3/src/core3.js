@@ -150,7 +150,8 @@
   if (window.RV) Array.prototype.forEach.call(document.querySelectorAll("[data-viewer]"), function (el) {
     TW.viewers[el.id || ("v" + Object.keys(TW.viewers).length)] = window.RV.mount(el, {
       doc: el.getAttribute("data-doc") || "pos", mode: el.getAttribute("data-mode") || "page",
-      docs: el.getAttribute("data-docs") !== "false", focusControls: el.getAttribute("data-controls") !== "false"
+      docs: el.getAttribute("data-docs") !== "false", focusControls: el.getAttribute("data-controls") !== "false",
+      thumbs: el.getAttribute("data-thumbs") === "true"
     });
   });
   Array.prototype.forEach.call(document.querySelectorAll("[data-open-report]"), function (b) {

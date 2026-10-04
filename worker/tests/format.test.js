@@ -27,14 +27,14 @@ test("контрольні цифри", () => {
 
 test("ID закупівлі: повний формат і реальна дата", () => {
   const now = new Date("2026-10-02T12:00:00Z");
-  assert.equal(parseTenderId("https://prozorro.gov.ua/tender/UA-2026-09-07-014600-a", now), "UA-2026-09-07-014600-a");
-  assert.equal(parseTenderId("ua-2026-09-07-014600-A", now), "UA-2026-09-07-014600-a");
-  assert.equal(parseTenderId("UA-2026-09-07-014600", now), "");          // без суфікса
+  assert.equal(parseTenderId("https://prozorro.gov.ua/tender/UA-2026-09-15-000123-a", now), "UA-2026-09-15-000123-a");
+  assert.equal(parseTenderId("ua-2026-09-15-000123-A", now), "UA-2026-09-15-000123-a");
+  assert.equal(parseTenderId("UA-2026-09-15-000123", now), "");          // без суфікса
   assert.equal(parseTenderId("UA-2026-99-99-000001-a", now), "");        // неможлива дата
   assert.equal(parseTenderId("UA-2026-02-30-000001-a", now), "");        // 30 лютого
   assert.equal(parseTenderId("UA-2014-01-10-000001-a", now), "");        // до запуску Prozorro
   assert.equal(parseTenderId("UA-2028-01-10-000001-a", now), "");        // надто далеке майбутнє
-  assert.equal(parseTenderId("XUA-2026-09-07-014600-a", now), "");
+  assert.equal(parseTenderId("XUA-2026-09-15-000123-a", now), "");
   assert.equal(parseTenderId("abc", now), "");
 });
 
