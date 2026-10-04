@@ -12,14 +12,41 @@
     email: "vitalii@tenderwin.com.ua",
     telegramUser: "TenderWin_UA",
     telegramUrl: "https://t.me/tenderwin_ua",
-    telegramPrefill: "Доброго дня! Хочу замовити аналіз відхилення. ID закупівлі: UA-… ЄДРПОУ/РНОКПП: …",
-    channelUrl: "https://t.me/tenderwin_plus",
-    channelLabel: "Тендер+ — щотижневий розбір відхилень"
+    telegramPrefill: "Доброго дня! Хочу замовити аналіз відхилення. ID закупівлі: UA-… ЄДРПОУ/РНОКПП: …"
   };
   var MESSAGE_MAX = 2000;          // так само в обробнику (worker/index.js)
   var REQUEST_TIMEOUT = 15000;     // мс очікування відповіді обробника
 
   var root = document.documentElement;
+
+  /* ---------- знеособлена статистика відвідувань ----------
+     Без cookie. Надсилаємо лише назву дії, сторінку й сайт, з якого прийшли. Дані форми сюди не потрапляють.
+     Свої відвідування Віталій вимикає в /admin/ → «Статистика» (позначка в цьому браузері). */
+  var stat = (function () {
+    var off = false, sent = {};
+    try { off = window.localStorage.getItem("tw-no-stats") === "1"; } catch (e) { /* приватний режим */ }
+    return function (e) {
+      if (off || sent[e]) return;          // кожну дію рахуємо один раз за завантаження сторінки
+      sent[e] = 1;
+      var m = /[?&]utm_source=([^&#]+)/.exec(location.search);
+      var data = JSON.stringify({ e: e, p: location.pathname, r: e === "view" ? document.referrer : "", s: m ? decodeURIComponent(m[1]) : "" });
+      try { if (navigator.sendBeacon && navigator.sendBeacon("/api/hit", new Blob([data], { type: "text/plain" }))) return; } catch (x) { /* */ }
+      try { fetch("/api/hit", { method: "POST", body: data, keepalive: true, headers: { "Content-Type": "text/plain" } }); } catch (x) { /* */ }
+    };
+  })();
+  stat("view");
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest ? ev.target.closest("a, [data-stat]") : null;
+    if (!a) return;
+    var href = a.getAttribute("href") || "";
+    if (a.hasAttribute("data-stat")) stat(a.getAttribute("data-stat"));
+    else if (/^tel:/.test(href)) stat("call");
+    else if (/t\.me\//.test(href)) stat("tg");
+    else if (/\.pdf($|[?#])/i.test(href)) { stat("pdf"); stat("report"); }
+  });
+  document.addEventListener("focusin", function (ev) {
+    if (ev.target.closest && ev.target.closest("#leadform")) stat("form_start");
+  });
 
   /* ---------- рік у футері ---------- */
   var y = document.getElementById("year");
@@ -54,7 +81,7 @@
     }
   } catch (e) { root.classList.remove("js"); }
 
-  /* ---------- Telegram: контакт @TenderWin_UA і канал «Тендер+» ---------- */
+  /* ---------- Telegram: контакт @TenderWin_UA ---------- */
   var TG_RE = /^https:\/\/t\.me\/[a-z][a-z0-9_]{4,31}$/;
   function setupTelegram(kind, url, prefill) {
     var ok = typeof url === "string" && TG_RE.test(url);
@@ -67,7 +94,6 @@
     return ok;
   }
   var tgOk = setupTelegram("contact", CONTACTS.telegramUrl, CONTACTS.telegramPrefill);
-  var chOk = setupTelegram("channel", CONTACTS.channelUrl, "");
 
   /* ---------- мобільна панель ховається біля форми, щоб не перекривати поля ---------- */
   var bar = document.getElementById("mobilebar");
@@ -121,11 +147,9 @@
     'Телефон: <a href="' + CONTACTS.phoneHref + '">' + CONTACTS.phone.replace(/ /g, "&nbsp;") + "</a>" +
     (tgOk ? ', Telegram: <a href="' + CONTACTS.telegramUrl + '" target="_blank" rel="noopener">@' + CONTACTS.telegramUser + "</a>" : "") +
     ', пошта: <a href="mailto:' + CONTACTS.email + '">' + CONTACTS.email + "</a>.";
-  var waitHtml = (tgOk || chOk)
-    ? '<span class="more">Поки чекаєте на відповідь: питання — у Telegram ' +
-      (tgOk ? '<a href="' + CONTACTS.telegramUrl + '" target="_blank" rel="noopener">@' + CONTACTS.telegramUser + "</a>" : "") +
-      (chOk ? '; свіжі розбори відхилень — у каналі <a href="' + CONTACTS.channelUrl + '" target="_blank" rel="noopener">Тендер+</a>' : "") +
-      ".</span>"
+  var waitHtml = tgOk
+    ? '<span class="more">Поки чекаєте на відповідь, питання можна поставити в Telegram: <a href="' + CONTACTS.telegramUrl +
+      '" target="_blank" rel="noopener">@' + CONTACTS.telegramUser + "</a>.</span>"
     : "";
 
   function say(html, kind) {

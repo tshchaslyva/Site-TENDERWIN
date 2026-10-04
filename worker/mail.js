@@ -71,13 +71,12 @@ function signature(c) {
     <a href="tel:${esc(c.phone.e164)}" style="color:#101d2b">${esc(c.phone.display)}</a> ·
     Telegram: <a href="${esc(c.telegram.url)}" style="color:#101d2b">@${esc(c.telegram.username)}</a> ·
     <a href="mailto:${esc(c.email)}" style="color:#101d2b">${esc(c.email)}</a><br>
-    <a href="https://${esc(c.site)}" style="color:#101d2b">${esc(c.site)}</a> ·
-    <a href="${esc(c.channel.url)}" style="color:#101d2b">${esc(c.channel.label)}</a>: ${esc(c.channel.url.replace(/^https:\/\//, ""))}</p>`;
+    <a href="https://${esc(c.site)}" style="color:#101d2b">${esc(c.site)}</a></p>`;
   const text = [
     "—",
     `TenderWin · ${c.person}`,
     `${c.phone.display} · Telegram: @${c.telegram.username} · ${c.email}`,
-    `${c.site} · ${c.channel.label}: ${c.channel.url.replace(/^https:\/\//, "")}`,
+    c.site,
   ].join("\n");
   return { html, text };
 }
@@ -141,7 +140,8 @@ export function renderInvoice(app, inv, cfg) {
   const l2 = "У ціну входять письмовий аналіз відхилення та одна консультація тривалістю 30 хвилин. Письмовий висновок підготуємо протягом 24 годин після зарахування оплати. Час консультації погодимо після передання висновку.";
   const l3 = cfg.termsUrl ? `Погоджені умови замовлення: ${cfg.termsUrl}` : "";
   const l4 = "Перед оплатою перевірте дані платника й предмет послуги. Якщо помітили неточність, повідомте відповіддю на цей лист.";
-  const l5 = `Рахунок дійсний до ${dotDate(new Date(inv.validUntil))} включно.`;
+  const l5 = `Рахунок дійсний до ${dotDate(new Date(inv.validUntil))} включно.` +
+    (cfg.seller && !cfg.seller.iban ? " Реквізити для оплати (IBAN) надішлемо окремим листом." : "");
   const html = wrapHtml(
     `<p style="margin-top:0">Добрий день!</p>${p(esc(l1))}${p(esc(l2))}` +
       (l3 ? p(`Погоджені умови замовлення: <a href="${esc(cfg.termsUrl)}" style="color:#0B1B2B">${esc(cfg.termsUrl)}</a>`) : "") +

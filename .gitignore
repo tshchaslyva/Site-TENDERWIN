@@ -2,3 +2,7 @@ node_modules/
 .dev.vars
 .wrangler/
 __pycache__/
+
+# Приватні матеріали клієнтів (справжні звіти до знеособлення й дозволу) — не публікувати
+design3/report/private/
+design3/dist-private/

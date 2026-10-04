@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<title>TenderWin: концепції сайту</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* Макет: робоча записка до вибору — вступ і стан матеріалів, два фіналісти, інші варіанти, порівняння, як обрати, логотип, що потрібно далі */
+:root{
+  --bg:#F3F4F6; --card:#FFFFFF; --fg:#14171C; --muted:#5A616C; --line:#DADDE3; --soft:#EBEDF1; --btn:#14171C; --btnfg:#FFFFFF; --warn-bg:#FFF5DA; --warn-fg:#6B4A00;
+  --a:#0F5C46; --b:#2F5BFF; --v:#0E2442; --g:#B07D1A; --gold:#C49A3E;
+  --disp:"Fixel Display","Fixel",system-ui,sans-serif; --sans:"Onest","Fixel",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1115;--card:#171A20;--fg:#ECEEF2;--muted:#9BA2AE;--line:#2A2E36;--soft:#1E222A;--btn:#ECEEF2;--btnfg:#0F1115;--warn-bg:#3A3015;--warn-fg:#F3DFA6;--a:#3FB58E;--b:#7D95FF;--v:#8FA9D6;--g:#E0B45A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1115;--card:#171A20;--fg:#ECEEF2;--muted:#9BA2AE;--line:#2A2E36;--soft:#1E222A;--btn:#ECEEF2;--btnfg:#0F1115;--warn-bg:#3A3015;--warn-fg:#F3DFA6;--a:#3FB58E;--b:#7D95FF;--v:#8FA9D6;--g:#E0B45A;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16.5px/1.6 var(--sans);margin:0;-webkit-font-smoothing:antialiased}
+.page{max-width:1220px;margin:0 auto;padding-inline:clamp(16px,4vw,40px);padding-block:40px 80px}
+h1,h2,h3{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;line-height:1.08;margin:0;text-wrap:balance}
+p,ul,ol{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--b);outline-offset:3px;border-radius:6px}
+.lbl{font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.intro{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:36px;align-items:start;padding-bottom:32px;border-bottom:1px solid var(--line)}
+@media(max-width:900px){.intro{grid-template-columns:1fr;gap:22px}}
+.intro h1{font-size:clamp(2.2rem,5.4vw,4rem);margin-top:12px}
+.intro .lede{margin-top:16px;font-size:1.1rem;color:var(--muted);max-width:62ch}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.toc a{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);text-decoration:none;font-weight:600;font-size:.94rem}
+.toc a i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.toc a:hover{border-color:var(--c)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.box h2{font-size:1rem;letter-spacing:-.01em}
+.box ul{margin-top:10px;padding-left:1.1em;color:var(--muted);font-size:.93rem;display:grid;gap:5px}
+.warn{margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--warn-bg);color:var(--warn-fg);font-size:.95rem}
+.warn b{font-weight:700}
+.cpt{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,4vw,52px);padding-block:56px;border-bottom:1px solid var(--line);scroll-margin-top:12px}
+@media(max-width:980px){.cpt{grid-template-columns:1fr}}
+.media{min-width:0}
+.shot{position:relative}
+.frame{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--card);box-shadow:0 26px 50px -36px rgba(10,12,20,.55)}
+.frame img{display:block;width:100%;height:auto;aspect-ratio:1200/750;object-fit:cover}
+.phone{position:absolute;right:-12px;bottom:-30px;width:24%;min-width:92px;max-width:100%;border-radius:20px;overflow:hidden;border:6px solid #0B0C10;background:#0B0C10;box-shadow:0 20px 44px -20px rgba(10,12,20,.6)}
+.phone img{display:block;width:100%;height:auto;aspect-ratio:390/844;object-fit:cover}
+@media(max-width:560px){.phone{right:-4px;bottom:-22px;width:30%}}
+.sig{margin-top:50px;display:grid;gap:8px}
+.sig p{font-size:.88rem;color:var(--muted)}
+.txt{min-width:0;display:flex;flex-direction:column;gap:16px}
+.num{display:flex;align-items:center;gap:12px}
+.num b{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--c);color:#fff;font:800 1.1rem var(--disp)}
+.txt h2{font-size:clamp(1.9rem,3.6vw,2.7rem)}
+.thesis{font-size:1.1rem;line-height:1.5}
+.txt h3{font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.txt ul{padding-left:1.1em;display:grid;gap:4px;font-size:.95rem}
+.order{font-size:.92rem;color:var(--muted)}
+.sw{display:flex;flex-wrap:wrap;gap:8px}
+.sw span{display:inline-flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.8rem;font-variant-numeric:tabular-nums}
+.sw span i{width:20px;height:20px;border-radius:50%;border:1px solid rgba(128,128,128,.35)}
+.go{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 18px;border-radius:10px;font-weight:700;font-size:.95rem;text-decoration:none;border:1px solid var(--line);background:var(--card)}
+.btn.p{background:var(--btn);color:var(--btnfg);border-color:var(--btn)}
+.btn.p:hover{background:var(--c);border-color:var(--c);color:#fff}
+.btn:not(.p):hover{border-color:var(--c)}
+.risk{padding:12px 14px;border-radius:10px;background:var(--soft);font-size:.92rem}
+.risk b{font-weight:700}
+section{padding-block:56px 10px}
+section h2{font-size:clamp(1.7rem,3.2vw,2.4rem)}
+.tw{margin-top:20px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:1000px;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+thead th{font-family:var(--disp);font-weight:800;font-size:1rem}
+thead th i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:8px}
+tbody th{font-size:.76rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);width:150px}
+tr:last-child th,tr:last-child td{border-bottom:0}
+.fav{margin-top:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media(max-width:860px){.fav{grid-template-columns:1fr}}
+.fav>div{border-radius:16px;padding:22px;border:1px solid var(--line);background:var(--card)}
+.fav>div.main{box-shadow:inset 0 0 0 2px var(--c,var(--a))}
+.fav h3{font-size:1.25rem;margin:6px 0 8px}
+.fav p{color:var(--muted)}
+.logos{margin-top:20px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media(max-width:960px){.logos{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.logos{grid-template-columns:1fr}}
+.logo{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:18px;display:grid;gap:12px;align-content:start}
+.logo .row{display:flex;align-items:center;gap:12px;padding:14px;border-radius:10px;background:#F6F7F9}
+.logo .row.dark{background:#0E2442}
+.logo svg{width:44px;height:44px;flex-shrink:0}
+.logo .wm{font:800 1.2rem var(--disp);letter-spacing:-.01em;color:#0E2442}
+.logo .row.dark .wm{color:#fff}
+.logo .wm b{color:#C49A3E;font-weight:800}
+.logo .fav16{display:flex;gap:8px;align-items:center;font-size:.8rem;color:var(--muted)}
+.logo .fav16 svg{width:16px;height:16px}.logo .fav16 svg+svg{width:32px;height:32px}
+.logo h3{font-size:1.02rem}
+.logo p{font-size:.9rem;color:var(--muted)}
+.need{margin-top:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(max-width:860px){.need{grid-template-columns:1fr}}
+.need div{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:18px}
+.need h3{font-size:1.02rem;margin-bottom:6px}
+.need p,.need li{font-size:.93rem;color:var(--muted)}
+.need ul{padding-left:1.1em;display:grid;gap:3px;margin-top:6px}
+.foot{margin-top:40px;font-size:.92rem;color:var(--muted);max-width:75ch}
+.grp{display:flex;align-items:baseline;gap:14px;padding-top:56px}
+.grp h2{font-size:clamp(1.5rem,2.8vw,2rem)}
+.grp p{color:var(--muted);font-size:.95rem}
+.grp+.cpt{padding-top:28px}
+.chg{padding-left:1.1em;display:grid;gap:4px;font-size:.95rem}
+.badge{display:inline-block;margin-left:8px;padding:3px 9px;border-radius:999px;font:700 .72rem/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;background:var(--c);color:#fff;vertical-align:middle}
+</style>
+
+<div class="page">
+  <header class="intro">
+    <div>
+      <p class="lbl">TenderWin · етап 1 за інструкцією v3.0 · 4 жовтня 2026</p>
+      <h1>Концепції сайту TenderWin: два фіналісти</h1>
+      <p class="lede">До остаточного вибору — два фіналісти. <b>А «Відкрите досьє»</b> — нова сторінка, де звіт видно в першому екрані. <b>Г «Розвиток чинного сайту»</b> — tenderwin.in.ua без зміни дизайну, лише зі структурними змінами інструкції v3.0 і відповідними даними. Обидва стали жвавішими: більше руху, але без перехоплення прокрутки, руху за курсором і автогортання. Б і В лишаються як інші варіанти.</p>
+      <nav class="toc" aria-label="Концепції">
+        <a href="#a" style="--c:var(--a)"><i></i>Фіналіст А · Відкрите досьє</a>
+        <a href="#g" style="--c:var(--g)"><i></i>Фіналіст Г · Розвиток чинного сайту</a>
+        <a href="#b" style="--c:var(--b)"><i></i>Б · Шлях до рішення</a>
+        <a href="#v" style="--c:var(--v)"><i></i>В · Точність і спокій</a>
+        <a href="#porivnyannia" style="--c:var(--muted)"><i></i>Порівняння</a>
+        <a href="#logo" style="--c:var(--gold)"><i></i>Логотип</a>
+      </nav>
+      <p class="warn"><b>Публічна версія.</b> Замість звіту — позначена заглушка з вигаданими даними. Чорнетка справжнього аналізу містить дані клієнта, тому показується лише в приватній версії за окремим посиланням. Після погодження концепції її замінять два чистові знеособлені аналізи: з рекомендацією оскаржувати і без неї.</p>
+    </div>
+    <aside class="box">
+      <h2>Однакове в усіх чотирьох</h2>
+      <ul>
+        <li>3 499 грн, 24 години після оплати, <span style="white-space:nowrap">30-хвилинна</span> консультація. А, Б, В — тексти v3.0; Г — тексти чинного сайту з обов’язковими змінами v3.0</li>
+        <li>Переглядач звіту: сторінки, масштаб, читання на весь екран, зміст, PDF без реєстрації</li>
+        <li>Одна головна дія «Замовити аналіз» → форма</li>
+        <li>Стани форми: помилка, надсилання, збережено, лист затримався (демонстрація)</li>
+        <li>Місце віджета Zadarma від 768 px; на телефоні — дзвінок у нижній панелі</li>
+        <li>Без каналу «Тендер+», блоку «Хто відповідає», AI-чату й калькулятора шансів</li>
+        <li>Працює без анімацій і без JavaScript; 320–1440 px без горизонтальної прокрутки</li>
+        <li>Прототипи ізольовані: нічого не надсилають, noindex</li>
+      </ul>
+    </aside>
+  </header>
+
+  <div class="grp"><h2>Фіналісти</h2><p>Обидва — з тим самим переглядачем звіту, формою й місцем віджета дзвінка</p></div>
+
+  <article class="cpt" id="a" style="--c:var(--a)">
+    <div class="media">
+      <div class="shot"><div class="frame"><img src="shots/dosie-d.webp" alt="Перший екран концепції А: пропозиція ліворуч, крупний фрагмент звіту праворуч і чотири пояснення" width="1200" height="750"></div>
+      <div class="phone"><img src="shots/dosie-m.webp" alt="Концепція А на телефоні: спершу ціна, строк і кнопка" width="390" height="844" loading="lazy"></div></div>
+      <div class="sig"><div class="frame"><img src="shots/dosie-s.webp" alt="Концепція А: обрано «Документ» — у фрагменті звіту обведено зіставлення документів" width="1200" height="750" loading="lazy"></div><p>Обрано «Документ»: переглядач наводить і обводить відповідний фрагмент. PDF не змінюється.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>А</b><span class="lbl">Світла · редакційна</span><span class="badge">Фіналіст</span></div>
+      <h2>Відкрите досьє</h2>
+      <p class="thesis">Якість аналізу видно ще до звернення: у першому екрані поруч із пропозицією — читабельний фрагмент справжнього звіту.</p>
+      <div><h3>Фірмова взаємодія</h3><p>Пояснення «Підстава», «Документ», «Ризик», «Рекомендація» наводять і обводять реальний фрагмент, поруч з’являється цитата з документа. Нижче — повний перегляд з легендою й мініатюрами сторінок.</p></div>
+      <div><h3>Що нового</h3><ul class="chg"><li>Чорнетка справжнього аналізу в переглядачі (у приватній версії)</li><li>Рух: смуга прочитання, маркер на «за 24 години», документ підіймається, після появи обводиться висновок, пояснення «спалахують», цифри прикладу рахуються, лінії розділів прокреслюються, відблиск ціни</li></ul></div>
+      <div><h3>Порядок</h3><p class="order">пропозиція → справжній звіт → що перевіряється → чотири кроки → ціна й межі → FAQ → форма → контакти</p></div>
+      <div><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#F5F2EB"></i>#F5F2EB</span><span><i style="background:#1F2328"></i>#1F2328</span><span><i style="background:#0F5C46"></i>#0F5C46</span><span><i style="background:#F4DC7A"></i>#F4DC7A</span></div><p style="margin-top:6px;color:var(--muted);font-size:.9rem">Source Serif 4 (заголовки), Onest (текст), IBM Plex Mono (примітки)</p></div>
+      <p class="risk"><b>Ризик:</b> дрібний текст і перевантаження документом. <b>Що зроблено:</b> фрагмент крупно, а не вся сторінка; короткі пояснення поза документом; на телефоні ціна й кнопка йдуть перед звітом.</p>
+      <div class="go"><a class="btn p" href="dosie.html">Відкрити прототип А →</a></div>
+    </div>
+  </article>
+
+  <article class="cpt" id="g" style="--c:var(--g)">
+    <div class="media">
+      <div class="shot"><div class="frame"><img src="shots/rozvytok-d.webp" alt="Перший екран концепції Г: чинний темно-синій перший екран із золотим підкресленням «за 24 години» і карткою пропозиції" width="1200" height="750" loading="lazy"></div>
+      <div class="phone"><img src="shots/rozvytok-m.webp" alt="Концепція Г на телефоні: як на чинному сайті, ціна й кнопки перед прокруткою" width="390" height="844" loading="lazy"></div></div>
+      <div class="sig"><div class="frame"><img src="shots/rozvytok-s.webp" alt="Концепція Г: новий розділ «Приклад звіту» — легенда ліворуч, обрано «Документ», у звіті обведено зіставлення документів" width="1200" height="750" loading="lazy"></div><p>Новий розділ «Приклад звіту»: обрано «Документ» — переглядач показує й обводить відповідний фрагмент.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>Г</b><span class="lbl">Чинний дизайн · розвиток</span><span class="badge">Фіналіст</span></div>
+      <h2>Розвиток чинного сайту</h2>
+      <p class="thesis">Той самий tenderwin.in.ua, який уже бачили клієнти: оформлення, кольори, шрифти й тексти без змін. Додано лише те, чого вимагає інструкція v3.0, і жвавіший рух.</p>
+      <div><h3>Що змінено (структура й дані)</h3><ul class="chg">
+        <li>Меню: Результат · Приклад звіту · Як замовити · Вартість · Контакти</li>
+        <li>Друга кнопка першого екрана — «Переглянути зразок аналізу» → новий розділ «Приклад звіту» з переглядачем і легендою</li>
+        <li>Крок 2: «Платіжні реквізити надамо додатково. До їх отримання оплату за цим рахунком здійснити неможливо.»</li>
+        <li>Прибрано «Працюємо за договором. Надаємо рахунок і акт…» — до підтвердження документообігу</li>
+        <li>Контакти: «замовте зворотний дзвінок» і місце віджета Zadarma</li></ul></div>
+      <div><h3>Рух</h3><p>Смуга прочитання, логотип прокреслюється, золоте підкреслення «за 24 години», картка пропозиції підіймається з відблиском ціни, лінія кроків, позначки результату по черзі, плавні відповіді FAQ, активний пункт меню. У режимі «менше руху» все статичне.</p></div>
+      <div><h3>Порядок</h3><p class="order">пропозиція → результат → приклад звіту → чотири кроки → ціна й межі → FAQ → форма й контакти</p></div>
+      <div><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#0B1B2B"></i>#0B1B2B</span><span><i style="background:#D9A441"></i>#D9A441</span><span><i style="background:#FAF7F0"></i>#FAF7F0</span><span><i style="background:#FFFFFF"></i>#FFFFFF</span></div><p style="margin-top:6px;color:var(--muted);font-size:.9rem">Fixel Display і Fixel Text — як на чинному сайті</p></div>
+      <p class="risk"><b>Ризик:</b> сайт виглядає майже так само, як зараз, — менше відчуття оновлення. <b>Що зроблено:</b> справжній звіт отримав власний розділ одразу після «Результату»; рух додає сучасності, не змінюючи бренду.</p>
+      <div class="go"><a class="btn p" href="rozvytok.html">Відкрити прототип Г →</a></div>
+    </div>
+  </article>
+
+  <div class="grp"><h2>Інші варіанти</h2><p>Лишаються для порівняння й запозичення елементів</p></div>
+
+  <article class="cpt" id="b" style="--c:var(--b)">
+    <div class="media">
+      <div class="shot"><div class="frame"><img src="shots/shliakh-d.webp" alt="Перший екран концепції Б: контрастний темний вступ із великим заголовком і рядком 3 499 грн · 24 години · 30 хвилин" width="1200" height="750" loading="lazy"></div>
+      <div class="phone"><img src="shots/shliakh-m.webp" alt="Концепція Б на телефоні" width="390" height="844" loading="lazy"></div></div>
+      <div class="sig"><div class="frame"><img src="shots/shliakh-s.webp" alt="Концепція Б: обрано питання «Які ризики?» — поруч фрагмент звіту з розділом «Ризики»" width="1200" height="750" loading="lazy"></div><p>Питання «Які ризики?» відкриває відповідну частину звіту. На телефоні відповідь розкривається під питанням.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>Б</b><span class="lbl">Контрастна · розповідь</span></div>
+      <h2>Шлях до рішення</h2>
+      <p class="thesis">Відвідувач бачить, як документи перетворюються на рекомендацію: лінія проходить через питання аналізу, матеріали й висновок.</p>
+      <div><h3>Фірмова взаємодія</h3><p>Чотири питання: «Що зазначив замовник?», «Що підтверджують документи?», «Які ризики?», «Що робити далі?». Кнопки, клавіатура, дотик. Без калькулятора шансів і без імітації аналізу.</p></div>
+      <div><h3>Порядок</h3><p class="order">пропозиція → питання клієнта → матеріали перевірки → фрагменти звіту та висновок → чотири кроки → ціна → FAQ → форма → контакти</p></div>
+      <div><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#0E1116"></i>#0E1116</span><span><i style="background:#FFFFFF"></i>#FFFFFF</span><span><i style="background:#2F5BFF"></i>#2F5BFF</span><span><i style="background:#F3F5F8"></i>#F3F5F8</span></div><p style="margin-top:6px;color:var(--muted);font-size:.9rem">Geologica — від тонкого до надширокого накреслення</p></div>
+      <p class="risk"><b>Ризик:</b> надмірна технологічність. <b>Що зроблено:</b> справжній документ у центрі, прості пояснення, головна дія завжди видна; лінія лише відображає прокрутку й не перехоплює її.</p>
+      <div class="go"><a class="btn p" href="shliakh.html">Відкрити прототип Б →</a></div>
+    </div>
+  </article>
+
+  <article class="cpt" id="v" style="--c:var(--v)">
+    <div class="media">
+      <div class="shot"><div class="frame"><img src="shots/spokii-d.webp" alt="Перший екран концепції В: світла площина, заголовок і темно-синя картка з ціною 3 499 грн" width="1200" height="750" loading="lazy"></div>
+      <div class="phone"><img src="shots/spokii-m.webp" alt="Концепція В на телефоні: ціна одразу під заголовком" width="390" height="844" loading="lazy"></div></div>
+      <div class="sig"><div class="frame"><img src="shots/spokii-s.webp" alt="Концепція В: великий перегляд звіту на темно-синій смузі зі змістом документа" width="1200" height="750" loading="lazy"></div><p>Розділ змісту «Ризики» переміщує переглядач до сторінки й обводить заголовок; «На весь екран» — широкий режим читання.</p></div>
+    </div>
+    <div class="txt">
+      <div class="num"><b>В</b><span class="lbl">Світла · темно-синя й золота</span></div>
+      <h2>Точність і спокій</h2>
+      <p class="thesis">Раціональний вибір завдяки прозорій послузі: специфікація «що входить у 3 499 грн», великий перегляд звіту, зрозумілі межі.</p>
+      <div><h3>Фірмова взаємодія</h3><p>Зміст документа поруч із великим переглядом: вибір розділу веде до сторінки. Стримані переходи; стани форми пояснюють результат дії.</p></div>
+      <div><h3>Порядок</h3><p class="order">пропозиція → що входить у 3 499 грн → великий перегляд звіту → як замовити → межі послуги та FAQ → форма → контакти</p></div>
+      <div><h3>Кольори й шрифти</h3><div class="sw"><span><i style="background:#0E2442"></i>#0E2442</span><span><i style="background:#C49A3E"></i>#C49A3E</span><span><i style="background:#F6F7F9"></i>#F6F7F9</span><span><i style="background:#13202F"></i>#13202F</span></div><p style="margin-top:6px;color:var(--muted);font-size:.9rem">Fixel Display і Fixel Text (MacPaw) — як на чинному сайті</p></div>
+      <p class="risk"><b>Ризик:</b> вигляд звичайного корпоративного шаблону. <b>Що зроблено:</b> специфікація замість карток, темно-синя смуга з великим документом, золото лише в деталях.</p>
+      <div class="go"><a class="btn p" href="spokii.html">Відкрити прототип В →</a></div>
+    </div>
+  </article>
+
+  <section id="porivnyannia" aria-labelledby="cmp-h">
+    <p class="lbl">Порівняння</p>
+    <h2 id="cmp-h" style="margin-top:8px">Чим відрізняються концепції</h2>
+    <div class="tw">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col" style="--c:var(--a)"><i></i>А · Відкрите досьє</th><th scope="col" style="--c:var(--g)"><i></i>Г · Розвиток чинного сайту</th><th scope="col" style="--c:var(--b)"><i></i>Б · Шлях до рішення</th><th scope="col" style="--c:var(--v)"><i></i>В · Точність і спокій</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Зрозумілість</th><td>Висока: пропозиція й документ поруч</td><td>Висока: знайома структура чинного сайту</td><td>Висока: питання клієнта ведуть до відповіді</td><td>Найвища: специфікація послуги одним списком</td></tr>
+          <tr><th scope="row">Довіра</th><td>Справжній документ — у першому екрані</td><td>Звіт у другому розділі, після «Результату»</td><td>Документ у другому екрані, після питань</td><td>Ціна, межі, реквізити й великий документ</td></tr>
+          <tr><th scope="row">Показ звіту</th><td>Крупний фрагмент + повна сторінка з легендою</td><td>Повна сторінка з легендою й мініатюрами</td><td>Фрагмент за питанням + повна сторінка</td><td>Великий перегляд зі змістом документа</td></tr>
+          <tr><th scope="row">Мобільне читання</th><td>Ціна й кнопка перед звітом; фрагмент без нахилу</td><td>Як на чинному сайті; легенда над звітом</td><td>Питання розкриваються під собою</td><td>Один стовпець, PDF на весь екран</td></tr>
+          <tr><th scope="row">Виразність</th><td>Редакційна, найбільш «авторська»</td><td>Чинний бренд без змін + жвавіший рух</td><td>Найконтрастніша, велика типографіка</td><td>Стримана, розвиток чинного бренду</td></tr>
+          <tr><th scope="row">Швидкість (лабораторно)</th><td>593 КБ, CLS 0,007</td><td>356 КБ, CLS 0</td><td>320 КБ, CLS 0</td><td>312 КБ, CLS 0,002</td></tr>
+          <tr><th scope="row">Перехід із чинного сайту</th><td>Новий дизайн повністю</td><td>Мінімальний: та сама розмітка й стилі</td><td>Новий дизайн повністю</td><td>Близький до чинного бренду, нова розмітка</td></tr>
+          <tr><th scope="row">Складність підтримки</th><td>Середня: позначки фрагментів для кожного звіту</td><td>Найнижча: чинний код сайту + позначки фрагментів</td><td>Середня: позначки фрагментів для кожного звіту</td><td>Нижча: потрібен лише зміст документа</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:10px;font-size:.86rem;color:var(--muted)">Швидкість — локальний сервер без обмеження мережі, Chromium, перше завантаження, ширина 390 і 1440 px. Це не польові дані відвідувачів.</p>
+    <div class="fav">
+      <div class="main" style="--c:var(--a)"><p class="lbl">Фіналіст · якщо важливо, щоб звіт продавав послугу</p><h3>А · Відкрите досьє</h3><p>Єдиний варіант, де результат роботи видно в першому кадрі: ще до прокрутки людина бачить, який документ отримає за 3 499 грн і як у ньому розібрано підставу, документи, ризики й рекомендацію. Сайт виглядає по-новому. Це творча гіпотеза, а не прогноз конверсії; перевірити її варто на чистових звітах.</p></div>
+      <div class="main" style="--c:var(--g)"><p class="lbl">Фіналіст · якщо важливо зберегти впізнаваність</p><h3>Г · Розвиток чинного сайту</h3><p>Найменше змін і ризиків: той самий вигляд, до якого вже звикли клієнти, плюс розділ зі звітом, обов’язкові зміни v3.0 і жвавіший рух. Найшвидший шлях до чистової версії на етапі 2.</p></div>
+    </div>
+    <div class="fav" style="margin-top:16px">
+      <div><p class="lbl">Моя оцінка</p><h3>А — сильніша вітрина, Г — найбезпечніший перехід</h3><p>Якщо мета — виділитися й одразу показати якість аналізу, обирайте А. Якщо важливіша спадкоємність і швидкий запуск — Г. Остаточний вибір за Вами.</p></div>
+      <div><p class="lbl">Що можна поєднати</p><h3>Елементи інших варіантів</h3><p>У Г — фрагмент звіту з поясненнями в першому екрані з А. З В — специфікацію «що входить у 3 499 грн» і зміст документа в повноекранному перегляді. З Б — питання клієнта як мобільну навігацію по звіту. Напишіть, що взяти, і я внесу це в основу етапу 2.</p></div>
+    </div>
+  </section>
+
+  <section id="logo" aria-labelledby="logo-h">
+    <p class="lbl">Окрема пропозиція</p>
+    <h2 id="logo-h" style="margin-top:8px">Еволюція логотипа</h2>
+    <p style="margin-top:10px;color:var(--muted);max-width:70ch">Назва, кольори й знак «T» лишаються. Три напрями розвитку — кожен підсилює головну ідею послуги: документ і посилання на джерела. Це лише пропозиція; змінювати логотип необов’язково.</p>
+    <div class="logos">
+      <div class="logo"><h3>Чинний знак</h3>
+        <div class="row"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E2442"/><path d="M14 20h36M32 20v26M22 44h20" stroke="#C49A3E" stroke-width="6" stroke-linecap="round"/></svg><span class="wm">Tender<b>Win</b></span></div>
+        <p>Темно-синій квадрат і золота «T» з основою. Упізнаваний, але без зв’язку з документом.</p></div>
+      <div class="logo"><h3>1 · Аркуш</h3>
+        <div class="row"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 6h32l12 12v40H10z" fill="#0E2442"/><path d="M42 6v12h12" fill="#22446F"/><path d="M20 26h24M32 26v20M25 46h14" stroke="#C49A3E" stroke-width="5" stroke-linecap="round"/></svg><span class="wm">Tender<b>Win</b></span></div>
+        <div class="row dark"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 6h32l12 12v40H10z" fill="#FFFFFF"/><path d="M42 6v12h12" fill="#D8DEE8"/><path d="M20 26h24M32 26v20M25 46h14" stroke="#0E2442" stroke-width="5" stroke-linecap="round"/></svg><span class="wm">Tender<b>Win</b></span></div>
+        <p>Знак стає аркушем із загнутим кутом: «висновок, який Ви отримаєте». Найближче до концепції В.</p></div>
+      <div class="logo"><h3>2 · Посилання</h3>
+        <div class="row"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E2442"/><path d="M17 15h-5v34h5M47 15h5v34h-5" stroke="#C49A3E" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 23h18M32 23v19M27 42h10" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/></svg><span class="wm">Tender<b>Win</b></span></div>
+        <div class="row dark"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M17 15h-5v34h5M47 15h5v34h-5" stroke="#C49A3E" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 23h18M32 23v19M27 42h10" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/></svg><span class="wm">Tender<b>Win</b></span></div>
+        <p>«T» у квадратних дужках, як посилання на джерело: «кожен висновок — з посиланням». Пасує до Б.</p></div>
+      <div class="logo"><h3>3 · Позначка на полях</h3>
+        <div class="row"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E2442"/><path d="M15 14v36" stroke="#C49A3E" stroke-width="5" stroke-linecap="round"/><path d="M25 21h24M37 21v24M31 45h12" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/></svg><span class="wm">Tender<b>Win</b></span></div>
+        <div class="row dark"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M15 14v36" stroke="#C49A3E" stroke-width="5" stroke-linecap="round"/><path d="M25 21h24M37 21v24M31 45h12" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/></svg><span class="wm">Tender<b>Win</b></span></div>
+        <p>Золота риска ліворуч — як позначка юриста на полях документа. Найближче до А.</p></div>
+    </div>
+  </section>
+
+  <section id="potribno" aria-labelledby="need-h">
+    <p class="lbl">Перед етапом 2</p>
+    <h2 id="need-h" style="margin-top:8px">Що потрібно від Вас</h2>
+    <div class="need">
+      <div><h3>1. Вибір концепції</h3><p>А чи Г (або Б, В), які елементи взяти з інших варіантів і Ваші зауваження.</p></div>
+      <div><h3>2. Два чистові платні аналізи</h3><p>PDF у тому вигляді, який отримує клієнт: один з рекомендацією оскаржувати, один без неї. Ви надасте їх уже знеособленими; вони замінять чорнетку. Перед розміщенням я ще раз перевірю знеособлення (ID закупівлі, назви, коди, підписи, метадані).</p></div>
+      <div><h3>3. Налаштування віджета Zadarma</h3><p>Код віджета з кабінету, графік відповіді за Києвом, тексти заголовка й кнопки, номер або SIP для вхідних дзвінків (не публікується).</p></div>
+      <div><h3>4. Шаблон листа після заявки</h3><p>Текст, який клієнт отримує одразу після оформлення заявки.</p></div>
+    </div>
+    <p class="foot">До публікації також знадобляться: IBAN і назва банку (вносяться як секрети Cloudflare, не в чат), підтвердження податкового статусу, умови консультації й повернення коштів, підтвердження «незалежної перевірки», чи безкоштовний дзвінок на 0 800, порядок документообігу, контрольні адреса й телефон для тестів. Повний перелік, реєстр вимог і запропоновані зміни текстів — у звіті етапу 1 (docs/v3-etap-1/zvit.md у репозиторії). Етап 2 почнеться лише після того, як чотири пункти вище буде отримано й перевірено.</p>
+  </section>
+</div>
+
+</body>
+</html>

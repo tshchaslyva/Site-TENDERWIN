@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+{{HEAD:Атлас — концепція 4 · TenderWin|Аналіз відхилення тендерної пропозиції за 24 години та 30-хвилинна консультація. 3 499 грн.}}
+<style>
+{{CORE_CSS}}
+/* ================= КОНЦЕПЦІЯ 4 · «АТЛАС» — розкішний журнальний стиль ================= */
+:root{
+  --paper:#F6F2EA; --paper2:#EEE7DA; --card:#FBF8F2; --ink:#1C1B18; --ink2:#3A3832; --muted:#7A746A; --line:rgba(28,27,24,.16); --line2:rgba(28,27,24,.32);
+  --brass:#A07A3F; --brass2:#C29A5B; --strong:#2F5D46; --medium:#A8681A; --weak:#8A3A2E;
+  --focus:#A07A3F; --accent:#2F5D46; --err:#8A3A2E; --wrap:1180px;
+  --disp:"Playfair Display",Georgia,serif; --serif:"Source Serif 4",Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,monospace; --num:"Cormorant Garamond",Georgia,serif;
+}
+body{background:var(--paper);color:var(--ink);font:400 18px/1.7 var(--serif)}
+::selection{background:#E7D7B8}
+.wrap{width:min(100% - 48px,var(--wrap))}
+@media(max-width:600px){.wrap{width:calc(100% - 32px)}}
+h1,h2,h3{font-family:var(--disp);font-weight:500;letter-spacing:-.015em;line-height:1.08}
+h2{font-size:clamp(2.1rem,4.4vw,3.6rem)}
+h3{font-size:1.35rem;line-height:1.25}
+em,.it{font-family:var(--disp);font-style:italic;font-weight:500}
+.lbl{font:500 .72rem/1.4 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.rule{height:1px;background:var(--ink);transform-origin:left;transform:scaleX(0);transition:transform 1.4s cubic-bezier(.7,0,.2,1)}
+.rule.in,.in .rule,.go .rule.top{transform:none}
+.dbl{border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);height:7px}
+.prog{position:fixed;left:0;top:0;height:2px;background:var(--brass);z-index:100;width:calc(var(--sp,0)*100%)}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.7em;padding:1.05em 1.8em;font:600 .78rem var(--mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border:1px solid var(--ink);transition:background .35s,color .35s,letter-spacing .35s}
+.btn-primary{background:var(--ink);color:var(--paper)}
+.btn-primary:hover{background:var(--strong);border-color:var(--strong);letter-spacing:.18em}
+.btn-ghost{background:transparent;color:var(--ink)}
+.btn-ghost:hover{background:var(--ink);color:var(--paper)}
+.ln{color:var(--ink);text-decoration:none;background:linear-gradient(var(--brass),var(--brass)) 0 100%/100% 1px no-repeat;padding-bottom:2px;transition:background-size .4s}
+.ln:hover{background-size:0 1px;background-position:100% 100%}
+
+/* шапка-масштабний заголовок */
+.mast{padding-top:18px}
+.mast .top{display:flex;justify-content:space-between;gap:20px}
+.mast .name{display:block;text-align:center;font:700 clamp(3rem,10vw,8.4rem)/.9 var(--disp);letter-spacing:-.035em;margin:14px 0 16px;text-decoration:none;color:var(--ink)}
+.mast .name i{font-style:italic;font-weight:500;color:var(--brass)}
+.mast nav{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 34px;padding:12px 0}
+.mast nav a{font:500 .74rem var(--mono);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--ink2)}
+.mast nav a:hover{color:var(--brass)}
+@media(max-width:700px){.mast .top span:nth-child(2){display:none}.mast nav{display:none}.mast .dbl{margin-bottom:0}}
+.hdr{position:fixed;left:0;right:0;top:0;z-index:70;background:rgba(246,242,234,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transform:translateY(-100%);transition:transform .45s cubic-bezier(.7,0,.2,1)}
+.hdr.show{transform:none}
+.hdr .in{display:flex;align-items:center;gap:24px;height:62px}
+.hdr .nm{font:700 1.45rem var(--disp);letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+.hdr .nm i{font-style:italic;font-weight:500;color:var(--brass)}
+.hdr .tel{margin-left:auto;font:500 .86rem var(--mono);text-decoration:none;white-space:nowrap}
+.hdr .btn{padding:.8em 1.2em;font-size:.7rem}
+@media(max-width:600px){.hdr .btn{display:none}}
+
+/* ---------- перший екран ---------- */
+.hero{padding:64px 0 90px}
+.hero .g{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px}
+.hero .l{grid-column:1 / span 8}
+.hero .r{grid-column:9 / span 4;border-left:1px solid var(--line);padding-left:28px}
+@media(max-width:960px){.hero .g{grid-template-columns:1fr}.hero .l,.hero .r{grid-column:1}.hero .r{border-left:0;padding-left:0;margin-top:56px;border-top:1px solid var(--line);padding-top:30px}}
+.hero h1{font-size:clamp(2.7rem,6.2vw,5.8rem);line-height:1.02;margin:18px 0 0;letter-spacing:-.025em}
+.js .hero h1 .w>span{transform:translateY(105%);transition:transform 1.3s cubic-bezier(.7,0,.2,1);transition-delay:calc(var(--i)*60ms + .2s)}
+.go .hero h1 .w>span{transform:none}
+.hero h1 .hl>span{font-style:italic;color:var(--brass)}
+.hero .lede{margin-top:34px;font-size:1.2rem;line-height:1.65;max-width:56ch;color:var(--ink2)}
+.hero .lede::first-letter{float:left;font:500 4.6em/.8 var(--disp);margin:.06em .1em 0 0;color:var(--brass)}
+.hero .acts{display:flex;flex-wrap:wrap;align-items:center;gap:24px 30px;margin-top:36px}
+.hero .note{margin-top:20px;font-size:.95rem;color:var(--muted);font-style:italic}
+.seal{position:relative;width:min(100%,250px);aspect-ratio:1;margin:0 auto 26px}
+.seal svg{width:100%;height:100%}
+.seal .c1,.seal .c2{fill:none;stroke:var(--ink);stroke-width:1;stroke-dasharray:var(--l);stroke-dashoffset:var(--l);transition:stroke-dashoffset 2.4s cubic-bezier(.7,0,.2,1)}
+.seal .c2{stroke-width:.6;transition-delay:.4s}
+.go .seal .c1,.go .seal .c2{stroke-dashoffset:0}
+.seal text{font:500 9.4px var(--mono);letter-spacing:.32em;text-transform:uppercase;fill:var(--ink2)}
+.seal .rt{transform-origin:125px 125px;animation:rot 60s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.seal .mid{position:absolute;inset:0;display:grid;place-items:center;text-align:center;opacity:0;transition:opacity 1.2s 1.4s}
+.go .seal .mid{opacity:1}
+.seal .mid b{display:block;font:600 2.6rem/1 var(--num);letter-spacing:-.01em}
+.seal .mid span{font:500 .62rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.toc li{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:1rem}
+.toc li:last-child{border-bottom:1px solid var(--line)}
+.toc .n{font:600 1.1rem var(--num);color:var(--brass);width:26px}
+.toc a{text-decoration:none;color:var(--ink)}
+.toc a:hover{color:var(--brass)}
+.toc .dots{flex:1;border-bottom:1px dotted var(--line2);transform:translateY(-4px)}
+.toc .p{font:500 .74rem var(--mono);color:var(--muted)}
+
+/* цитата */
+.pull{padding:80px 0;background:var(--paper2);border-block:1px solid var(--line);position:relative;overflow:hidden}
+.pull blockquote{margin:0 auto;max-width:28ch;text-align:center;font:500 italic clamp(1.8rem,3.8vw,3.2rem)/1.22 var(--disp);letter-spacing:-.01em}
+.pull blockquote::before{content:"“";display:block;font:500 7rem/.5 var(--disp);color:var(--brass);margin-bottom:22px}
+.pull p{text-align:center;margin-top:26px}
+
+section{padding:120px 0}
+@media(max-width:760px){section{padding:78px 0}}
+.ch{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px;align-items:end;margin-bottom:60px}
+.ch .rn{grid-column:1 / span 3;font:500 clamp(6rem,13vw,11rem)/.8 var(--num);color:transparent;-webkit-text-stroke:1px var(--brass);transform:translateY(calc((var(--p,.5) - .5)*-60px))}
+.ch .tx{grid-column:4 / span 9}
+.ch .tx .lbl{display:block;margin-bottom:14px}
+.ch .lede{margin-top:20px;color:var(--ink2);font-size:1.12rem;max-width:62ch}
+@media(max-width:860px){.ch{grid-template-columns:1fr}.ch .rn,.ch .tx{grid-column:1}.ch .rn{font-size:5.5rem;margin-bottom:10px}}
+
+/* ---------- метод ---------- */
+.acts4{display:grid;grid-template-columns:repeat(4,1fr);gap:0 28px}
+@media(max-width:1000px){.acts4{grid-template-columns:1fr 1fr;gap:40px 28px}}
+@media(max-width:600px){.acts4{grid-template-columns:1fr}}
+.act .rule{margin-bottom:22px}
+.act .n{font:600 3.6rem/1 var(--num);color:var(--brass)}
+.act h3{margin:10px 0 12px}
+.act p{color:var(--ink2);font-size:1rem}
+.act .fn{margin-top:16px;padding-top:12px;border-top:1px dotted var(--line2);font:500 .74rem/1.5 var(--mono);color:var(--muted)}
+.act .fn sup{color:var(--brass)}
+
+/* ---------- справи ---------- */
+.tabs{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--line)}
+.tab{all:unset;cursor:pointer;flex:1 1 0;min-width:200px;padding:18px 20px;border-right:1px solid var(--line);transition:background .3s}
+.tab:last-child{border-right:0}
+.tab .lbl{display:block;margin-bottom:6px}
+.tab .t{font:500 italic 1.08rem/1.3 var(--disp)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.tab[aria-selected="true"] .lbl{color:var(--brass2)}
+.tab:hover:not([aria-selected="true"]){background:var(--paper2)}
+.tab:focus-visible{outline:2px solid var(--brass);outline-offset:-2px}
+@media(max-width:700px){.tab{min-width:0;flex:1 1 100%;border-right:0;border-bottom:1px solid var(--line)}}
+.spread{perspective:2200px;margin-top:28px}
+.book{display:grid;grid-template-columns:1fr 1.45fr;background:var(--card);border:1px solid var(--line2);box-shadow:0 30px 60px -40px rgba(28,27,24,.45);transform-origin:left center;transition:transform .55s cubic-bezier(.7,0,.2,1),opacity .4s}
+.book.turn{transform:rotateY(-14deg) translateX(-10px);opacity:0}
+@media(max-width:900px){.book{grid-template-columns:1fr}}
+.book .pg{padding:44px 40px;position:relative}
+.book .pg.a{background:linear-gradient(90deg,var(--card) 85%,#EFE8DA);border-right:1px solid var(--line)}
+@media(max-width:900px){.book .pg.a{background:var(--card);border-right:0;border-bottom:1px solid var(--line)}}
+@media(max-width:560px){.book .pg{padding:28px 20px}}
+.book .pno{position:absolute;bottom:16px;font:500 .7rem var(--mono);color:var(--muted)}
+.book .pg.a .pno{left:40px}.book .pg.b .pno{right:40px}
+.book h3{font-size:clamp(1.6rem,2.6vw,2.2rem);margin:14px 0 24px;line-height:1.12}
+.book dl{display:grid;gap:14px;border-top:1px solid var(--line);padding-top:18px}
+.book dt{font:500 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.book dd{margin:2px 0 0;font-size:1rem}
+.vseal{position:relative;width:190px;height:190px;margin:34px 0 10px;color:var(--c)}
+.vseal svg{width:100%;height:100%;overflow:visible}
+.vseal .o{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:540;stroke-dashoffset:540;transition:stroke-dashoffset 1.6s .2s cubic-bezier(.7,0,.2,1)}
+.vseal .i2{fill:none;stroke:currentColor;stroke-width:.7;stroke-dasharray:3 4;opacity:0;transition:opacity .6s 1.2s}
+.book.drawn .vseal .o{stroke-dashoffset:0}.book.drawn .vseal .i2{opacity:1}
+.vseal .t{position:absolute;inset:28px;display:grid;place-items:center;text-align:center;font:500 italic 1.15rem/1.15 var(--disp);opacity:0;transform:scale(1.3) rotate(-8deg);transition:opacity .5s 1s,transform .6s 1s cubic-bezier(.3,1.5,.5,1)}
+.book.drawn .vseal .t{opacity:1;transform:rotate(-8deg)}
+.vseal .t small{display:block;font:500 .56rem var(--mono);letter-spacing:.16em;text-transform:uppercase;font-style:normal;margin-top:8px}
+.book .pg.b{display:grid;grid-template-columns:1fr 170px;gap:0 30px;align-content:start}
+@media(max-width:700px){.book .pg.b{grid-template-columns:1fr}}
+.book .main>*+*{margin-top:22px}
+.book .side{border-left:1px solid var(--line);padding-left:18px;font:500 .74rem/1.55 var(--mono);color:var(--muted)}
+@media(max-width:700px){.book .side{border-left:0;padding-left:0;border-top:1px dotted var(--line2);padding-top:14px;margin-top:24px}}
+.book .side p+p{margin-top:16px}
+.book .side sup,.book .main sup{color:var(--brass);font:600 .72rem var(--mono)}
+.book blockquote{margin:0;font:500 italic 1.3rem/1.45 var(--disp);color:var(--ink)}
+.book .pair{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:560px){.book .pair{grid-template-columns:1fr}}
+.book .k{display:block;font:500 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.book .main p{font-size:1rem;color:var(--ink2)}
+.book .gain{border-top:1px solid var(--line);padding-top:16px;font:500 italic 1.1rem/1.45 var(--disp);color:var(--c)}
+.book .main>*{opacity:0;transform:translateY(10px);transition:opacity .6s,transform .7s cubic-bezier(.2,.75,.2,1)}
+.book.drawn .main>*{opacity:1;transform:none}
+.book.drawn .main>*:nth-child(2){transition-delay:.1s}.book.drawn .main>*:nth-child(3){transition-delay:.2s}.book.drawn .main>*:nth-child(4){transition-delay:.3s}.book.drawn .main>*:nth-child(5){transition-delay:.4s}.book.drawn .main>*:nth-child(6){transition-delay:.5s}
+.cases .foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;margin-top:24px}
+.cases .disc{font:italic 400 .95rem var(--serif);color:var(--muted);max-width:64ch}
+
+/* ---------- результат ---------- */
+.res3{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px}
+.res3 .l{grid-column:1 / span 7}.res3 .r{grid-column:9 / span 4}
+@media(max-width:900px){.res3{grid-template-columns:1fr}.res3 .l,.res3 .r{grid-column:1}.res3 .r{margin-top:50px}}
+.res3 ol li{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:18px 0;border-top:1px solid var(--line);font-size:1.08rem}
+.res3 ol li:last-child{border-bottom:1px solid var(--line)}
+.res3 .i{font:600 2rem/1 var(--num);color:var(--brass)}
+.cons{border:1px solid var(--ink);padding:34px 30px;text-align:center;background:var(--card);position:relative}
+.cons::before{content:"";position:absolute;inset:6px;border:1px solid var(--line);pointer-events:none}
+.cons .big{font:500 7rem/.9 var(--num);letter-spacing:-.02em}
+.cons .big sup{font-size:.4em;color:var(--brass);vertical-align:.9em}
+.cons h3{margin:14px 0 10px}
+.cons p{font-size:.98rem;color:var(--ink2)}
+.nb{margin-top:60px;display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px}
+.nb .lbl{grid-column:1 / span 3;padding-top:6px}
+.nb p{grid-column:4 / span 8;font:500 italic clamp(1.25rem,2vw,1.6rem)/1.45 var(--disp);border-left:2px solid var(--brass);padding-left:24px}
+@media(max-width:860px){.nb{grid-template-columns:1fr}.nb .lbl,.nb p{grid-column:1}.nb .lbl{margin-bottom:12px}}
+
+/* ---------- кроки як зміст ---------- */
+.steps{border-top:1px solid var(--ink)}
+.step{display:grid;grid-template-columns:90px 1fr;gap:6px 24px;padding:26px 0;border-bottom:1px solid var(--line)}
+.step .n{grid-row:1 / span 2;font:500 3.4rem/1 var(--num);color:var(--brass)}
+.step h3{display:flex;align-items:baseline;gap:14px;font-size:clamp(1.25rem,2vw,1.6rem)}
+.step h3::after{content:"";flex:1;border-bottom:1px dotted var(--line2);order:1;transform:translateY(-6px)}
+.step .tag{order:2;grid-column:2;grid-row:1;justify-self:end;font:500 .74rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--strong);align-self:center}
+.step p{color:var(--ink2);font-size:1rem;max-width:70ch}
+.step{position:relative}
+.step .tag{position:absolute;right:0;top:34px;background:var(--paper);padding-left:10px}
+@media(max-width:600px){.step{grid-template-columns:56px 1fr}.step .n{font-size:2.4rem}.step .tag{position:static;grid-column:2;justify-self:start;padding:0}.step h3::after{display:none}}
+
+/* ---------- вартість ---------- */
+.menu{border:1px solid var(--ink);background:var(--card);padding:6px}
+.menu .in{border:1px solid var(--line2);padding:56px clamp(22px,5vw,64px);text-align:center}
+.menu .lbl{display:block;margin-bottom:18px}
+.menu .row{display:flex;align-items:baseline;gap:14px;text-align:left;margin:22px 0 10px}
+.menu .row h2{font-size:clamp(1.4rem,2.8vw,2.2rem);line-height:1.15}
+.menu .row .dots{flex:1;border-bottom:1px dotted var(--ink);transform:translateY(-8px);min-width:30px}
+.menu .row .amt{font:600 clamp(2.4rem,5vw,3.8rem)/1 var(--num);white-space:nowrap}
+.menu .row .amt small{font:500 .9rem var(--mono);letter-spacing:.1em;margin-left:6px}
+@media(max-width:700px){.menu .row{flex-direction:column;align-items:flex-start}.menu .row .dots{display:none}}
+.menu .desc{text-align:left;color:var(--ink2);max-width:70ch}
+.menu .two{display:grid;grid-template-columns:1fr 1fr;gap:30px;text-align:left;margin-top:30px;padding-top:24px;border-top:1px solid var(--line)}
+@media(max-width:700px){.menu .two{grid-template-columns:1fr;gap:18px}}
+.menu .two p{font-size:.98rem;color:var(--ink2)}
+.menu .two .k{display:block;font:500 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+.menu .two .yes .k{color:var(--strong)}.menu .two .no .k{color:var(--weak)}
+.menu .btn{margin-top:36px}
+.contract{text-align:center;margin-top:28px;font-style:italic;color:var(--ink2)}
+.contract b{font-style:normal;font-weight:600}
+
+/* ---------- FAQ ---------- */
+.faqg{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px}
+.faqg .h{grid-column:1 / span 4}.faqg .faq{grid-column:5 / span 8}
+@media(max-width:900px){.faqg{grid-template-columns:1fr}.faqg .h,.faqg .faq{grid-column:1}.faqg .h{margin-bottom:30px}}
+.faq{border-top:1px solid var(--ink);counter-reset:q}
+.faq details{border-bottom:1px solid var(--line);counter-increment:q}
+.faq summary{padding:22px 0;font:500 italic 1.25rem/1.35 var(--disp)}
+.faq summary span::before{content:"№ " counter(q) "  ";font:500 .74rem var(--mono);font-style:normal;letter-spacing:.1em;color:var(--brass);margin-right:6px;vertical-align:.18em}
+.faq summary i{width:22px;height:22px;flex-shrink:0;position:relative}
+.faq summary i::before,.faq summary i::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:1px;background:var(--ink);transform:translate(-50%,-50%)}
+.faq summary i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .4s}
+.faq details[open] summary i::after{transform:translate(-50%,-50%) rotate(0)}
+.faq .ans{color:var(--ink2);padding-bottom:24px;font-size:1rem}
+
+/* ---------- форма ---------- */
+.fg{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px}
+.fg .l{grid-column:1 / span 5}.fg .r{grid-column:6 / span 7}
+@media(max-width:960px){.fg{grid-template-columns:1fr}.fg .l,.fg .r{grid-column:1}.fg .r{margin-top:40px}}
+.fg .sub{margin-top:20px;color:var(--ink2);font-size:1.08rem}
+.side-c{margin-top:40px;border-top:1px solid var(--ink);padding-top:20px}
+.side-c h3{font-style:italic}
+.side-c>p{color:var(--ink2);font-size:.98rem;margin:8px 0 14px}
+.contacts li{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.contacts .k{font:500 .7rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+.contacts .v{text-decoration:none;font-weight:600;overflow-wrap:anywhere}
+.contacts a.v:hover{color:var(--brass)}
+.tw-form{background:var(--card);border:1px solid var(--line2);padding:36px;gap:22px}
+@media(max-width:560px){.tw-form{padding:22px 16px}}
+.tw-form label{font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.tw-form .chk{font:400 .96rem var(--serif);text-transform:none;letter-spacing:0}
+.tw-form .req{color:var(--brass);margin-left:3px}
+.tw-form .opt{color:var(--muted);text-transform:none;letter-spacing:0}
+.tw-form input,.tw-form textarea{background:transparent;border:0;border-bottom:1px solid var(--line2);border-radius:0;padding:10px 0;font:400 1.02rem var(--serif);color:var(--ink);transition:border-color .3s}
+.tw-form textarea{border:1px solid var(--line2);padding:12px}
+.tw-form input:focus,.tw-form textarea:focus{outline:none;border-color:var(--brass)}
+.tw-form input::placeholder,.tw-form textarea::placeholder{color:#A39C90;font-style:italic}
+.tw-form [aria-invalid="true"]{border-color:var(--err)}
+.tw-form .hint{font:italic 400 .88rem var(--serif);color:var(--muted)}
+.tw-form .chk a{color:var(--strong)}
+.tw-form button{width:100%;padding:1.3em}
+.tw-form .msg{padding:16px 18px;border:1px solid;font-family:var(--serif)}
+.tw-form .msg.ok{background:#EAF0EA;border-color:var(--strong);color:#1F4232}
+.tw-form .msg.err{background:#F5E7E3;border-color:var(--err);color:#5E241B}
+.tw-form .note{font-style:italic}
+
+/* ---------- футер ---------- */
+.ft{border-top:3px solid var(--ink);padding:60px 0 34px;text-align:center}
+.ft .nm{font:700 clamp(3rem,9vw,7rem)/.9 var(--disp);letter-spacing:-.035em}
+.ft .nm i{font-style:italic;font-weight:500;color:var(--brass)}
+.ft p{max-width:62ch;margin:20px auto 0;color:var(--ink2);font-size:1rem}
+.ft nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 28px;margin-top:26px}
+.ft nav a{font:500 .72rem var(--mono);letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
+.ft nav a:hover{color:var(--brass)}
+.ft .legal{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font:500 .72rem var(--mono);color:var(--muted)}
+.ft .legal a{color:var(--ink);text-decoration:none}
+.ft .colo{margin-top:16px;font:italic 400 .85rem var(--serif);color:var(--muted)}
+
+.mbar{background:var(--ink);color:var(--paper);border-radius:0}
+.mbar .btn{padding:.9em 1.1em;font-size:.68rem;background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.mbar .call{width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(246,242,234,.35);flex-shrink:0;color:var(--paper)}
+.mbar .call svg{width:18px;height:18px}
+</style>
+</head>
+<body>
+<div class="prog" aria-hidden="true"></div>
+<header class="hdr" id="hdr">
+  <div class="wrap in">
+    <a class="nm" href="#top">Tender<i>Win</i></a>
+    <a class="tel" href="{{PHONE_HREF}}">{{PHONE}}</a>
+    <a class="btn btn-primary" href="#zayavka">{{BTN}}</a>
+  </div>
+</header>
+
+<div class="mast" id="top">
+  <div class="wrap">
+    <div class="top lbl"><span>Випуск № 1 · жовтень 2026</span><span>Аналіз відхилень · Prozorro</span><span><a class="ln" href="{{PHONE_HREF}}" style="color:var(--muted)">{{PHONE}}</a></span></div>
+    <div class="rule top" style="margin-top:12px"></div>
+    <a class="name" href="#top" aria-label="TenderWin — на початок">Tender<i>Win</i></a>
+    <div class="dbl"></div>
+    <nav aria-label="Розділи"><a href="#metod">I · Метод</a><a href="#spravy">II · Справи</a><a href="#rezultat">III · Результат</a><a href="#yak">IV · Кроки</a><a href="#vartist">V · Вартість</a><a href="#pytannya">Питання</a><a href="#zayavka">Заявка</a></nav>
+    <div class="rule top"></div>
+  </div>
+</div>
+
+<main>
+<section class="hero" style="padding-top:60px">
+  <div class="wrap g">
+    <div class="l">
+      <p class="lbl">{{KICKER}}</p>
+      <h1 data-split id="h1">{{H1}}</h1>
+      <p class="lede" data-r data-d="600">{{LEDE}}</p>
+      <div class="acts" data-r data-d="750"><a class="btn btn-primary" href="#zayavka">{{BTN}}</a><a class="ln it" href="#spravy" style="font-size:1.15rem">{{BTN2}} →</a></div>
+      <p class="note" data-r data-d="850">{{NOTE}}</p>
+    </div>
+    <aside class="r">
+      <div class="seal" aria-hidden="true">
+        <svg viewBox="0 0 250 250"><circle class="c1" cx="125" cy="125" r="118"/><circle class="c2" cx="125" cy="125" r="84"/>
+          <defs><path id="sp" d="M125,125 m-100,0 a100,100 0 1,1 200,0 a100,100 0 1,1 -200,0"/></defs>
+          <g class="rt"><text><textPath href="#sp" textLength="620" lengthAdjust="spacing">Аналіз · Висновок за 24 години · Консультація 30 хвилин ·</textPath></text></g></svg>
+        <div class="mid"><div><b>3 499</b><span>грн · усе разом</span></div></div>
+      </div>
+      <p class="lbl" style="margin-bottom:10px">У цьому випуску</p>
+      <ol class="toc">
+        <li><span class="n">I</span><a href="#metod">Метод</a><span class="dots"></span><span class="p">с. 2</span></li>
+        <li><span class="n">II</span><a href="#spravy">Три справи</a><span class="dots"></span><span class="p">с. 3</span></li>
+        <li><span class="n">III</span><a href="#rezultat">Що Ви отримаєте</a><span class="dots"></span><span class="p">с. 4</span></li>
+        <li><span class="n">IV</span><a href="#yak">Як замовити</a><span class="dots"></span><span class="p">с. 5</span></li>
+        <li><span class="n">V</span><a href="#vartist">Вартість</a><span class="dots"></span><span class="p">с. 6</span></li>
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<div class="pull"><div class="wrap"><blockquote data-r>Ми не завжди радимо оскаржувати: інколи найцінніше — вчасно дізнатися, що скарга не має шансів.</blockquote><p class="lbl" data-r data-d="200">Принцип роботи TenderWin</p></div></div>
+
+<section id="metod">
+  <div class="wrap">
+    <div class="ch" data-progress><span class="rn" aria-hidden="true">I</span><div class="tx"><span class="lbl">Розділ I · Метод</span><h2 data-r>Кожну підставу — окремо. Кожен висновок — <em>з посиланням.</em></h2></div></div>
+    <div class="acts4">
+      <article class="act" data-r><div class="rule"></div><span class="n">1</span><h3>Читаємо рішення замовника</h3><p>Беремо дослівне формулювання й розбиваємо його на окремі підстави відхилення.</p><p class="fn"><sup>1</sup> Рішення про відхилення, підстава № 1</p></article>
+      <article class="act" data-r data-d="120"><div class="rule"></div><span class="n">2</span><h3>Знаходимо вимогу документації</h3><p>Розділ, пункт, сторінка — щоб оцінка спиралася на текст, а не на враження.</p><p class="fn"><sup>2</sup> Додаток 1, п. 3.2, с. 14</p></article>
+      <article class="act" data-r data-d="240"><div class="rule"></div><span class="n">3</span><h3>Перевіряємо Вашу пропозицію</h3><p>Файл, сторінка, підпис. Якщо документа бракує або він неповний, так і зазначимо.</p><p class="fn"><sup>3</sup> Довідка_техніка.pdf, с. 3</p></article>
+      <article class="act" data-r data-d="360"><div class="rule"></div><span class="n">4</span><h3>Оцінюємо й пояснюємо</h3><p>Аргументи за і проти, ризики, наступні кроки. Потім — <span class="nw">30-хвилинна</span> консультація.</p><p class="fn"><sup>4</sup> Висновок — до 24 годин після оплати</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="cases" id="spravy" style="padding-top:20px">
+  <div class="wrap">
+    <div class="ch" data-progress><span class="rn" aria-hidden="true">II</span><div class="tx"><span class="lbl">Розділ II · Приклади висновку</span><h2 data-r>{{CASES_H2}}</h2><p class="lede" data-r data-d="100">{{CASES_LEDE}}</p></div></div>
+    <div class="tabs" role="tablist" aria-label="Демонстраційні справи" id="tabs"></div>
+    <div class="spread"><div class="book" id="book" role="tabpanel"></div></div>
+    <div class="foot"><p class="disc">{{DISCLAIMER}}</p><a class="btn btn-ghost" href="demo/pryklad-vysnovku-demo.pdf" target="_blank" rel="noopener">{{PDF}}</a></div>
+  </div>
+</section>
+
+<section id="rezultat" style="padding-top:20px">
+  <div class="wrap">
+    <div class="ch" data-progress><span class="rn" aria-hidden="true">III</span><div class="tx"><span class="lbl">Розділ III · Що Ви отримаєте</span><h2 data-r>{{RES_H2}}</h2><p class="lede" data-r data-d="100">{{RES_LEDE}}</p></div></div>
+    <div class="res3">
+      <div class="l"><ol>{{RESLIST}}</ol></div>
+      <div class="r"><div class="cons" data-r><div class="big">30<sup>′</sup></div><h3>{{CONS_H3}}</h3><p>{{CONS_TEXT}}</p></div></div>
+    </div>
+    <div class="nb" data-r><p class="lbl">Примітка редакції</p><p>{{RES_NOTE}}</p></div>
+  </div>
+</section>
+
+<section id="yak" style="padding-top:20px">
+  <div class="wrap">
+    <div class="ch" data-progress><span class="rn" aria-hidden="true">IV</span><div class="tx"><span class="lbl">Розділ IV · Як замовити</span><h2 data-r>{{HOW_H2}}</h2></div></div>
+    <ol class="steps">{{STEPS}}</ol>
+  </div>
+</section>
+
+<section id="vartist" style="padding-top:20px">
+  <div class="wrap">
+    <div class="ch" data-progress><span class="rn" aria-hidden="true">V</span><div class="tx"><span class="lbl">Розділ V · Вартість послуги</span><h2 data-r>Одна послуга. <em>Одна ціна.</em></h2></div></div>
+    <div class="menu" data-r><div class="in">
+      <span class="lbl">Прейскурант</span>
+      <div class="row"><h2>{{PRICE_H2}}</h2><span class="dots"></span><span class="amt"><span data-count="3499">3&nbsp;499</span><small>грн</small></span></div>
+      <p class="desc">{{PRICE_DESC}}</p>
+      <div class="two"><p class="yes"><span class="k">Входить</span>{{PRICE_INCL}} Письмовий аналіз протягом 24&nbsp;годин після оплати.</p><p class="no"><span class="k">Не входить</span>{{PRICE_LIMITS}}</p></div>
+      <a class="btn btn-primary" href="#zayavka">{{BTN}}</a>
+    </div></div>
+    <p class="contract" data-r><b>{{CONTRACT}}</b> {{REMOTE}}</p>
+  </div>
+</section>
+
+<section id="pytannya" style="padding-top:20px">
+  <div class="wrap faqg">
+    <div class="h"><span class="lbl" style="display:block;margin-bottom:14px">Питання й відповіді</span><h2 data-r>{{FAQ_H2}}</h2></div>
+    {{FAQ}}
+  </div>
+</section>
+
+<section id="zayavka" style="padding-top:20px">
+  <div class="wrap fg">
+    <div class="l"><span class="lbl" style="display:block;margin-bottom:14px">Заявка</span><h2 data-r>{{FORM_H2}}</h2><p class="sub" data-r data-d="100">{{FORM_SUB}}</p>
+      <aside class="side-c" id="kontakty" data-r data-d="200"><h3>{{CONT_H}}</h3><p>{{CONT_TEXT}}</p>{{CONTACTS}}</aside></div>
+    <div class="r" data-r data-d="150">{{FORM:btn btn-primary}}</div>
+  </div>
+</section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="nm">Tender<i>Win</i></div>
+    <p>{{FOOT}}</p>
+    <nav aria-label="Розділи сайту"><a href="#metod">Метод</a><a href="#spravy">Справи</a><a href="#vartist">Вартість</a><a href="#pytannya">Питання</a><a href="#zayavka">Заявка</a></nav>
+    <div class="legal"><span>© 2026 TenderWin · {{EXECUTOR}}</span><span><a href="{{PHONE_HREF}}">{{PHONE}}</a> · <a href="mailto:{{EMAIL}}">{{EMAIL}}</a> · <a href="{{TG_URL}}">{{TG}}</a></span><a id="privacy" href="#privacy">Політика конфіденційності</a></div>
+    <p class="colo">Набрано шрифтами Playfair Display, Source Serif 4 та IBM Plex Mono.</p>
+  </div>
+</footer>
+
+<nav class="mbar" id="mbar" aria-label="Замовлення"><span class="t">{{MOBILE}}</span><a class="btn" href="#zayavka">{{BTN}}</a>
+  <a class="call" href="{{PHONE_HREF}}" aria-label="Зателефонувати"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg></a></nav>
+
+<script>window.TW_DATA = {{CASES_JSON}};</script>
+<script>{{CORE_JS}}</script>
+<script>
+(function () {
+  "use strict";
+  var RM = TW.RM, root = document.documentElement, e = TW.esc;
+  requestAnimationFrame(function () { root.classList.add("go"); });
+  Array.prototype.forEach.call(document.querySelectorAll("#h1 .w"), function (w) { if (/24/.test(w.textContent)) w.classList.add("hl"); });
+  document.querySelectorAll(".seal circle").forEach(function (c) { c.style.setProperty("--l", (2 * Math.PI * c.r.baseVal.value).toFixed(1)); });
+  /* лінійки, що прокреслюються */
+  document.querySelectorAll(".act").forEach(function (a) { TW.onIn(a, function () { a.querySelector(".rule").classList.add("in"); }); });
+  /* компактна шапка після масштабного заголовка */
+  var hdr = document.getElementById("hdr"), mast = document.querySelector(".mast");
+  addEventListener("scroll", function () { hdr.classList.toggle("show", mast.getBoundingClientRect().bottom < 0); }, { passive: true });
+
+  /* справи: журнальний розворот */
+  var tabs = document.getElementById("tabs"), book = document.getElementById("book"), ROM = ["I", "II", "III"];
+  var COL = { strong: "var(--strong)", medium: "var(--medium)", weak: "var(--weak)" }, cur = -1;
+  function fill(i) {
+    var c = TW.cases[i];
+    book.style.setProperty("--c", COL[c.strength]);
+    book.innerHTML = '<div class="pg a"><span class="lbl">Справа ' + ROM[i] + ' · ' + e(c.tag) + '</span><h3>' + e(c.title) + '</h3>' +
+      '<dl><div><dt>Предмет закупівлі</dt><dd>' + e(c.subject) + '</dd></div><div><dt>Закупівля</dt><dd>' + e(c.tender) + '</dd></div><div><dt>Очікувана вартість</dt><dd>' + e(c.budget) + '</dd></div></dl>' +
+      '<div class="vseal"><svg viewBox="0 0 190 190" aria-hidden="true"><circle class="o" cx="95" cy="95" r="86"/><circle class="i2" cx="95" cy="95" r="76"/></svg><div class="t"><div>' + e(c.verdict) + '<small>' + e(c.strengthLabel) + '</small></div></div></div>' +
+      '<span class="pno">с. ' + (i * 2 + 6) + '</span></div>' +
+      '<div class="pg b"><div class="main"><div><span class="k">Що зазначив замовник</span><blockquote>«' + e(c.decision) + '»</blockquote></div>' +
+      '<div class="pair"><div><span class="k">Вимога документації<sup>1</sup></span><p>' + e(c.requirement.text) + '</p></div><div><span class="k">Що є в пропозиції<sup>2</sup></span><p>' + e(c.proposal.text) + '</p></div></div>' +
+      '<div><span class="k">Оцінка</span><p>' + e(c.assessment) + '</p></div><div><span class="k">Ризики</span><p>' + e(c.risks) + '</p></div>' +
+      '<div><span class="k">Наступні кроки</span><p>' + e(c.next) + '</p></div><p class="gain">' + e(c.saving) + '</p></div>' +
+      '<div class="side"><p><sup>1</sup> ' + e(c.requirement.ref) + '</p><p><sup>2</sup> ' + e(c.proposal.ref) + '</p><p>Джерела: рішення замовника, тендерна документація, пропозиція учасника.</p></div>' +
+      '<span class="pno">с. ' + (i * 2 + 7) + '</span></div>';
+    if (book.dataset.seen) requestAnimationFrame(function () { requestAnimationFrame(function () { book.classList.add("drawn"); }); });
+  }
+  function show(i) {
+    if (i === cur) return;
+    Array.prototype.forEach.call(tabs.children, function (t, k) { t.setAttribute("aria-selected", k === i ? "true" : "false"); t.tabIndex = k === i ? 0 : -1; });
+    if (cur < 0 || RM) { cur = i; fill(i); return; }
+    cur = i; book.classList.add("turn"); book.classList.remove("drawn");
+    setTimeout(function () { fill(i); book.classList.remove("turn"); }, 420);
+  }
+  TW.cases.forEach(function (c, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "tab"; b.setAttribute("role", "tab");
+    b.innerHTML = '<span class="lbl">Справа ' + ROM[i] + '</span><span class="t">' + e(c.verdict) + '</span>';
+    b.addEventListener("click", function () { show(i); });
+    b.addEventListener("keydown", function (ev) { if (ev.key === "ArrowRight" || ev.key === "ArrowLeft") { var n = (i + (ev.key === "ArrowRight" ? 1 : 2)) % 3; show(n); tabs.children[n].focus(); } });
+    tabs.appendChild(b);
+  });
+  show(0);
+  TW.whenVisible(book, function () { book.dataset.seen = "1"; book.classList.add("drawn"); }, 0.25);
+})();
+</script>
+</body>
+</html>

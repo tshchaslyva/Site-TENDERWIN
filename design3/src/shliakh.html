@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+{{HEAD}}
+<style>
+{{CORE_CSS}}
+{{VIEWER_CSS}}
+{{PROTO_CSS}}
+/* ============ Б «ШЛЯХ ДО РІШЕННЯ» — контрастний вступ, світлі розділи для читання, лінія через питання аналізу ============
+   Ліва колонка шляху з вузлами; велика гротескна типографіка; без закріплених полотен на телефоні. */
+:root{
+  --night:#0E1116; --night2:#171C24; --paper:#FFFFFF; --soft:#F3F5F8; --ink:#11151A; --ink2:#36404C; --muted:#56616E; --line:#DCE1E8;
+  --accent:#2F5BFF; --accent2:#2449D8; --accent-d:#9DB0FF; --on-d:#E9EDF3; --on-d2:#B3BDCA;
+  --f:"Geologica",system-ui,sans-serif;
+  --focus:#2F5BFF; --err:#B42318; --wrap:1240px; --btn-r:999px; --field-r:12px; --field-line:#9AA4B1;
+}
+body{background:var(--paper);color:var(--ink);font:400 17px/1.62 var(--f)}
+h1,h2,h3{font-weight:800;letter-spacing:-.03em;line-height:1.04;text-wrap:balance}
+h2{font-size:clamp(2rem,4.2vw,3.4rem)}
+h3{font-size:1.25rem;letter-spacing:-.015em;line-height:1.25}
+.kick{font-weight:600;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:1.14rem;color:var(--ink2);max-width:60ch}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-line{background:transparent;color:var(--on-d);border-color:rgba(233,237,243,.55)}
+.btn-line:hover{border-color:#fff;color:#fff}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn-ghost:hover{background:var(--ink);color:#fff}
+
+/* вступ */
+.intro{background:var(--night);color:var(--on-d);position:relative;overflow:hidden}
+.intro::after{content:"";position:absolute;right:-12%;top:-30%;width:62vw;height:62vw;max-width:900px;max-height:900px;border-radius:50%;border:1px solid rgba(157,176,255,.16);pointer-events:none}
+.intro::before{content:"";position:absolute;right:4%;top:6%;width:34vw;height:34vw;max-width:520px;max-height:520px;border-radius:50%;border:1px solid rgba(157,176,255,.12);pointer-events:none}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(14,17,22,.96);color:var(--on-d);border-bottom:1px solid transparent;transition:border-color .2s}
+.hdr.scrolled{border-color:rgba(233,237,243,.12)}
+.hdr .in{display:flex;align-items:center;gap:24px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:1.14rem;letter-spacing:-.03em;color:#fff}
+.logo .mk{width:28px;height:28px;border-radius:50%;border:2px solid var(--accent-d);display:grid;place-items:center}
+.logo .mk i{width:8px;height:8px;border-radius:50%;background:var(--accent-d)}
+.nav{display:flex;gap:22px;margin-left:auto;font-size:.95rem}
+.nav a{text-decoration:none;color:var(--on-d2)}
+.nav a:hover{color:#fff}
+.hdr .tel{color:#fff;font-weight:600;text-decoration:none;white-space:nowrap}
+.hdr .btn{min-height:42px;font-size:.95rem}
+@media(max-width:1080px){.nav{display:none}.hdr .tel{margin-left:auto}}
+@media(max-width:620px){.hdr .btn{display:none}.hdr .in{height:58px}}
+.hero{position:relative;z-index:1;padding:56px 0 0}
+.hero .kick{color:var(--accent-d)}
+.hero h1{font-size:clamp(2.4rem,6vw,5.4rem);max-width:14ch;margin-top:18px;color:#fff}
+.hero .lede{color:var(--on-d2);margin-top:22px}
+.offer{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:0;margin-top:34px;border-top:1px solid rgba(233,237,243,.18)}
+.offer>div{padding:16px 28px 0 0;margin-right:28px;border-right:1px solid rgba(233,237,243,.18)}
+.offer>div:last-child{border-right:0}
+.offer b{display:block;font-size:clamp(1.5rem,2.6vw,2.1rem);letter-spacing:-.03em;color:#fff;font-weight:800;white-space:nowrap}
+.offer span{display:block;color:var(--on-d2);font-size:.95rem}
+.term{margin-top:14px;color:var(--on-d2);max-width:62ch}
+@media(max-width:640px){.offer{grid-template-columns:1fr}.offer>div{border-right:0;margin:0;padding:12px 0;border-bottom:1px solid rgba(233,237,243,.14);display:flex;justify-content:space-between;align-items:baseline;gap:12px}.offer span{text-align:right}}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.hero .note{margin-top:14px;font-size:.92rem;color:var(--on-d2)}
+@media(max-width:560px){.acts .btn{flex:1 1 100%}.hero{padding-top:30px}.hero h1{font-size:2.3rem}.hero .lede{font-size:1.04rem}}
+.start{position:relative;margin-top:52px;padding-bottom:36px;display:flex;align-items:center;gap:14px;color:var(--accent-d);font-weight:600}
+.start::before{content:"";width:2px;height:56px;background:linear-gradient(transparent,var(--accent-d));margin-left:27px}
+
+/* шлях */
+.path{position:relative;padding-left:96px}
+@media(max-width:760px){.path{padding-left:40px}}
+.path::before,.path::after{content:"";position:absolute;left:28px;top:0;bottom:0;width:2px;background:var(--line)}
+.path::after{background:var(--accent);transform-origin:top;transform:scaleY(var(--p,0))}
+@media(max-width:760px){.path::before,.path::after{left:10px}}
+.rm .path::after{transform:none}
+.node{position:absolute;left:-77px;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--line);transition:background .3s,border-color .3s}
+.node.on{background:var(--accent);border-color:var(--accent)}
+@media(max-width:760px){.node{left:-39px}}
+section{position:relative;padding:88px 0}
+@media(max-width:760px){section{padding:60px 0}}
+.sh{margin-bottom:34px}
+.sh .lede{margin-top:16px}
+.sh .node{top:6px}
+
+/* питання клієнта */
+.qa{display:grid;grid-template-columns:5fr 7fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:900px){.qa{grid-template-columns:1fr}}
+.qs{display:grid;gap:8px}
+.q{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:48px 1fr 24px;gap:14px;align-items:center;padding:18px 18px;border-radius:14px;border:1.5px solid var(--line);background:#fff;transition:border-color .15s,background .15s}
+.q .n{font-weight:800;font-size:1.05rem;color:var(--muted)}
+.q b{font-size:clamp(1.15rem,1.8vw,1.45rem);letter-spacing:-.02em;font-weight:800;line-height:1.2}
+.q svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;transition:transform .2s}
+.q:hover{border-color:var(--accent)}
+.q:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.q[aria-expanded="true"]{border-color:var(--accent);background:#F1F4FF}
+.q[aria-expanded="true"] .n{color:var(--accent)}
+.q[aria-expanded="true"] svg{transform:rotate(90deg);color:var(--accent)}
+@media(max-width:900px){.q[aria-expanded="true"] svg{transform:rotate(90deg)}}
+.q b{min-width:0;hyphens:auto;overflow-wrap:break-word}
+@media(max-width:480px){.q{grid-template-columns:30px 1fr 18px;gap:10px;padding:14px 12px}.q b{font-size:1.06rem}.q .n{font-size:.95rem}.path{padding-left:30px}.path::before,.path::after{left:8px}.node{left:-30px;width:18px;height:18px}}
+.ans-pane{min-width:0}
+.ans-pane .rv{--rv-aspect:16/10;--rv-frame:var(--soft);--rv-accent:var(--accent);--rv-radius:14px}
+.ans-pane .ex{margin-top:14px;font-size:1.02rem;color:var(--ink2)}
+.ans-pane .ex b{color:var(--ink)}
+.ans-pane .more{display:inline-flex;margin-top:10px;font-weight:600;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+@media(max-width:900px){.ans-pane{margin:4px 0 10px}}
+
+/* матеріали */
+.mat{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--ink)}
+@media(max-width:900px){.mat{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.mat{grid-template-columns:1fr}}
+.mat li{padding:20px 20px 22px 0;border-right:1px solid var(--line)}
+.mat li+li{padding-left:20px}
+.mat li:last-child{border-right:0}
+@media(max-width:900px){.mat li{border-right:0;border-bottom:1px solid var(--line);padding-left:0!important}}
+.mat b{display:block;font-size:1.2rem;letter-spacing:-.02em;font-weight:800;line-height:1.2}
+.mat span{display:block;margin-top:8px;color:var(--muted);font-size:.95rem}
+.mat .k{font-weight:600;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+
+/* фрагменти звіту */
+.rep{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:960px){.rep{grid-template-columns:1fr}}
+.rep .rv{--rv-frame:var(--soft);--rv-accent:var(--accent);--rv-radius:14px}
+.list li{display:grid;grid-template-columns:36px 1fr;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
+.list .i{font-weight:800;color:var(--accent)}
+.cons{margin-top:22px;padding:24px;border-radius:16px;background:var(--night);color:var(--on-d)}
+.cons b{display:block;font-size:2.6rem;font-weight:800;letter-spacing:-.04em;color:#fff;line-height:1}
+.cons h3{margin:10px 0 6px;color:#fff}
+.cons p{color:var(--on-d2)}
+.note2{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--soft);color:var(--ink2)}
+
+/* кроки */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:s}
+@media(max-width:1000px){.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.steps{grid-template-columns:1fr}}
+.step{position:relative;padding:22px;border-radius:16px;background:var(--soft)}
+.step .n{display:block;font-weight:800;font-size:2.4rem;letter-spacing:-.05em;color:var(--accent);line-height:1}
+.step .tag{position:absolute;top:22px;right:22px;font-weight:600;font-size:.8rem;padding:4px 10px;border-radius:999px;background:#fff;color:var(--ink)}
+.step h3{margin:14px 0 8px}
+.step p{color:var(--ink2);font-size:.98rem}
+.step .iban{margin-top:12px;padding:10px 12px;border-radius:10px;background:#fff;border-left:3px solid #E7A511;font-size:.9rem}
+
+/* вартість */
+.price{background:var(--night);color:var(--on-d)}
+.price .g{display:grid;grid-template-columns:5fr 7fr;gap:clamp(24px,4vw,56px);align-items:center}
+@media(max-width:860px){.price .g{grid-template-columns:1fr}}
+.price .amt{font-weight:800;font-size:clamp(3.6rem,9vw,7rem);letter-spacing:-.06em;line-height:.95;color:#fff}
+.price .amt small{font-size:.3em;letter-spacing:0;color:var(--on-d2);margin-left:.15em}
+.price h2{font-size:clamp(1.6rem,3vw,2.4rem);color:#fff}
+.price p{margin-top:14px;color:var(--on-d2)}
+.price .lim{padding-top:14px;border-top:1px solid rgba(233,237,243,.16)}
+.price .btn{margin-top:24px}
+
+/* FAQ */
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:2px solid var(--ink)}
+.faq summary{padding:20px 0;font-weight:600;font-size:1.12rem;letter-spacing:-.01em}
+.faq summary i{width:32px;height:32px;flex-shrink:0;border-radius:50%;background:var(--soft);position:relative;transition:background .2s}
+.faq summary i::before,.faq summary i::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;background:var(--ink);transform:translate(-50%,-50%)}
+.faq summary i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .2s}
+.faq details[open] summary i{background:var(--accent)}
+.faq details[open] summary i::before,.faq details[open] summary i::after{background:#fff}
+.faq details[open] summary i::after{transform:translate(-50%,-50%) rotate(0)}
+.faq .ans{color:var(--ink2);padding-bottom:20px;max-width:75ch}
+
+/* форма */
+.fg{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:960px){.fg{grid-template-columns:1fr}}
+.fcard{padding:clamp(20px,3vw,36px);border-radius:20px;background:var(--soft)}
+.fcard .sub{margin:12px 0 24px;color:var(--ink2)}
+.tw-form .chk a{color:var(--accent)}
+.side{padding:clamp(20px,3vw,32px);border-radius:20px;border:1.5px solid var(--line);position:sticky;top:90px}
+@media(max-width:960px){.side{position:static}}
+.side h3{font-size:1.4rem}
+.side>p{margin:10px 0 16px;color:var(--ink2)}
+.contacts li{display:grid;gap:2px;padding:12px 0;border-top:1px solid var(--line)}
+.contacts .k{font-weight:600;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.contacts .v{font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+.contacts a.v{color:var(--accent)}
+
+/* футер */
+.ft{background:var(--night);color:var(--on-d2);padding:48px 0 30px;font-size:.94rem}
+.ft .g{display:grid;grid-template-columns:6fr 6fr;gap:24px}
+@media(max-width:760px){.ft .g{grid-template-columns:1fr}}
+.ft nav{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:flex-end}
+@media(max-width:760px){.ft nav{justify-content:flex-start}}
+.ft a{color:#fff}
+.ft .legal{margin-top:24px;padding-top:16px;border-top:1px solid rgba(233,237,243,.14);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:.84rem}
+.privacy{margin-top:16px}.privacy summary{cursor:pointer;font-weight:600;color:#fff}.privacy p{margin-top:8px;max-width:75ch}
+
+.mbar{background:var(--night);color:#fff}
+.mbar .call{border:1.5px solid rgba(233,237,243,.35);color:#fff}
+.cb{background:var(--accent);color:#fff}
+.rv-fallback img{width:100%;height:auto;border-radius:12px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">До змісту</a>
+{{PROTO}}
+<div class="intro">
+<header class="hdr" id="hdr">
+  <div class="wrap in">
+    <a class="logo" href="#top" aria-label="TenderWin — на початок"><span class="mk"><i></i></span>TenderWin</a>
+    <nav class="nav" aria-label="Розділи"><a href="#zrazok">Результат</a><a href="#pytannia-klienta">Приклад звіту</a><a href="#yak">Як замовити</a><a href="#vartist">Вартість</a><a href="#kontakty">Контакти</a></nav>
+    <a class="tel" href="{{PHONE_HREF}}">{{PHONE}}</a>
+    <a class="btn btn-primary" href="#zayavka">{{BTN}}</a>
+  </div>
+</header>
+<main id="main">
+<section class="hero" id="top" style="padding-bottom:0">
+  <div class="wrap">
+    <p class="kick">{{KICKER}}</p>
+    <h1>{{H1}}</h1>
+    <p class="lede">{{LEDE}}</p>
+    <div class="offer">
+      <div><b>3&nbsp;499&nbsp;грн</b><span>за аналіз і консультацію</span></div>
+      <div><b>24 години</b><span>письмовий аналіз після оплати</span></div>
+      <div><b>30 хвилин</b><span>консультація після висновку</span></div>
+    </div>
+    <p class="term">{{TERM}}</p>
+    <div class="acts"><a class="btn btn-primary" href="#zayavka">{{BTN}}</a><a class="btn btn-line" href="#pytannia-klienta">{{BTN2}}</a></div>
+    <p class="note">{{NOTE}}</p>
+    <p class="start">Як документи перетворюються на рекомендацію</p>
+  </div>
+</section>
+</div>
+
+<div class="wrap">
+<div class="path" id="path">
+
+<section id="pytannia-klienta" style="padding-top:56px">
+  <div class="sh"><span class="node" aria-hidden="true"></span><p class="kick">Питання клієнта</p><h2>Що Ви дізнаєтеся з аналізу</h2>
+    <p class="lede">Оберіть питання — поруч відкриється відповідна частина прикладу звіту. Це демонстрація підходу, а не оцінка Вашої справи.</p></div>
+  <div class="qa" id="qa">
+    <div class="qs" role="group" aria-label="Питання до звіту">
+      <button type="button" class="q" data-key="pidstava" aria-expanded="true" aria-controls="answer"><span class="n">01</span><b>Що зазначив замовник?</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button type="button" class="q" data-key="dokument" aria-expanded="false" aria-controls="answer"><span class="n">02</span><b>Що підтверджують документи?</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button type="button" class="q" data-key="ryzyk" aria-expanded="false" aria-controls="answer"><span class="n">03</span><b>Які ризики?</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button type="button" class="q" data-key="rekomendatsiia" aria-expanded="false" aria-controls="answer"><span class="n">04</span><b>Що робити далі?</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+    <div class="ans-pane" id="answer" aria-live="polite">
+      <div id="qv" data-viewer data-doc="first" data-mode="focus" data-controls="false">{{RVFALLBACK:first}}</div>
+      <p class="ex" id="qex"></p>
+      <button type="button" class="more" id="qmore">Відкрити цю сторінку повністю</button>
+    </div>
+  </div>
+</section>
+
+<section id="materialy" style="padding-top:20px">
+  <div class="sh"><span class="node" aria-hidden="true"></span><p class="kick">Матеріали перевірки</p><h2>Збираємо першоджерела з Prozorro</h2>
+    <p class="lede">Розбираємо кожну підставу відхилення окремо: що написав замовник, що вимагала документація і що є у Ваших документах.</p></div>
+  <ol class="mat">
+    <li data-r><p class="k">01</p><b>Рішення замовника</b><span>Дослівне формулювання кожної підстави відхилення.</span></li>
+    <li data-r><p class="k">02</p><b>Тендерна документація</b><span>Вимога, на яку посилається замовник: розділ, пункт, сторінка.</span></li>
+    <li data-r><p class="k">03</p><b>Ваша пропозиція</b><span>Що міститься у відповідних документах: файл і сторінка.</span></li>
+    <li data-r><p class="k">04</p><b>Листування</b><span>Звернення й відповіді за закупівлею, якщо вони стосуються підстави.</span></li>
+  </ol>
+</section>
+
+<section id="zrazok" style="padding-top:20px">
+  <div class="sh"><span class="node" aria-hidden="true"></span><p class="kick">Фрагменти звіту та висновок</p><h2>{{RES_H2}}</h2><p class="lede">{{RES_LEDE}}</p></div>
+  <div class="rep">
+    <div id="full" data-viewer data-doc="first" data-mode="page">{{RVFALLBACK:first}}</div>
+    <div>
+      <ol class="list">{{RESLIST}}</ol>
+      <div class="cons" data-r><b>30 хв</b><h3>{{CONS_H3}}</h3><p>{{CONS_TEXT}}</p></div>
+      <p class="note2" data-r>{{RES_NOTE}}</p>
+    </div>
+  </div>
+</section>
+
+<section id="yak" style="padding-top:20px">
+  <div class="sh"><span class="node" aria-hidden="true"></span><p class="kick">Як замовити</p><h2>{{HOW_H2}}</h2></div>
+  <ol class="steps">{{STEPS}}</ol>
+</section>
+</div>
+</div>
+
+<section class="price" id="vartist">
+  <div class="wrap g">
+    <div><p class="kick" style="color:var(--accent-d)">Вартість</p><p class="amt">3&nbsp;499<small>грн</small></p></div>
+    <div><h2>{{PRICE_TITLE}}</h2><p>{{PRICE_DESC}}</p><p class="lim">{{PRICE_LIMITS}}</p><a class="btn btn-primary" href="#zayavka">{{BTN}}</a></div>
+  </div>
+</section>
+
+<section id="pytannya">
+  <div class="wrap" style="max-width:980px"><p class="kick">Питання</p><h2 style="margin:12px 0 28px">{{FAQ_H2}}</h2>{{FAQ}}</div>
+</section>
+
+<section id="zayavka" style="padding-top:10px">
+  <div class="wrap fg">
+    <div class="fcard"><p class="kick">Заявка</p><h2 style="margin-top:10px">{{FORM_H2}}</h2><p class="sub">{{FORM_SUB}}</p>{{FORM:btn btn-primary}}</div>
+    <aside class="side" id="kontakty"><h3>{{CONT_H}}</h3><p>{{CONT_TEXT}}</p>{{CONTACTS}}</aside>
+  </div>
+</section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="g"><p>{{FOOT}}</p>
+      <nav aria-label="Розділи сайту"><a href="#zrazok">Результат</a><a href="#pytannia-klienta">Приклад звіту</a><a href="#yak">Як замовити</a><a href="#vartist">Вартість</a><a href="#kontakty">Контакти</a></nav></div>
+    {{PRIVACY}}
+    <div class="legal"><span>© 2026 TenderWin · {{EXECUTOR}}</span><span><a href="{{PHONE_HREF}}">{{PHONE}}</a> · <a href="mailto:{{EMAIL}}">{{EMAIL}}</a> · <a href="{{TG_URL}}">{{TG}}</a></span></div>
+  </div>
+</footer>
+
+{{MBAR:btn btn-primary}}
+{{CALLBACK}}
+
+<script>window.TW_REPORTS = {{REPORTS_JSON}};</script>
+<script>{{VIEWER_JS}}</script>
+<script>{{CORE_JS}}</script>
+<script>
+(function () {
+  "use strict";
+  var hdr = document.getElementById("hdr");
+  addEventListener("scroll", function () { hdr.classList.toggle("scrolled", scrollY > 8); }, { passive: true });
+  var EX = window.TW_REPORTS.explain;
+  var QTEXT = {
+    pidstava: "У звіті наводимо дослівне формулювання замовника. Кожна підстава відхилення розбирається окремо.",
+    dokument: "Зіставляємо вимогу документації з тим, що є у Вашій пропозиції, — з номером сторінки й назвою файлу.",
+    ryzyk: "Описуємо, що може послабити позицію або вплинути на рішення органу оскарження.",
+    rekomendatsiia: "Пояснюємо, що доцільно зробити далі й чому — зокрема, коли оскаржувати не варто."
+  };
+  /* вибір питання → відповідний фрагмент справжнього звіту; на телефоні відповідь під питанням */
+  var qv = TW.viewers.qv, pane = document.getElementById("answer"), qs = document.querySelectorAll(".q"), ex = document.getElementById("qex"), cur = "pidstava";
+  var mq = window.matchMedia("(max-width: 900px)");
+  function place(btn) {
+    if (mq.matches) btn.insertAdjacentElement("afterend", pane);
+    else document.getElementById("qa").appendChild(pane);
+    qv.refit();
+  }
+  function choose(btn, focusPane) {
+    cur = btn.getAttribute("data-key");
+    Array.prototype.forEach.call(qs, function (q) { q.setAttribute("aria-expanded", String(q === btn)); });
+    qv.highlight(cur);
+    var hl = qv.doc().highlights.filter(function (x) { return x.key === cur; })[0];
+    ex.innerHTML = "<b>" + btn.querySelector("b").textContent + "</b> " + QTEXT[cur] + (hl ? " Сторінка " + hl.page + " з " + qv.doc().pageCount + "." : "");
+    place(btn);
+  }
+  Array.prototype.forEach.call(qs, function (b, i) {
+    b.addEventListener("click", function () { choose(b); });
+    b.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      e.preventDefault(); var n = qs[(i + (e.key === "ArrowDown" ? 1 : qs.length - 1)) % qs.length]; n.focus(); choose(n);
+    });
+  });
+  document.getElementById("qmore").addEventListener("click", function () { qv.open(undefined, cur); });
+  qv.el.addEventListener("rv:change", function (e) { if (!e.detail.key) { qv.highlight(cur); } });
+  mq.addEventListener("change", function () { place(document.querySelector('.q[aria-expanded="true"]')); });
+  choose(qs[0]);
+
+  /* лінія шляху заповнюється разом зі звичайною прокруткою (без перехоплення) */
+  var path = document.getElementById("path"), nodes = document.querySelectorAll(".node"), tick = false;
+  function onScroll() {
+    if (tick) return; tick = true;
+    requestAnimationFrame(function () {
+      var r = path.getBoundingClientRect(), p = (innerHeight * 0.6 - r.top) / r.height;
+      path.style.setProperty("--p", Math.max(0, Math.min(1, p)).toFixed(3));
+      Array.prototype.forEach.call(nodes, function (n) { n.classList.toggle("on", n.getBoundingClientRect().top < innerHeight * 0.6); });
+      tick = false;
+    });
+  }
+  addEventListener("scroll", onScroll, { passive: true }); addEventListener("resize", onScroll); onScroll();
+})();
+</script>
+</body>
+</html>

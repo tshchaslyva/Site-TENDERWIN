@@ -4,6 +4,7 @@
 // Сюди потрапляють лише запити /api/*:
 //   POST /api/zayavka      — заявка з форми: спершу зберігаємо, потім листи
 //   /api/admin/...         — робочий інструмент Віталія (сторінка /admin/), лише з ключем ADMIN_TOKEN
+//   POST /api/hit          — знеособлена статистика відвідувань (без cookie; IP не зберігається)
 //
 // Порядок роботи (інструкція v2.0, розділи 4.2 і 9):
 //   1. Заявку зберігаємо в реєстрі разом із чергою листів — одна атомарна операція.
@@ -27,6 +28,7 @@ import {
   isoDay, dotDate, addDays, kyivEndOfDay, clean, parseTenderId, normalizeContact,
   isValidEdrpou, isValidRnokpp, isValidIbanUa,
 } from "./format.js";
+import { STAT_BIT, statInput, statsRange } from "./stats.js";
 
 const MAX_BODY = 20000;                  // байтів у запиті з форми
 const MESSAGE_MAX = 2000;                // символів у полі «Коротко про ситуацію» (так само в index.html)
@@ -91,12 +93,13 @@ function serviceItem(tender, lot) {
   return `Аналіз відхилення тендерної пропозиції у закупівлі ${tender}${lot ? ` (${lot})` : ""} та консультація тривалістю 30 хвилин`;
 }
 
-/** Що ще заважає виставляти рахунки автоматично (порожній список — усе гаразд) */
+/**
+ * Що заважає створювати рахунки (порожній список — усе гаразд).
+ * IBAN і банк необов'язкові: без них рахунок виходить із приміткою, що реквізити для оплати надішлемо окремо.
+ */
 function invoiceBlockers(cfg) {
   const s = cfg.seller, out = [];
-  if (!s.iban) out.push("не вказано IBAN (секрет SELLER_IBAN)");
-  else if (!isValidIbanUa(s.iban)) out.push("IBAN має неправильний формат або контрольну суму");
-  if (!s.bank) out.push("не вказано банк (секрет SELLER_BANK)");
+  if (s.iban && !isValidIbanUa(s.iban)) out.push("IBAN має неправильний формат або контрольну суму (секрет SELLER_IBAN)");
   if (!isValidRnokpp(s.rnokpp)) out.push("РНОКПП виконавця відсутній або некоректний (секрет SELLER_RNOKPP)");
   if (!s.address) out.push("не вказано адресу виконавця (секрет SELLER_ADDRESS)");
   if (!cfg.priceOk) out.push(`ціна в налаштуваннях не ${EXPECTED_PRICE} грн`);
@@ -147,6 +150,13 @@ const SCHEMA = `
   CREATE TABLE IF NOT EXISTS events (app_id TEXT, ts INTEGER NOT NULL, action TEXT NOT NULL, detail TEXT);
   CREATE INDEX IF NOT EXISTS events_app ON events (app_id);
   CREATE TABLE IF NOT EXISTS alerts (key TEXT PRIMARY KEY, ts INTEGER NOT NULL);
+  -- статистика відвідувань: лише лічильники за днем (Київ); жодних IP, cookie чи даних форми
+  CREATE TABLE IF NOT EXISTS stats (day TEXT NOT NULL, metric TEXT NOT NULL, key TEXT NOT NULL, n INTEGER NOT NULL,
+    PRIMARY KEY (day, metric, key));
+  -- щоденний неповоротний код відвідувача (для «унікальних»); видаляється разом із сіллю за 1–2 доби
+  CREATE TABLE IF NOT EXISTS stat_visitors (day TEXT NOT NULL, h TEXT NOT NULL, n INTEGER NOT NULL, ev INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (day, h));
+  CREATE TABLE IF NOT EXISTS stat_salt (day TEXT PRIMARY KEY, salt TEXT NOT NULL);
 `;
 
 const MAIL_LABEL = {
@@ -247,7 +257,8 @@ export class InvoiceRegistry extends DurableObject {
 
     // 4) запис заявки
     const day = isoDay(new Date(now));
-    const id = `Z-${day}/${this.nextNumber("Z:" + day)}`;
+    // номер заявки: 20261003-1 (лише цифри — без літер Z і V); рахунок окремо: TW-2026-10-03/1
+    const id = `${day.replace(/-/g, "")}-${this.nextNumber("app:" + day)}`;
     this.sql.exec(
       `INSERT INTO applications (id, created, updated, op_key, fp, name, email, contact, org, code, no_code, other_payer,
          tender, lot, message, service_version, terms_version, consent_at, flags, amount)
@@ -346,6 +357,8 @@ export class InvoiceRegistry extends DurableObject {
     const old = this.one(
       `SELECT MIN(updated) AS t FROM applications WHERE stage = 'new' AND intake IN ('received', 'clarification_needed', 'declined')`);
     if (old && old.t) times.push(old.t + cfg.retentionDays * DAY);
+    const salt = this.one("SELECT MIN(day) AS d FROM stat_salt");   // коди відвідувачів — не довше двох діб
+    if (salt && salt.d) times.push(Date.parse(salt.d + "T00:00:00Z") + 2 * DAY);
     if (!times.length) return;
     await this.ctx.storage.setAlarm(Math.max(now + 1000, Math.min(...times)));
   }
@@ -355,6 +368,7 @@ export class InvoiceRegistry extends DurableObject {
     const cfg = config(this.env);
     this.sql.exec("DELETE FROM hits WHERE ts < ?", now - DAY);
     this.sql.exec("DELETE FROM alerts WHERE ts < ?", now - 7 * DAY);
+    this.cleanStats(now);
     // неоплачені звернення, що не перейшли в замовлення, — видаляємо після строку зберігання
     const stale = this.all(
       `SELECT id FROM applications WHERE stage = 'new' AND intake IN ('received', 'clarification_needed', 'declined') AND updated < ?`,
@@ -365,6 +379,93 @@ export class InvoiceRegistry extends DurableObject {
       this.sql.exec("DELETE FROM applications WHERE id = ?", id);
     }
     await this.processDue();
+  }
+
+  // ================================================================
+  // Статистика відвідувань
+  // ================================================================
+  /** Видалити коди відвідувачів і сіль за минулі доби та лічильники, старші за ~13 місяців */
+  cleanStats(now = Date.now()) {
+    const yesterday = isoDay(new Date(now - DAY));
+    this.sql.exec("DELETE FROM stat_visitors WHERE day < ?", yesterday);
+    this.sql.exec("DELETE FROM stat_salt WHERE day < ?", yesterday);
+    this.sql.exec("DELETE FROM stats WHERE day < ?", isoDay(new Date(now - 400 * DAY)));
+  }
+
+  /**
+   * Одна подія з сайту. ip і ua потрібні лише для щоденного коду відвідувача й ніде не зберігаються.
+   * h: { event, path, ref, src, device, country, ip, ua }
+   */
+  async hitStat(h) {
+    const now = Date.now();
+    const day = isoDay(new Date(now));
+    if (this.statDay !== day) { this.cleanStats(now); this.statDay = day; }
+    let saltRow = this.one("SELECT salt FROM stat_salt WHERE day = ?", day);
+    if (!saltRow) {
+      const salt = [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, "0")).join("");
+      this.sql.exec("INSERT INTO stat_salt (day, salt) VALUES (?, ?) ON CONFLICT(day) DO NOTHING", day, salt);
+      saltRow = this.one("SELECT salt FROM stat_salt WHERE day = ?", day);
+    }
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${saltRow.salt}|${h.ip}|${h.ua}`));
+    const vh = [...new Uint8Array(digest)].slice(0, 12).map((b) => b.toString(16).padStart(2, "0")).join("");
+    const bit = STAT_BIT[h.event] || 0;
+    const bump = (metric, key) => this.sql.exec(
+      "INSERT INTO stats (day, metric, key, n) VALUES (?, ?, ?, 1) ON CONFLICT(day, metric, key) DO UPDATE SET n = n + 1",
+      day, metric, String(key).slice(0, 80));
+    this.ctx.storage.transactionSync(() => {
+      const v = this.one(
+        `INSERT INTO stat_visitors (day, h, n, ev) VALUES (?, ?, 1, 0)
+         ON CONFLICT(day, h) DO UPDATE SET n = n + 1 RETURNING n, ev`, day, vh);
+      if (v.n > 300) return;                       // одна «людина» не накручує лічильники
+      if (v.n === 1) bump("uv", "");
+      if (bit && !(v.ev & bit)) {
+        this.sql.exec("UPDATE stat_visitors SET ev = ev | ? WHERE day = ? AND h = ?", bit, day, vh);
+        bump("evu", h.event);                       // скільки різних відвідувачів зробили дію
+      }
+      bump("ev", h.event);
+      if (h.event === "view") {
+        bump("page", h.path);
+        bump("ref", h.ref);
+        bump("dev", h.device);
+        if (h.country) bump("cty", h.country);
+        if (h.src) bump("src", h.src);
+      }
+    });
+    return true;
+  }
+
+  /** Зведення для робочого інструмента за останні days днів (за Києвом) */
+  stats(days) {
+    const now = Date.now();
+    const { from, list } = statsRange(now, days);
+    const rows = this.all("SELECT day, metric, key, n FROM stats WHERE day >= ? AND metric IN ('uv', 'ev', 'evu')", from);
+    const byDay = Object.fromEntries(list.map((d) => [d, { day: d, views: 0, visitors: 0, report: 0, pdf: 0, form_start: 0, call: 0, tg: 0 }]));
+    for (const r of rows) {
+      const d = byDay[r.day];
+      if (!d) continue;
+      if (r.metric === "uv") d.visitors += r.n;
+      else if (r.metric === "ev" && r.key === "view") d.views += r.n;
+      else if (r.metric === "evu" && r.key !== "view" && r.key in d) d[r.key] += r.n;
+    }
+    const top = (metric, limit = 10) => this.all(
+      "SELECT key, SUM(n) AS n FROM stats WHERE day >= ? AND metric = ? GROUP BY key ORDER BY n DESC LIMIT ?", from, metric, limit);
+    const fromMs = Date.parse(from + "T00:00:00+03:00") - HOUR;   // запас на літній/зимовий час
+    const inRange = (col) => this.count(`SELECT COUNT(*) AS c FROM applications WHERE ${col} >= ?`, fromMs);
+    const series = list.map((d) => byDay[d]);
+    const sum = (k) => series.reduce((a, x) => a + x[k], 0);
+    return {
+      days, from, series,
+      totals: { views: sum("views"), visitors: sum("visitors"), report: sum("report"), pdf: sum("pdf"), form_start: sum("form_start"), call: sum("call"), tg: sum("tg") },
+      funnel: {
+        applications: inRange("created"),
+        accepted: this.count("SELECT COUNT(*) AS c FROM applications WHERE intake = 'accepted' AND created >= ?", fromMs),
+        invoices: this.count("SELECT COUNT(*) AS c FROM invoice_docs WHERE created >= ?", fromMs),
+        paid: inRange("paid_at"),
+        delivered: inRange("analysis_delivered_at"),
+        consultations: this.count("SELECT COUNT(*) AS c FROM applications WHERE consult_status = 'completed' AND updated >= ?", fromMs),
+      },
+      refs: top("ref"), pages: top("page"), devices: top("dev", 5), countries: top("cty"), sources: top("src"),
+    };
   }
 
   // ================================================================
@@ -392,7 +493,23 @@ export class InvoiceRegistry extends DurableObject {
       || (r.stage === "analysis_in_progress" && r.analysis_due_at && r.analysis_due_at - now < 3 * HOUR);
     const out = filter === "all" ? rows : filter === "problems" ? rows.filter(isProblem) : rows.filter(isOpen);
     const globalFailed = this.count("SELECT COUNT(*) AS c FROM outbox WHERE app_id IS NULL AND status = 'failed'");
-    return { items: out, globalFailed, blockers: invoiceBlockers(config(this.env)) };
+    return { items: out, globalFailed, blockers: invoiceBlockers(config(this.env)), mail: this.mailHealth() };
+  }
+
+  /** Стан пошти для робочого інструмента: чи є ключ і чи не повертає Resend помилок (значення секретів не показуються) */
+  mailHealth() {
+    const lastErr = this.one("SELECT last_error, updated FROM outbox WHERE last_error IS NOT NULL ORDER BY updated DESC LIMIT 1");
+    const lastOk = this.one("SELECT MAX(updated) AS t FROM outbox WHERE status = 'accepted'");
+    const okAt = lastOk && lastOk.t ? lastOk.t : null;
+    const errNewer = lastErr && (!okAt || lastErr.updated > okAt);
+    return {
+      configured: !!(this.env.RESEND_API_KEY && this.env.MAIL_FROM),
+      from: this.env.MAIL_FROM || "",
+      lastAcceptedAt: okAt,
+      lastError: errNewer ? lastErr.last_error : "",
+      lastErrorAt: errNewer ? lastErr.updated : null,
+      waiting: this.count("SELECT COUNT(*) AS c FROM outbox WHERE status IN ('pending', 'sending')"),
+    };
   }
 
   get(id) {
@@ -469,7 +586,6 @@ export class InvoiceRegistry extends DurableObject {
         const pdf = await buildInvoicePdf({
           fonts: { regular: fontRegular, bold: fontBold, display: fontDisplay },
           seller: cfg.seller,
-          channel: cfg.contacts.channel,
           buyer: { name: buyerName, code: buyerCode, codeLabel: buyerCode.length === 8 ? "Код ЄДРПОУ" : "РНОКПП" },
           number: inv.number,
           date: created,
@@ -698,6 +814,26 @@ async function handleZayavka(request, env) {
 }
 
 // ================================================================
+// POST /api/hit — подія статистики. Завжди 204: сайт не чекає й не залежить від відповіді.
+// ================================================================
+async function handleHit(request, env) {
+  const done = new Response(null, { status: 204, headers: SECURITY_HEADERS });
+  if (!originAllowed(request, env)) return done;
+  const body = await readBody(request, 1024);
+  if (body.tooLarge) return done;
+  const h = statInput(body.text, {
+    ua: request.headers.get("User-Agent") || "",
+    host: new URL(request.url).hostname,
+    country: request.cf && request.cf.country,
+  });
+  if (!h) return done;
+  try {
+    await registry(env).hitStat({ ...h, ip: request.headers.get("CF-Connecting-IP") || "unknown", ua: request.headers.get("User-Agent") || "" });
+  } catch (e) { console.error("stats", e && e.message); }
+  return done;
+}
+
+// ================================================================
 // /api/admin/* — робочий інструмент (лише з паролем ADMIN_TOKEN)
 // ================================================================
 async function tokenMatches(given, expected) {
@@ -723,6 +859,10 @@ async function handleAdmin(request, env, path) {
     return json({ ok: false, error: ok ? "Забагато невдалих спроб. Зачекайте годину." : "Неправильний пароль." }, ok ? 429 : 401);
   }
 
+  if (request.method === "GET" && path === "/api/admin/stats") {
+    const days = Math.min(400, Math.max(1, Number(new URL(request.url).searchParams.get("days")) || 30));
+    return json({ ok: true, ...(await reg.stats(days)) });
+  }
   if (request.method === "GET" && path === "/api/admin/applications") {
     const filter = new URL(request.url).searchParams.get("filter") || "open";
     return json({ ok: true, ...(await reg.list(filter)) });
@@ -757,6 +897,10 @@ export default {
         return await handleZayavka(request, env);
       }
       if (path.startsWith("/api/admin/")) return await handleAdmin(request, env, path);
+      if (path === "/api/hit") {
+        if (request.method !== "POST") return json({ ok: false, error: "Method Not Allowed" }, 405);
+        return await handleHit(request, env);
+      }
     } catch (e) {
       console.error("api crashed", e && e.stack || e);
       return json({ ok: false, error: "internal" }, 500);

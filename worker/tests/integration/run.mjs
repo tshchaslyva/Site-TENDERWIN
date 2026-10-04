@@ -121,11 +121,13 @@ async function main() {
     const d = await getApp(r.json.id);
     check("T12", "Причина затримки видна власнику", (d.mails || []).every((x) => /RESEND_API_KEY/.test(x.last_error || "")), d.mails?.map((x) => x.last_error).join(" | "));
     const acc = await act(r.json.id, "accept", {});
-    check("T12", "Без IBAN автоматичний рахунок заблоковано з поясненням", acc.status === 400 && /IBAN/.test(acc.json.error || ""), acc.json.error);
+    check("T12", "Без РНОКПП і адреси виконавця рахунок заблоковано з поясненням", acc.status === 400 && /SELLER_RNOKPP/.test(acc.json.error || "") && !/IBAN/.test(acc.json.error || ""), acc.json.error);
     const acc2 = await act(r.json.id, "accept", { withoutInvoice: true });
     check("T12", "Можна прийняти замовлення з ручним рахунком", acc2.status === 200 && acc2.json.ok, acc2.json.message);
     const sent = await mock("/__sent");
     check("T12", "Жодного листа не надіслано без ключа", sent.hits.length === 0, `${sent.hits.length}`);
+    const health = (await admin("/api/admin/applications?filter=all")).json.mail || {};
+    check("T12", "Робочий інструмент показує: пошту не налаштовано", health.configured === false && health.waiting >= 2, JSON.stringify(health));
   });
 
   // ---------------- B: повна конфігурація з тестовим IBAN ----------------
@@ -146,15 +148,15 @@ async function main() {
     // T06: успішна заявка
     const p1 = base({ name: "Віталій" });
     const r1 = await post("/api/zayavka", p1);
-    check("T06", "Заявку збережено, обидва листи прийнято", r1.status === 200 && r1.json.saved && /^Z-\d{4}-\d{2}-\d{2}\/\d+$/.test(r1.json.id)
+    check("T06", "Заявку збережено, обидва листи прийнято", r1.status === 200 && r1.json.saved && /^\d{8}-\d+$/.test(r1.json.id)
       && r1.json.mail.client === "accepted" && r1.json.mail.owner === "accepted", `${r1.json.id} ${JSON.stringify(r1.json.mail)}`);
     let sent = await mock("/__sent");
     const ack = sent.sent.find((x) => x.to === p1.email);
     const own = sent.sent.find((x) => x.to === OWNER);
     check("T04", "Лист клієнту: нейтральне «Добрий день!», 30-хвилинна консультація, 3 499 грн", ack && /^Добрий день!\n/.test(ack.text) && !/Віталій!/.test(ack.text)
       && /30-хвилинну консультацію/.test(ack.text) && /3 499 грн/.test(ack.text));
-    check("T19", "Підпис: номер Zadarma, @TenderWin_UA, канал «Тендер+»; Reply-To — Віталій", ack && /\+380 800 357 135/.test(ack.text) && /@TenderWin_UA/.test(ack.text)
-      && /t\.me\/tenderwin_plus/.test(ack.text) && ack.reply_to === OWNER);
+    check("T19", "Підпис: номер Zadarma, @TenderWin_UA, без каналу; Reply-To — Віталій", ack && /\+380 800 357 135/.test(ack.text) && /@TenderWin_UA/.test(ack.text)
+      && !/tenderwin_plus|Тендер\+/.test(ack.text + ack.html) && ack.reply_to === OWNER);
     check("R02", "До прийняття замовлення рахунку у вкладенні немає", ack && ack.attachments.length === 0);
     check("T06", "Віталій отримав усі дані й посилання на робочий інструмент; Reply-To — клієнт", own && own.text.includes(p1.org) && own.text.includes(p1.tender)
       && /\/admin\/#/.test(own.text) && own.reply_to === p1.email);
@@ -201,6 +203,9 @@ async function main() {
       && (await getApp(okLink.json.id)).app.tender === "UA-2026-09-30-000777-a");
     const chk = await post("/api/zayavka", base({ code: "14360571" }));
     check("R19", "Неправильна контрольна цифра — не блок, а позначка для Віталія", chk.status === 200 && /checksum/.test((await getApp(chk.json.id)).app.flags));
+
+    const hB = (await admin("/api/admin/applications?filter=all")).json.mail || {};
+    check("R07", "Стан пошти: ключ є, останній лист прийнято, помилок немає", hB.configured === true && hB.lastAcceptedAt > 0 && !hB.lastError, JSON.stringify(hB));
 
     // T13 / R03: швидке заповнення
     const fast = base({ elapsed: 100 });
@@ -310,6 +315,45 @@ async function main() {
       && (await getApp(d2.json.id)).app.flags.includes("dup:" + d1.json.id));
   });
 
+  // ---------------- D: рахунок без IBAN (повний режим до відкриття розрахункового рахунку) ----------------
+  await withWorker("D: рахунок без IBAN", { ...commonVars, ...testSeller, RESEND_API_KEY: "re_test", ADMIN_TOKEN: ADMIN }, async () => {
+    await mock("/__reset", {});
+    const p = base();
+    const r = await post("/api/zayavka", p);
+    check("Z/V", "Номер заявки — лише цифри, без літер Z і V", /^\d{8}-\d+$/.test(r.json.id) && !/[ZV]/i.test(r.json.id), r.json.id);
+    const acc = await act(r.json.id, "accept", {});
+    const sent = await mock("/__sent");
+    const inv = sent.sent.find((x) => x.to === p.email && /^Рахунок № TW-/.test(x.subject));
+    check("T17", "Без IBAN рахунок створюється й надсилається з приміткою про реквізити", acc.json.ok && inv && inv.attachments.length === 1
+      && /IBAN\) надішлемо окремим листом/.test(inv.text) && !/[ZV]/.test(inv.subject.replace("TenderWin", "")) && !/[ZV]/.test(inv.attachments[0].filename), acc.json.message);
+    globalThis.__pdfNoIban = inv ? inv.attachments[0].content : "";
+
+    // ---- статистика відвідувань ----
+    const PC = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36";
+    const PHONE = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1";
+    const hit = (body, ua, ip, raw) => fetch(BASE + "/api/hit", { method: "POST", headers: { "Content-Type": "text/plain", Origin: BASE, "User-Agent": ua, "CF-Connecting-IP": ip }, body: raw || JSON.stringify(body) });
+    const h1 = await hit({ e: "view", p: "/", r: "https://www.google.com/search?q=x" }, PC, "10.5.5.1");
+    await hit({ e: "view", p: "/", r: "" }, PC, "10.5.5.1");
+    await hit({ e: "view", p: "/", r: "https://t.me/x" }, PHONE, "10.5.5.2");
+    await hit({ e: "report" }, PHONE, "10.5.5.2");
+    await hit({ e: "report" }, PHONE, "10.5.5.2");
+    await hit({ e: "form_start" }, PHONE, "10.5.5.2");
+    const hb = await hit({ e: "view", p: "/" }, "Googlebot/2.1 (+http://www.google.com/bot.html)", "10.5.5.3");
+    const hx = await hit({ e: "steal" }, PC, "10.5.5.4");
+    const hl = await hit(null, PC, "10.5.5.5", JSON.stringify({ e: "view", p: "/" + "a".repeat(3000) }));
+    check("S01", "Подія статистики приймається без відповіді для сторінки (204), роботи й сміття теж 204", h1.status === 204 && hb.status === 204 && hx.status === 204 && hl.status === 204);
+    const noTok = await admin("/api/admin/stats?days=7", { token: "wrong-token-but-long-enough-000" , ip: "10.9.9.8" });
+    check("S02", "Статистику без пароля не видно", noTok.status === 401);
+    const st = (await admin("/api/admin/stats?days=7")).json;
+    const t = st.totals || {};
+    check("S03", "Перегляди й відвідувачі пораховано, робот і невідома подія — ні", st.ok && t.views === 3 && t.visitors === 2, JSON.stringify(t));
+    check("S04", "Дію рахуємо один раз на відвідувача за день", t.report === 1 && t.form_start === 1, JSON.stringify(t));
+    const refs = (st.refs || []).map((x) => x.key), devs = (st.devices || []).map((x) => x.key);
+    check("S05", "Джерела — лише назва сайту; пристрої визначено", refs.includes("google.com") && refs.includes("t.me") && refs.includes("(прямий захід або закладка)")
+      && devs.includes("телефон") && devs.includes("комп’ютер"), refs.join(", ") + " | " + devs.join(", "));
+    check("S06", "У статистиці немає IP-адрес; заявки з реєстру — у шляху клієнта", !/10\.5\.5\./.test(JSON.stringify(st)) && st.funnel.applications >= 1 && st.series.length === 7);
+  });
+
   // ---------------- C: малі ліміти — поріг автолистів і граничний ліміт ----------------
   await withWorker("C: малі ліміти 24 год", { ...commonVars, RESEND_API_KEY: "re_test", ADMIN_TOKEN: ADMIN, LIMIT_ROLLING_24H: "2", HARD_LIMIT_ROLLING_24H: "4" }, async () => {
     await mock("/__reset", {});
@@ -327,7 +371,7 @@ async function main() {
   console.log(`\nУсього: ${results.length}, пройдено: ${results.length - failed.length}, не пройдено: ${failed.length}`);
   if (process.env.TW_RESULTS) {
     const { writeFileSync } = await import("node:fs");
-    writeFileSync(process.env.TW_RESULTS, JSON.stringify({ results, pdf: globalThis.__pdf || "" }, null, 1));
+    writeFileSync(process.env.TW_RESULTS, JSON.stringify({ results, pdf: globalThis.__pdf || "", pdfNoIban: globalThis.__pdfNoIban || "" }, null, 1));
   }
   process.exit(failed.length ? 1 : 0);
 }

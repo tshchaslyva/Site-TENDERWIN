@@ -11,11 +11,6 @@
     "url": "https://t.me/tenderwin_ua",
     "prefill": "Доброго дня! Хочу замовити аналіз відхилення. ID закупівлі: UA-… ЄДРПОУ/РНОКПП: …"
   },
-  "channel": {
-    "username": "tenderwin_plus",
-    "url": "https://t.me/tenderwin_plus",
-    "label": "Тендер+ — щотижневий розбір відхилень"
-  },
   "person": "Віталій Щасливий",
   "executor": "ФОП Щасливий Віталій Олександрович"
 }

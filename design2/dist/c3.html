@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Аналізатор — концепція 3 · TenderWin</title>
+<meta name="description" content="Аналіз відхилення тендерної пропозиції за 24 години та 30-хвилинна консультація. 3 499 грн.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* ===== спільна основа концепцій (кожна концепція перевизначає вигляд) ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+img,svg,video{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit;cursor:pointer}
+.nw{white-space:nowrap}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{width:min(100% - 40px, var(--wrap, 1240px));margin-inline:auto}
+:focus-visible{outline:3px solid var(--focus, currentColor);outline-offset:3px;border-radius:4px}
+
+/* розбиті слова: анімація задається концепцією через .js [data-split] .w > span */
+[data-split] .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.12em .1em .1em 0;margin:-.12em -.1em -.1em 0}
+[data-split] .w>span{display:inline-block}
+
+/* поява */
+.js [data-r]{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.js [data-r].in{opacity:1;transform:none}
+
+/* FAQ */
+.faq details{overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.faq summary::-webkit-details-marker{display:none}
+.faq .ans{overflow:hidden;transition:height .32s cubic-bezier(.2,.7,.2,1),opacity .32s ease}
+.faq .ans ol{list-style:decimal;padding-left:1.3em;margin-top:10px}
+.faq .ans li+li{margin-top:6px}
+.faq .ans p+p,.faq .ans p+ol{margin-top:10px}
+
+/* форма */
+.tw-form{display:grid;gap:16px}
+.tw-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tw-form .fld{display:grid;gap:7px}
+.tw-form input,.tw-form textarea{width:100%;font:inherit;min-width:0}
+.tw-form textarea{min-height:110px;resize:vertical}
+.tw-form .hint{font-size:.84rem;opacity:.8}
+.tw-form .err{font-size:.86rem;font-weight:600;color:var(--err,#d64545)}
+.tw-form .err:empty{display:none}
+.tw-form .chk{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:.93rem}
+.tw-form .chk input{width:18px;height:18px;margin-top:3px;flex-shrink:0;accent-color:var(--accent,currentColor)}
+.tw-form .msg:empty{display:none}
+.tw-form .msg small{display:block;margin-top:6px;font-weight:500;opacity:.8}
+.tw-form .note{font-size:.84rem;opacity:.75}
+.tw-form button.loading{pointer-events:none;opacity:.75}
+.tw-form button.loading span::after{content:"…"}
+@media(max-width:600px){.tw-form .row2{grid-template-columns:1fr}}
+
+/* мобільна панель */
+.mbar{display:none}
+@media(max-width:760px){
+  .mbar{display:flex;align-items:center;gap:10px;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:80;
+    padding:8px 8px 8px 16px;border-radius:18px;transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .35s}
+  .mbar.away{transform:translateY(140%);opacity:0}
+  .mbar .t{flex:1;min-width:0;font-size:.84rem;line-height:1.25;font-weight:600}
+  .mbar a{white-space:nowrap}
+  body{padding-bottom:84px}
+}
+@media(max-width:359px){.mbar .t{display:none}.mbar .btn{flex:1}}
+
+/* менше руху */
+.rm *,.rm *::before,.rm *::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+.rm [data-r]{opacity:1 !important;transform:none !important}
+
+/* ================= КОНЦЕПЦІЯ 3 · «АНАЛІЗАТОР» — інтерфейс продукту, темна тема ================= */
+:root{
+  --bg:#060A14; --bg2:#0A1020; --panel:rgba(15,22,40,.72); --panel2:#0E1528; --line:rgba(148,163,184,.13); --line2:rgba(148,163,184,.24);
+  --text:#E7ECF5; --muted:#8D98AE; --dim:#5D6880; --mint:#45F0BF; --indigo:#7C8CFF; --amber:#FFB84D; --coral:#FF8A7A;
+  --strong:#45F0BF; --medium:#FFB84D; --weak:#FF8A7A;
+  --focus:#45F0BF; --accent:#45F0BF; --err:#FF8A7A; --wrap:1200px;
+  --f:"Onest",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+body{background:var(--bg);color:var(--text);font:400 16.5px/1.65 var(--f)}
+::selection{background:rgba(69,240,191,.3)}
+.mono{font-family:var(--mono)}
+h1,h2,h3{font-weight:700;letter-spacing:-.035em;line-height:1.05}
+h2{font-size:clamp(2rem,4.2vw,3.4rem)}
+h3{font-size:1.15rem;letter-spacing:-.015em;line-height:1.3}
+.grad{padding-inline:.12em;background:linear-gradient(180deg,#fff 20%,#9AA6BF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gm{background:linear-gradient(90deg,var(--mint),var(--indigo));-webkit-background-clip:text;background-clip:text;color:transparent}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--line2);background:rgba(15,22,40,.6);font:500 .78rem var(--mono);color:var(--muted)}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.kick{font:500 .76rem var(--mono);color:var(--mint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px;display:block}
+.lede{color:var(--muted);font-size:1.1rem;max-width:62ch}
+
+/* тло: сітка точок + «туманність» */
+.bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bgfx .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(148,163,184,.16) 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 80%)}
+.bgfx b{position:absolute;border-radius:50%;filter:blur(90px);opacity:.42}
+.bgfx b:nth-child(2){width:640px;height:640px;left:-120px;top:-220px;background:#2A3BCC;animation:fl1 22s ease-in-out infinite alternate}
+.bgfx b:nth-child(3){width:520px;height:520px;right:-140px;top:-80px;background:#0F8F75;animation:fl2 26s ease-in-out infinite alternate}
+.bgfx b:nth-child(4){width:460px;height:460px;left:38%;top:30%;background:#3B2A8F;opacity:.22;animation:fl1 30s ease-in-out infinite alternate-reverse}
+@keyframes fl1{to{transform:translate(160px,120px) scale(1.15)}}
+@keyframes fl2{to{transform:translate(-140px,160px) scale(.9)}}
+main,header,footer{position:relative;z-index:2}
+
+/* кнопки */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.6em;padding:.95em 1.45em;border-radius:12px;font-weight:600;font-size:.98rem;line-height:1;text-decoration:none;border:1px solid transparent;transition:transform .2s,box-shadow .3s,background .3s,border-color .3s}
+.btn-primary{background:linear-gradient(180deg,#5DF5CA,#2FD9A8);color:#03140F;box-shadow:0 0 0 1px rgba(69,240,191,.4),0 8px 30px -8px rgba(69,240,191,.55),inset 0 1px 0 rgba(255,255,255,.5)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(69,240,191,.6),0 12px 40px -8px rgba(69,240,191,.75),inset 0 1px 0 rgba(255,255,255,.5)}
+.btn-ghost{background:rgba(15,22,40,.6);border-color:var(--line2);color:var(--text)}
+.btn-ghost:hover{border-color:rgba(124,140,255,.6);background:rgba(124,140,255,.08)}
+.btn kbd{font:500 .72rem var(--mono);padding:2px 6px;border-radius:5px;background:rgba(3,20,15,.18);margin-left:4px}
+
+/* шапка */
+.hdr{position:sticky;top:12px;z-index:60;padding:0 12px}
+.hdr .in{display:flex;align-items:center;gap:22px;height:60px;padding:0 10px 0 18px;max-width:1200px;margin:12px auto 0;border-radius:16px;border:1px solid transparent;transition:background .35s,border-color .35s,backdrop-filter .35s}
+.hdr.scrolled .in{background:rgba(10,16,32,.72);border-color:var(--line2);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:1.06rem;letter-spacing:-.02em}
+.logo .ic{width:26px;height:26px;border-radius:8px;background:conic-gradient(from 210deg,var(--mint),var(--indigo),var(--mint));display:grid;place-items:center}
+.logo .ic::after{content:"";width:12px;height:12px;border-radius:3px;background:var(--bg);box-shadow:inset 0 0 0 2px rgba(255,255,255,.85)}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav a{font-size:.9rem;color:var(--muted);text-decoration:none;padding:7px 12px;border-radius:9px;transition:color .2s,background .2s}
+.nav a:hover{color:var(--text);background:rgba(148,163,184,.1)}
+.hdr .tel{font:500 .86rem var(--mono);color:var(--text);text-decoration:none;white-space:nowrap}
+.hdr .btn{padding:.7em 1.05em;font-size:.88rem;border-radius:10px}
+@media(max-width:1060px){.nav{display:none}.hdr .tel{margin-left:auto}}
+@media(max-width:640px){.hdr .btn{display:none}.hdr{top:8px;padding:0 8px}.hdr .in{margin-top:8px}}
+
+/* ---------- перший екран ---------- */
+.hero{padding:70px 0 40px;text-align:center}
+.hero .chip{margin-bottom:28px;position:relative;overflow:hidden}
+.hero .chip::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(69,240,191,.25) 50%,transparent 70%);transform:translateX(-100%);animation:shim 3.6s 1.2s ease-in-out infinite}
+@keyframes shim{to{transform:translateX(100%)}}
+.hero h1{font-size:clamp(2.5rem,6.4vw,5.4rem);max-width:16ch;margin:0 auto;line-height:1.02;padding:0 .2em;letter-spacing:-.028em}
+.js .hero h1 .w>span{opacity:0;transform:translateY(40%);filter:blur(10px);transition:opacity .9s,transform .9s cubic-bezier(.2,.75,.2,1),filter .9s;transition-delay:calc(var(--i)*60ms + .1s)}
+.go .hero h1 .w>span{opacity:1;transform:none;filter:none}
+.hero h1 .hl>span{background:linear-gradient(90deg,var(--mint),var(--indigo));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lede{margin:26px auto 0}
+.hero .actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:34px}
+.hero .note{margin-top:16px;font-size:.86rem;color:var(--dim)}
+@media(max-width:560px){.hero{padding-top:44px}.hero .actions .btn{flex:1 1 100%}}
+
+/* консоль */
+.cwrap{perspective:1800px;margin-top:64px}
+.console{position:relative;max-width:1100px;margin:0 auto;border-radius:18px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(17,25,46,.92),rgba(9,14,28,.96));
+  box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 40px 120px -30px rgba(0,0,0,.9),0 0 80px -20px rgba(69,240,191,.18);transform:rotateX(var(--tilt,16deg)) scale(var(--sc,.94));transform-origin:50% 0;transition:transform .1s linear;text-align:left;overflow:hidden}
+.console::before{content:"";position:absolute;left:10%;right:10%;top:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--mint),var(--indigo),transparent)}
+.console .bar{display:flex;align-items:center;gap:14px;height:46px;padding:0 16px;border-bottom:1px solid var(--line)}
+.console .dots{display:flex;gap:7px}.console .dots i{width:11px;height:11px;border-radius:50%;background:#26304A}
+.console .ttl{font:500 .78rem var(--mono);color:var(--muted)}
+.console .ttl b{color:var(--text);font-weight:500}
+.console .demo{margin-left:auto;font:500 .7rem var(--mono);color:var(--amber);border:1px solid rgba(255,184,77,.35);padding:3px 8px;border-radius:6px}
+.console .body{display:grid;grid-template-columns:280px 1fr;min-height:420px}
+@media(max-width:860px){.console .body{grid-template-columns:1fr}}
+.console .side{border-right:1px solid var(--line);padding:18px}
+@media(max-width:860px){.console .side{border-right:0;border-bottom:1px solid var(--line)}}
+.console .field{font:500 .76rem var(--mono);color:var(--dim);margin-bottom:6px}
+.console .inp{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:#070C18;font:500 .8rem var(--mono);color:var(--text);min-height:40px;overflow:hidden;white-space:nowrap}
+.console .inp .car{width:7px;height:15px;background:var(--mint);animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.console .chk{margin-top:18px;display:grid;gap:4px}
+.console .chk li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:.88rem;color:var(--dim);transition:color .3s,background .3s}
+.console .chk li .st{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line2);flex-shrink:0;display:grid;place-items:center;transition:all .3s}
+.console .chk li.run{color:var(--text);background:rgba(124,140,255,.08)}
+.console .chk li.run .st{border-color:var(--indigo);border-top-color:transparent;animation:spin .8s linear infinite}
+.console .chk li.done{color:var(--text)}
+.console .chk li.done .st{background:var(--mint);border-color:var(--mint)}
+.console .chk li.done .st::after{content:"";width:7px;height:4px;border-left:2px solid #03140F;border-bottom:2px solid #03140F;transform:rotate(-45deg) translate(1px,-1px)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.console .prog{margin-top:16px;height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.console .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--indigo));transition:width .6s}
+.console .main{padding:18px 22px;position:relative;min-width:0}
+.log{font:400 .82rem/1.75 var(--mono);color:var(--muted);min-height:190px}
+.log p{opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s;white-space:pre-wrap}
+.log p.on{opacity:1;transform:none}
+.log .p{color:var(--indigo)}.log .ok{color:var(--mint)}.log .w{color:var(--text)}.log .rf{color:var(--amber)}
+.res{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;padding:18px;border-radius:14px;border:1px solid rgba(69,240,191,.35);background:linear-gradient(135deg,rgba(69,240,191,.08),rgba(124,140,255,.06));opacity:0;transform:translateY(14px) scale(.98);transition:opacity .6s,transform .6s cubic-bezier(.2,.75,.2,1)}
+.res.on{opacity:1;transform:none}
+.res .pill{display:inline-block;font:600 .7rem var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mint);margin-bottom:4px}
+.res b{display:block;font-size:1.35rem;letter-spacing:-.02em}
+.res small{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
+@media(max-width:560px){.res{grid-template-columns:1fr;gap:10px}}
+.gauge{width:130px}
+.gauge .bgp{fill:none;stroke:var(--line2);stroke-width:10;stroke-linecap:round}
+.gauge .fg{fill:none;stroke:var(--c,var(--mint));stroke-width:10;stroke-linecap:round;stroke-dasharray:0 400;transition:stroke-dasharray 1.2s cubic-bezier(.2,.75,.2,1)}
+.gauge .ndl{transform-origin:70px 70px;transform:rotate(-90deg);transition:transform 1.2s cubic-bezier(.3,1.4,.5,1)}
+.gauge .ndl line{stroke:var(--text);stroke-width:2.5;stroke-linecap:round}
+.gauge .ndl circle{fill:var(--text)}
+.replay{position:absolute;right:16px;bottom:14px;font:500 .72rem var(--mono);color:var(--muted);background:none;border:1px solid var(--line2);border-radius:8px;padding:6px 10px;opacity:0;transition:opacity .4s}
+.replay.on{opacity:1}
+.replay:hover{color:var(--text);border-color:var(--indigo)}
+.cap{margin-top:18px;font:500 .78rem var(--mono);color:var(--dim)}
+
+/* факти */
+.facts{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:16px;margin-top:70px;background:rgba(10,16,32,.5);overflow:hidden}
+.facts>div{padding:20px 22px;border-right:1px solid var(--line)}
+.facts>div:last-child{border-right:0}
+.facts b{display:block;font-size:1.5rem;letter-spacing:-.03em;font-weight:700}
+.facts span{display:block;font:500 .74rem var(--mono);color:var(--muted);margin-top:4px}
+@media(max-width:900px){.facts{grid-template-columns:1fr 1fr}.facts>div{border-bottom:1px solid var(--line)}.facts>div:nth-child(2n){border-right:0}.facts>div:last-child{grid-column:1 / -1}}
+
+section{padding:120px 0}
+@media(max-width:760px){section{padding:76px 0}}
+.sh{text-align:center;max-width:780px;margin:0 auto 54px}
+.sh .lede{margin:18px auto 0}
+
+/* ---------- бенто ---------- */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.card{position:relative;border-radius:20px;border:1px solid var(--line);background:var(--panel);padding:26px;overflow:hidden;isolation:isolate;transition:border-color .3s,transform .4s cubic-bezier(.2,.75,.2,1)}
+.card::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(500px circle at var(--gx,50%) var(--gy,-20%),rgba(124,140,255,.12),transparent 50%);opacity:0;transition:opacity .4s}
+.card:hover{border-color:var(--line2)}
+.card:hover::before{opacity:1}
+.card .kick{margin-bottom:10px}
+.card h3{font-size:1.3rem;margin-bottom:8px}
+.card p{color:var(--muted);font-size:.95rem}
+.c-a{grid-column:span 4;display:flex;flex-direction:column}
+.c-b,.c-c,.c-d,.c-e{grid-column:span 2}
+@media(max-width:960px){.bento{grid-template-columns:1fr 1fr}.c-a{grid-column:1 / -1;grid-row:auto}.c-b,.c-c,.c-d,.c-e{grid-column:span 1}}
+@media(max-width:600px){.bento{grid-template-columns:1fr}.c-b,.c-c,.c-d,.c-e{grid-column:1}}
+.refs{margin-top:22px;display:grid;gap:10px;flex:1;align-content:start}
+.refs .r{display:grid;grid-template-columns:110px 1fr auto;gap:14px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(7,12,24,.7);opacity:0;transform:translateX(-18px);transition:opacity .5s,transform .6s cubic-bezier(.2,.75,.2,1);transition-delay:calc(var(--i)*140ms)}
+.c-a.in .refs .r{opacity:1;transform:none}
+.refs .r .k{font:500 .7rem var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.refs .r .v{font-size:.9rem;min-width:0}
+.refs .r .rf{font:500 .72rem var(--mono);color:var(--amber);white-space:nowrap}
+.refs .r.out{border-color:rgba(69,240,191,.4);background:rgba(69,240,191,.06)}
+.refs .r.out .v{color:var(--mint);font-weight:600}
+@media(max-width:600px){.refs .r{grid-template-columns:1fr;gap:4px}}
+.ring{width:120px;height:120px;border-radius:50%;margin:4px 0 18px;display:grid;place-items:center;background:conic-gradient(var(--mint) calc(var(--rp,0)*1turn),rgba(148,163,184,.14) 0);transition:--rp 2s cubic-bezier(.2,.75,.2,1)}
+@property --rp{syntax:"<number>";inherits:false;initial-value:0}
+.c-b.in .ring{--rp:1}
+.ring::after{content:"";position:absolute}
+.ring span{width:100px;height:100px;border-radius:50%;background:#0B1224;display:grid;place-items:center;font-weight:700;font-size:1.7rem;letter-spacing:-.03em}
+.ring span small{display:block;font:500 .64rem var(--mono);color:var(--muted);text-align:center;letter-spacing:.04em;margin-top:-4px}
+.wave{display:flex;align-items:center;gap:4px;height:120px;margin:4px 0 18px}
+.wave i{flex:1;max-width:8px;border-radius:4px;background:linear-gradient(180deg,var(--indigo),var(--mint));height:20%;animation:wv 1.4s ease-in-out infinite;animation-delay:calc(var(--i)*-90ms)}
+@keyframes wv{50%{height:var(--h,80%)}}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 18px}
+.seg span{font:500 .76rem var(--mono);padding:7px 10px;border-radius:8px;border:1px solid var(--line2);color:var(--dim);transition:all .4s}
+.seg span.on{color:#03140F;background:var(--c);border-color:var(--c)}
+.price-mini{font-weight:700;font-size:3rem;letter-spacing:-.05em;line-height:1;margin:14px 0 14px}
+.price-mini small{font-size:1rem;color:var(--muted);font-weight:500;letter-spacing:0}
+
+/* структура висновку */
+.struct{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:860px){.struct{grid-template-columns:1fr}}
+.list li{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:.96rem}
+.list li:first-child{border-top:0}
+.list .i{width:22px;height:22px;border-radius:7px;background:rgba(69,240,191,.12);border:1px solid rgba(69,240,191,.35);font:600 .66rem var(--mono);color:var(--mint);display:grid;place-items:center;margin-top:2px}
+.note2{display:flex;gap:14px;align-items:flex-start;color:var(--muted)}
+.note2 svg{width:22px;height:22px;flex-shrink:0;color:var(--amber);margin-top:2px}
+
+/* ---------- кейси: звіт ---------- */
+.app{display:grid;grid-template-columns:300px 1fr;border-radius:20px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(15,22,40,.9),rgba(9,14,28,.95));overflow:hidden;min-height:600px}
+@media(max-width:960px){.app{grid-template-columns:1fr}}
+.app .lst{border-right:1px solid var(--line);padding:14px;display:grid;gap:6px;align-content:start}
+@media(max-width:960px){.app .lst{border-right:0;border-bottom:1px solid var(--line);grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){.app .lst{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;scrollbar-width:none}.app .lh{display:none}.item{flex:0 0 80%;scroll-snap-align:start;border-color:var(--line)}}
+.app .lh{font:500 .72rem var(--mono);color:var(--dim);padding:6px 10px 10px;text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:960px){.app .lh{grid-column:1 / -1}}
+.item{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:4px;padding:12px 14px;border-radius:12px;border:1px solid transparent;transition:background .25s,border-color .25s}
+.item:hover{background:rgba(148,163,184,.06)}
+.item[aria-selected="true"]{background:rgba(124,140,255,.1);border-color:rgba(124,140,255,.35)}
+.item:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.item .t{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.92rem}
+.item .t i{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);flex-shrink:0}
+.item .s{font:500 .72rem var(--mono);color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .v{font-size:.82rem;color:var(--muted)}
+.rpt{padding:26px 30px;min-width:0}
+@media(max-width:640px){.rpt{padding:20px 16px}}
+.rpt .anim{animation:fadeup .55s cubic-bezier(.2,.75,.2,1) both}
+@keyframes fadeup{from{opacity:0;transform:translateY(12px)}}
+.rpt .hd{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-start;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.rpt .hd .m{font:500 .74rem var(--mono);color:var(--dim)}
+.rpt .hd h3{font-size:1.45rem;margin:8px 0 10px;max-width:30ch}
+.vpill{display:inline-flex;align-items:center;gap:8px;font:600 .74rem var(--mono);letter-spacing:.04em;text-transform:uppercase;padding:6px 10px;border-radius:8px;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 40%,transparent)}
+.gbox{display:flex;align-items:center;gap:14px}
+.gbox .gauge{width:120px}
+.gbox small{display:block;font:500 .7rem var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.gbox b{font-size:1rem}
+.q{margin:22px 0 18px;padding:14px 16px;border-radius:12px;background:rgba(7,12,24,.7);border:1px solid var(--line);font-size:.95rem}
+.q .k{display:block;font:500 .7rem var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.diff{display:grid;grid-template-columns:1fr 54px 1fr;border-radius:14px;border:1px solid var(--line2);overflow:hidden}
+@media(max-width:760px){.diff{grid-template-columns:1fr}}
+.diff .col{min-width:0}
+.diff .dh{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font:500 .72rem var(--mono);color:var(--muted);background:rgba(7,12,24,.6)}
+.diff .dh .rf{color:var(--amber);text-align:right}
+.diff .db{display:grid;grid-template-columns:32px 1fr;font-size:.92rem}
+.diff .ln{font:500 .7rem var(--mono);color:var(--dim);text-align:right;padding:12px 8px 12px 0;border-right:1px solid var(--line);user-select:none}
+.diff .tx{padding:12px 14px}
+.diff .col.a .db{background:rgba(124,140,255,.05)}
+.diff .col.b .db{background:color-mix(in srgb,var(--c) 7%,transparent)}
+.diff .col.b .tx{border-left:2px solid var(--c)}
+.diff .mid{display:grid;place-items:center;border-inline:1px solid var(--line);background:rgba(7,12,24,.6)}
+.diff .mid b{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font:700 1.05rem var(--mono);color:#03140F;background:var(--c);box-shadow:0 0 18px color-mix(in srgb,var(--c) 60%,transparent)}
+@media(max-width:760px){.diff .mid{border-inline:0;border-block:1px solid var(--line);padding:8px}}
+.diff + .dcap{margin-top:8px;font:500 .74rem var(--mono);color:var(--c)}
+.rcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+@media(max-width:1100px){.rcards{grid-template-columns:1fr}}
+.rcards div{padding:16px;border-radius:12px;border:1px solid var(--line);background:rgba(7,12,24,.5);font-size:.92rem;color:var(--muted)}
+.rcards b{display:block;font:500 .7rem var(--mono);color:var(--text);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.cases .foot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;margin-top:20px}
+.cases .disc{font:500 .76rem var(--mono);color:var(--dim);max-width:70ch}
+
+/* ---------- кроки ---------- */
+.tl{position:relative;max-width:820px;margin:0 auto;padding-left:64px}
+.tl::before{content:"";position:absolute;left:21px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.tl::after{content:"";position:absolute;left:21px;top:8px;width:2px;height:calc((100% - 16px)*min(1,var(--p,0)*1.5));background:linear-gradient(var(--mint),var(--indigo));box-shadow:0 0 12px var(--mint)}
+.tl .step{position:relative;padding:22px 24px;margin-bottom:14px;border-radius:16px;border:1px solid var(--line);background:var(--panel)}
+.tl .step .n{position:absolute;left:-64px;top:20px;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font:600 .82rem var(--mono);background:#0B1224;border:1px solid var(--line2);color:var(--mint);z-index:1}
+.tl .step .tag{float:right;font:500 .7rem var(--mono);color:var(--mint);border:1px solid rgba(69,240,191,.35);padding:3px 8px;border-radius:6px;margin-left:12px}
+.tl .step h3{margin-bottom:6px}
+.tl .step p{color:var(--muted);font-size:.95rem}
+@media(max-width:560px){.tl{padding-left:52px}.tl .step .n{left:-52px;width:38px;height:38px}.tl::before,.tl::after{left:18px}.tl .step .tag{float:none;display:inline-block;margin:0 0 8px}}
+
+/* ---------- вартість ---------- */
+@property --a{syntax:"<angle>";inherits:false;initial-value:0deg}
+.pcard{position:relative;max-width:980px;margin:0 auto;border-radius:24px;padding:1px;background:conic-gradient(from var(--a),rgba(148,163,184,.15),var(--mint),rgba(148,163,184,.15) 35%,var(--indigo),rgba(148,163,184,.15) 70%);animation:sp 8s linear infinite}
+@keyframes sp{to{--a:360deg}}
+.pcard .pin{display:grid;grid-template-columns:1.2fr .8fr;border-radius:23px;background:linear-gradient(180deg,#0E1630,#090F20);overflow:hidden}
+@media(max-width:860px){.pcard .pin{grid-template-columns:1fr}}
+.pcard .l{padding:40px}
+.pcard .l h2{font-size:clamp(1.6rem,3vw,2.3rem)}
+.pcard .l p{color:var(--muted);margin-top:14px}
+.ticks{margin-top:20px;display:grid;gap:10px}
+.ticks li{display:flex;gap:12px;align-items:flex-start;font-size:.95rem}
+.ticks li svg{width:20px;height:20px;flex-shrink:0;margin-top:2px}
+.ticks li svg path{stroke:var(--mint);stroke-width:2.4;fill:none;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .6s;transition-delay:calc(var(--i)*150ms + .3s)}
+.pcard.in .ticks li svg path{stroke-dashoffset:0}
+.pcard .r{padding:40px;border-left:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;gap:14px;background:radial-gradient(400px circle at 100% 0%,rgba(69,240,191,.12),transparent 60%)}
+@media(max-width:860px){.pcard .r{border-left:0;border-top:1px solid var(--line)}.pcard .l,.pcard .r{padding:28px 22px}}
+.pcard .amt{font-weight:700;font-size:clamp(3.2rem,6vw,4.6rem);letter-spacing:-.05em;line-height:1}
+.pcard .amt small{font-size:1.2rem;color:var(--muted);font-weight:500;letter-spacing:0}
+.pcard .r .btn{width:100%}
+.pcard .lim{font-size:.86rem;color:var(--dim)}
+.contract{text-align:center;margin-top:24px;color:var(--muted);font-size:.95rem}
+.contract b{color:var(--text)}
+
+/* ---------- FAQ ---------- */
+.faq{max-width:860px;margin:0 auto;display:grid;gap:10px}
+.faq details{border-radius:14px;border:1px solid var(--line);background:var(--panel);transition:border-color .3s}
+.faq details[open]{border-color:var(--line2)}
+.faq summary{padding:20px 22px;font-weight:600;font-size:1.02rem}
+.faq summary i{width:26px;height:26px;flex-shrink:0;border-radius:8px;border:1px solid var(--line2);position:relative;transition:transform .35s,background .3s}
+.faq summary i::before,.faq summary i::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:1.5px;background:var(--mint);transform:translate(-50%,-50%)}
+.faq summary i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .35s}
+.faq details[open] summary i{background:rgba(69,240,191,.1)}
+.faq details[open] summary i::after{transform:translate(-50%,-50%) rotate(0)}
+.faq .ans{color:var(--muted);padding:0 22px 20px;font-size:.96rem}
+
+/* ---------- форма ---------- */
+.fgrid{display:grid;grid-template-columns:1.3fr .7fr;gap:20px;align-items:start}
+@media(max-width:960px){.fgrid{grid-template-columns:1fr}}
+.fpanel{border-radius:22px;border:1px solid var(--line2);background:var(--panel);padding:34px;backdrop-filter:blur(10px)}
+@media(max-width:560px){.fpanel{padding:22px 16px}}
+.fpanel h2{font-size:clamp(1.7rem,3vw,2.4rem)}
+.fpanel .sub{margin:12px 0 26px;color:var(--muted)}
+.tw-form label{font-weight:500;font-size:.88rem}
+.tw-form .req{color:var(--mint);margin-left:3px}
+.tw-form .opt{color:var(--dim);font-weight:400}
+.tw-form input,.tw-form textarea{background:#070C18;border:1px solid var(--line2);border-radius:10px;padding:12px 14px;color:var(--text);transition:border-color .2s,box-shadow .2s}
+.tw-form input::placeholder,.tw-form textarea::placeholder{color:#55607A}
+.tw-form input:focus,.tw-form textarea:focus{outline:none;border-color:var(--mint);box-shadow:0 0 0 4px rgba(69,240,191,.14)}
+.tw-form [aria-invalid="true"]{border-color:var(--err)}
+.tw-form .hint{color:var(--dim)}
+.tw-form .chk a{color:var(--mint)}
+.tw-form button{width:100%;padding:1.1em}
+.tw-form .msg{padding:14px 16px;border-radius:12px;font-weight:500}
+.tw-form .msg.ok{background:rgba(69,240,191,.1);border:1px solid rgba(69,240,191,.4);color:#B8FBE6}
+.tw-form .msg.err{background:rgba(255,138,122,.1);border:1px solid rgba(255,138,122,.4);color:#FFD2CB}
+.tw-form .note{color:var(--dim)}
+.side-c{border-radius:22px;border:1px solid var(--line);background:var(--panel);padding:28px;position:sticky;top:100px}
+@media(max-width:960px){.side-c{position:static}}
+.side-c h3{font-size:1.25rem}
+.side-c>p{color:var(--muted);font-size:.93rem;margin:8px 0 14px}
+.contacts li{display:grid;gap:2px;padding:12px 0;border-top:1px solid var(--line)}
+.contacts .k{font:500 .7rem var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.contacts .v{font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+.contacts a.v:hover{color:var(--mint)}
+
+/* ---------- футер ---------- */
+.ft{border-top:1px solid var(--line);padding:56px 0 34px;position:relative}
+.ft::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--mint),var(--indigo),transparent);opacity:.6}
+.ft .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;color:var(--muted);font-size:.92rem}
+.ft .row p{max-width:58ch}
+.ft a{color:var(--text);text-decoration:none}
+.ft a:hover{color:var(--mint)}
+.ft .links{display:flex;flex-wrap:wrap;gap:8px 22px}
+.ft .legal{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font:500 .74rem var(--mono);color:var(--dim)}
+
+.mbar{background:rgba(10,16,32,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line2);color:var(--text)}
+.mbar .btn{padding:.8em 1.1em;font-size:.92rem}
+.mbar .call{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line2);flex-shrink:0}
+.mbar .call svg{width:18px;height:18px}
+</style>
+</head>
+<body>
+<style>.gbar{position:relative;z-index:300;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 16px;background:#111318;color:#C9CCD3;font:500 13px/1.3 system-ui,sans-serif}.gbar a{color:#fff;text-decoration:none;font-weight:600;white-space:nowrap}.gbar a:hover{text-decoration:underline}.gbar b{color:#fff}@media(max-width:520px){.gbar span{display:none}}</style><div class="gbar"><a class="home" href="./">← Усі концепції</a><span>Концепція 3 з 5 · <b>«Аналізатор»</b> · демонстраційний макет</span><a href="c4.html">«Атлас» →</a></div><script>if(/githack\.com$/.test(location.hostname)||location.protocol==="file:")document.querySelector(".gbar .home").href="index.html"</script>
+<div class="bgfx" aria-hidden="true"><div class="dots"></div><b></b><b></b><b></b></div>
+
+<header class="hdr" data-header>
+  <div class="in">
+    <a class="logo" href="#top" aria-label="TenderWin — на початок"><span class="ic"></span>TenderWin</a>
+    <nav class="nav" aria-label="Розділи"><a href="#metod">Як працюємо</a><a href="#kejsy">Приклади</a><a href="#yak">Кроки</a><a href="#vartist">Вартість</a><a href="#pytannya">Питання</a></nav>
+    <a class="tel" href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a>
+    <a class="btn btn-primary" href="#zayavka">Замовити аналіз</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <span class="chip" data-r><i></i>Для учасників публічних закупівель Prozorro</span>
+    <h1 data-split id="h1" class="grad">Аналіз відхилення тендерної пропозиції за&nbsp;24&nbsp;години</h1>
+    <p class="lede" data-r data-d="450">Допоможемо оцінити, чи є підстави оскаржувати відхилення. Перевіримо аргументи замовника за документами Вашої закупівлі, підготуємо письмовий висновок і пояснимо його на <span class="nw">30-хвилинній</span> консультації.</p>
+    <div class="actions" data-r data-d="600">
+      <a class="btn btn-primary" href="#zayavka" data-magnet>Замовити аналіз<kbd>3 499 грн</kbd></a>
+      <a class="btn btn-ghost" href="#kejsy">Подивитися приклад висновку</a>
+    </div>
+    <p class="note" data-r data-d="700">Перед оплатою підтвердимо обсяг роботи та можливість виконати її вчасно.</p>
+
+    <div class="cwrap" data-r data-d="300">
+      <div class="console" id="console" aria-label="Демонстрація: як фахівець розбирає рішення про відхилення">
+        <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="ttl">tenderwin / <b>аналіз відхилення</b></span><span class="demo">демо · дані вигадані</span></div>
+        <div class="body">
+          <div class="side">
+            <p class="field">ID закупівлі</p>
+            <div class="inp"><span id="typed"></span><span class="car" aria-hidden="true"></span></div>
+            <ul class="chk" id="chk">
+              <li><span class="st"></span>Рішення замовника</li>
+              <li><span class="st"></span>Вимога документації</li>
+              <li><span class="st"></span>Ваша пропозиція</li>
+              <li><span class="st"></span>Оцінка позиції</li>
+              <li><span class="st"></span>Висновок і консультація</li>
+            </ul>
+            <div class="prog"><i id="prog"></i></div>
+          </div>
+          <div class="main">
+            <div class="log" id="log">
+              <p><span class="p">›</span> Підстава 1: <span class="w">«учасник не надав довідку про наявність обладнання»</span></p>
+              <p><span class="p">›</span> Вимога документації: довідка в довільній формі <span class="rf">[Додаток 1 · п. 3.2 · с. 14]</span></p>
+              <p><span class="p">›</span> У пропозиції: довідка, 11 одиниць техніки, КЕП <span class="rf">[Довідка_техніка.pdf · с. 3]</span></p>
+              <p><span class="ok">✓</span> Документ є у складі пропозиції — підстава <span class="w">не підтверджується</span></p>
+              <p><span class="ok">✓</span> Ризики й наступні кроки описано · перевірку виконано</p>
+            </div>
+            <div class="res" id="res">
+              <svg class="gauge" viewBox="0 0 140 80" aria-hidden="true"><path class="bgp" d="M10,70 A60,60 0 0 1 130,70"/><path class="fg" id="g0" d="M10,70 A60,60 0 0 1 130,70"/><g class="ndl" id="n0"><line x1="70" y1="70" x2="70" y2="22"/><circle cx="70" cy="70" r="5"/></g></svg>
+              <div><span class="pill">Висновок</span><b>Є підстави оскаржувати</b><small>Сильна позиція · письмово за 24 год · консультація 30 хв</small></div>
+            </div>
+            <button class="replay" id="replay" type="button">↻ повторити</button>
+          </div>
+        </div>
+      </div>
+      <p class="cap">Інтерфейс — ілюстрація методу. Кожен висновок готує й перевіряє фахівець, а не автомат.</p>
+    </div>
+
+    <div class="facts" data-r>
+      <div><b>3 499 грн</b><span>аналіз + консультація</span></div>
+      <div><b>24 год</b><span>письмовий висновок</span></div>
+      <div><b>30 хв</b><span>консультація</span></div>
+      <div><b>Договір</b><span>рахунок і акт</span></div>
+      <div><b>Онлайн</b><span>по всій Україні</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="metod" style="padding-top:60px">
+  <div class="wrap">
+    <div class="sh"><span class="kick">Що Ви отримаєте</span><h2 class="grad" data-r>Письмовий висновок, який допомагає прийняти рішення</h2><p class="lede" data-r data-d="100">У висновку розглянемо кожну підставу відхилення та покажемо, на яких документах ґрунтується оцінка.</p></div>
+    <div class="bento">
+      <article class="card c-a" data-r>
+        <span class="kick">Кожна підстава — з посиланням</span>
+        <h3>Оцінка спирається на текст документів, а не на враження</h3>
+        <p>Зіставляємо три джерела: рішення замовника, тендерну документацію й Вашу пропозицію.</p>
+        <div class="refs">
+          <div class="r" style="--i:0"><span class="k">Рішення</span><span class="v">«Не надав довідку про обладнання»</span><span class="rf">Протокол · підстава 1</span></div>
+          <div class="r" style="--i:1"><span class="k">Документація</span><span class="v">Довідка в довільній формі</span><span class="rf">Додаток 1 · п. 3.2 · с. 14</span></div>
+          <div class="r" style="--i:2"><span class="k">Пропозиція</span><span class="v">Довідка є, 11 одиниць, КЕП</span><span class="rf">Довідка_техніка.pdf · с. 3</span></div>
+          <div class="r out" style="--i:3"><span class="k">Висновок</span><span class="v">Підстава не підтверджується</span><span class="rf">Сильна позиція</span></div>
+        </div>
+      </article>
+      <article class="card c-b" data-r data-d="100"><span class="kick">Строк</span><div class="ring" style="position:relative"><span><span>24<small>години</small></span></span></div><h3>Письмовий аналіз</h3><p>Протягом 24&nbsp;годин після зарахування оплати.</p></article>
+      <article class="card c-c" data-r data-d="200"><span class="kick">Консультація</span><div class="wave" id="wave" aria-hidden="true"></div><h3>30 хвилин для пояснення висновків</h3><p>На консультації розберемо незрозумілі моменти, відповімо на Ваші запитання щодо аналізу та обговоримо можливі наступні кроки. Консультація входить у ціну послуги.</p></article>
+      <article class="card c-d" data-r data-d="100"><span class="kick">Чесна оцінка</span><div class="seg" id="seg" aria-hidden="true"><span style="--c:var(--strong)">Сильна</span><span style="--c:var(--medium)">Середня</span><span style="--c:var(--weak)">Стійка позиція замовника</span></div><h3>Інколи висновок — «не оскаржувати»</h3><p>Якщо документи не дають достатніх підстав рекомендувати оскарження, пояснимо це у висновку. Якщо для оцінки бракує даних, прямо зазначимо обмеження.</p></article>
+      <article class="card c-e" data-r data-d="200"><span class="kick">Вартість</span><div class="price-mini">3&nbsp;499 <small>грн</small></div><h3>Усе включено</h3><p>Консультація входить у ціну послуги.</p></article>
+    </div>
+    <div class="struct">
+      <article class="card" data-r><span class="kick">Структура висновку</span><ol class="list"><li data-r data-d="0"><span class="i">01</span><span>Що саме зазначив замовник у рішенні про відхилення.</span></li><li data-r data-d="80"><span class="i">02</span><span>Яка вимога документації стосується цієї підстави.</span></li><li data-r data-d="160"><span class="i">03</span><span>Що міститься у відповідних документах Вашої пропозиції.</span></li><li data-r data-d="240"><span class="i">04</span><span>Які аргументи підтримують оскарження, а які послаблюють позицію.</span></li><li data-r data-d="320"><span class="i">05</span><span>Які наступні дії доцільно розглянути та які ризики врахувати.</span></li></ol></article>
+      <article class="card" data-r data-d="120"><span class="kick">Як ми працюємо</span>
+        <ol class="list">
+          <li><span class="i">01</span><span>Читаємо рішення замовника й розбиваємо його на окремі підстави відхилення.</span></li>
+          <li><span class="i">02</span><span>Знаходимо вимогу документації: розділ, пункт, сторінку.</span></li>
+          <li><span class="i">03</span><span>Перевіряємо Вашу пропозицію: файл, сторінку, підпис.</span></li>
+          <li><span class="i">04</span><span>Оцінюємо позицію, ризики й наступні кроки, а потім пояснюємо все на <span class="nw">30-хвилинній</span> консультації.</span></li>
+        </ol>
+        <p class="note2" style="margin-top:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg><span>Перед надсиланням висновок проходить незалежну перевірку.</span></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="cases" id="kejsy" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sh"><span class="kick">Приклади висновку</span><h2 class="grad" data-r>Так виглядає результат нашої роботи</h2><p class="lede" data-r data-d="100">Три демонстраційні справи з різним результатом. Ми не завжди радимо оскаржувати: інколи найцінніше — вчасно дізнатися, що скарга не має шансів.</p></div>
+    <div class="app" data-r>
+      <div class="lst" role="tablist" aria-label="Демонстраційні справи" id="lst"><p class="lh">Справи · демо</p></div>
+      <div class="rpt" id="rpt" role="tabpanel"></div>
+    </div>
+    <div class="foot"><p class="disc">Демонстраційний приклад: закупівля умовна, дані вигадані. Реальні висновки клієнтів конфіденційні.</p><a class="btn btn-ghost" href="demo/pryklad-vysnovku-demo.pdf" target="_blank" rel="noopener">Завантажити приклад висновку (PDF)</a></div>
+  </div>
+</section>
+
+<section id="yak" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sh"><span class="kick">Як замовити</span><h2 class="grad" data-r>Як замовити аналіз і консультацію</h2></div>
+    <ol class="tl" data-progress><li class="step" data-r data-d="0"><span class="n">01</span><h3>Заповніть заявку</h3><p>Укажіть закупівлю, учасника та контакти для зв’язку. Для багатолотової закупівлі зазначте потрібний лот.</p></li><li class="step" data-r data-d="110"><span class="n">02</span><h3>Погодьте обсяг роботи та оплатіть рахунок</h3><p>Перевіримо вихідні дані й можливість виконати аналіз вчасно, погодимо умови та надішлемо рахунок на 3&nbsp;499&nbsp;грн.</p></li><li class="step" data-r data-d="220"><span class="n">03</span><span class="tag">24 години</span><h3>Отримайте письмовий аналіз</h3><p>Підготуємо висновок протягом 24&nbsp;годин після зарахування оплати. Точний строк підтвердимо в листі.</p></li><li class="step" data-r data-d="330"><span class="n">04</span><span class="tag">30 хвилин</span><h3>Обговоріть висновки на консультації</h3><p>Після передання аналізу погодимо час <span class="nw">30-хвилинної</span> консультації. Вона вже входить у сплачену вартість.</p></li></ol>
+  </div>
+</section>
+
+<section id="vartist" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sh"><span class="kick">Вартість послуги</span></div>
+    <div class="pcard" data-r>
+      <div class="pin">
+        <div class="l"><h2>Аналіз відхилення та <span class="nw">30-хвилинна</span> консультація</h2><p>Письмовий аналіз із посиланнями на документи, оцінка кожної підстави відхилення, рекомендації щодо наступних дій та одна консультація за результатами аналізу.</p>
+          <ul class="ticks">
+            <li style="--i:0"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Письмовий аналіз із посиланнями на документи</li>
+            <li style="--i:1"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Оцінка кожної підстави відхилення</li>
+            <li style="--i:2"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Рекомендації щодо наступних дій</li>
+            <li style="--i:3"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="nw">30-хвилинна</span> консультація за результатами</span></li>
+          </ul></div>
+        <div class="r"><div class="amt"><span data-count="3499">3&nbsp;499</span> <small>грн</small></div><p style="color:var(--muted)">Консультація входить у ціну послуги.</p>
+          <a class="btn btn-primary" href="#zayavka" data-magnet>Замовити аналіз</a><p class="lim">Підготовка і подання скарги, представництво та плата за подання скарги до цієї послуги не входять. Рішення органу оскарження не залежить від TenderWin.</p></div>
+      </div>
+    </div>
+    <p class="contract" data-r><b>Працюємо за договором. Надаємо рахунок і акт наданих послуг.</b> Працюємо дистанційно з учасниками закупівель по всій Україні.</p>
+  </div>
+</section>
+
+<section id="pytannya" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sh"><span class="kick">Питання</span><h2 class="grad" data-r>Що зазвичай запитують</h2></div>
+    <div class="faq"><details open><summary><span>Як відбувається опрацювання моєї справи і коли я отримаю аналіз?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Після зарахування оплати ми беремо справу в роботу.</p><ol><li>Збираємо першоджерела з Prozorro: рішення замовника про відхилення, тендерну документацію, Вашу пропозицію та листування за закупівлею.</li><li>Розбираємо кожну підставу відхилення окремо: що написав замовник, що вимагала документація і що є у Ваших документах.</li><li>Якщо для висновку бракує даних, уточнюємо їх у Вас телефоном або в Telegram — тому вкажіть у заявці контакт, за яким Ви на зв’язку.</li><li>Перед надсиланням висновок проходить незалежну перевірку.</li><li>Готовий аналіз надсилаємо на Вашу електронну пошту окремим документом із посиланнями на джерела — до 24 годин з моменту зарахування оплати.</li></ol></div></details><details><summary><span>Коли відбудеться консультація?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Після того як Ви отримаєте письмовий висновок. Час і спосіб зв’язку погодимо з Вами. Одна <span class="nw">30-хвилинна</span> консультація за результатами аналізу входить у вартість 3&nbsp;499&nbsp;грн. Строк 24 години стосується підготовки письмового аналізу.</p></div></details><details><summary><span>Що потрібно для початку?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Заповніть заявку на сайті: укажіть ID або посилання на закупівлю, дані учасника й контакти. Якщо потрібного документа немає у відкритому доступі, узгодимо його передання до початку роботи.</p></div></details><details><summary><span>Чи підготуєте Ви скаргу?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Ця послуга включає аналіз відхилення та консультацію щодо висновків. Підготовка й подання скарги до неї не входять.</p></div></details><details><summary><span>Що буде, якщо підстав для оскарження недостатньо?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Ви отримаєте висновок із поясненням причин і ризиків. На консультації розберемо ці висновки та можливі наступні дії. Оцінка слабкої позиції також є результатом аналізу; ми не обіцяємо позитивної рекомендації незалежно від документів.</p></div></details><details><summary><span>Чи входить плата за подання скарги у 3&nbsp;499&nbsp;грн?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Ні. Це вартість аналізу та консультації. Якщо Ви вирішите подавати скаргу, плату за її подання потрібно врахувати окремо за правилами, що застосовуються до Вашої закупівлі.</p></div></details><details><summary><span>Що робити, якщо строк оскарження спливає?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Укажіть це в заявці та зв’яжіться з нами за контактами на сайті. До оплати потрібно перевірити строк саме Вашої процедури та можливість виконати аналіз вчасно. Звернення до TenderWin й оплата аналізу не зупиняють строку оскарження.</p></div></details><details><summary><span>Як оформлюється замовлення?</span><i aria-hidden="true"></i></summary><div class="ans"><p>До оплати погоджуємо предмет, строк та умови послуги, після чого надсилаємо рахунок. Документи оформлюємо відповідно до погодженого договору.</p></div></details></div>
+  </div>
+</section>
+
+<section id="zayavka" style="padding-top:40px">
+  <div class="wrap fgrid">
+    <div class="fpanel" data-r><span class="kick">Заявка</span><h2>Замовити аналіз відхилення</h2><p class="sub">Аналіз і <span class="nw">30-хвилинна</span> консультація за 3&nbsp;499&nbsp;грн. Після заявки підтвердимо можливість виконання та надішлемо умови оплати.</p><form class="tw-form" data-demo novalidate>
+  <div class="row2"><div class="fld"><label for="f-name">Ім’я<b class="req" aria-hidden="true">*</b></label><input id="f-name" type="text" aria-describedby="f-name-err" required><span class="err" id="f-name-err" aria-live="polite"></span></div><div class="fld"><label for="f-mail">Електронна пошта<b class="req" aria-hidden="true">*</b></label><input id="f-mail" type="email" aria-describedby="f-mail-err f-mail-hint" placeholder="name@company.ua" required><span class="hint" id="f-mail-hint">Для підтвердження заявки, рахунку й аналізу.</span><span class="err" id="f-mail-err" aria-live="polite"></span></div></div>
+  <div class="fld"><label for="f-tender">ID або посилання на закупівлю<b class="req" aria-hidden="true">*</b></label><input id="f-tender" type="text" aria-describedby="f-tender-err f-tender-hint" required><span class="hint" id="f-tender-hint">Формат ID: UA-РРРР-ММ-ДД-000000-a. Можна вставити посилання з Prozorro.</span><span class="err" id="f-tender-err" aria-live="polite"></span></div>
+  <div class="fld"><label for="f-org">Назва учасника / ПІБ ФОП<b class="req" aria-hidden="true">*</b></label><input id="f-org" type="text" aria-describedby="f-org-err f-org-hint" placeholder="ТОВ «…» або ФОП Прізвище Ім’я По батькові" required><span class="hint" id="f-org-hint">Як у тендерній пропозиції.</span><span class="err" id="f-org-err" aria-live="polite"></span></div>
+  <div class="fld"><label for="f-code">Код ЄДРПОУ або РНОКПП ФОП<b class="req" aria-hidden="true">*</b></label><input id="f-code" type="text" aria-describedby="f-code-err f-code-hint" required><span class="hint" id="f-code-hint">8 цифр — ЄДРПОУ, 10 цифр — РНОКПП.</span><span class="err" id="f-code-err" aria-live="polite"></span></div>
+  <label class="chk"><input type="checkbox"><span>Коду немає — уточню окремо</span></label>
+  <div class="row2"><div class="fld"><label for="f-lot">Лот <span class="opt">(якщо їх кілька)</span></label><input id="f-lot" type="text" aria-describedby="f-lot-err" placeholder="Наприклад, лот 2"><span class="err" id="f-lot-err" aria-live="polite"></span></div><div class="fld"><label for="f-contact">Телефон або Telegram <span class="opt">(рекомендовано)</span></label><input id="f-contact" type="text" aria-describedby="f-contact-err" placeholder="+380 … або @username"><span class="err" id="f-contact-err" aria-live="polite"></span></div></div>
+  <div class="fld"><label for="f-msg">Коротко про ситуацію <span class="opt">(необов’язково)</span></label><textarea id="f-msg" aria-describedby="f-msg-err" placeholder="Коли оприлюднено рішення, чи спливає строк оскарження"></textarea><span class="err" id="f-msg-err" aria-live="polite"></span></div>
+  <label class="chk"><input type="checkbox"><span>Рахунок оплачуватиме інша особа, ніж учасник</span></label>
+  <label class="chk"><input type="checkbox" id="f-ok" required aria-describedby="f-ok-err"><span>Погоджуюся на обробку моїх персональних даних для опрацювання цього звернення відповідно до <a href="#privacy">політики конфіденційності</a>.</span></label>
+  <span class="err" id="f-ok-err" aria-live="polite"></span>
+  <button type="submit" class="btn btn-primary"><span>Надіслати заявку</span></button>
+  <div class="msg" role="status" aria-live="polite"></div>
+  <p class="note">Надсилання заявки не є оплатою. Не вставляйте в поле повідомлення паролі, банківські дані або конфіденційні документи.</p>
+</form></div>
+    <aside class="side-c" id="kontakty" data-r data-d="150"><h3>Маєте запитання?</h3><p>Зателефонуйте за номером +380&nbsp;800&nbsp;357&nbsp;135 або напишіть нам у Telegram: @TenderWin_UA. Для оформлення замовлення заповніть заявку на сайті.</p><ul class="contacts">
+  <li><span class="k">Телефон</span><a class="v" href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a></li>
+  <li><span class="k">Telegram</span><a class="v" href="https://t.me/tenderwin_ua" target="_blank" rel="noopener">@TenderWin_UA</a></li>
+  <li><span class="k">Пошта</span><a class="v" href="mailto:vitalii@tenderwin.com.ua">vitalii@tenderwin.com.ua</a></li>
+  <li><span class="k">Виконавець</span><span class="v">ФОП Щасливий Віталій Олександрович</span></li>
+</ul></aside>
+  </div>
+</section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="row"><div><a class="logo" href="#top" aria-label="TenderWin — на початок" style="margin-bottom:14px"><span class="ic"></span>TenderWin</a><p>TenderWin. Аналіз відхилення тендерної пропозиції та <span class="nw">30-хвилинна</span> консультація за 3&nbsp;499&nbsp;грн. Письмовий аналіз протягом 24&nbsp;годин після оплати погодженого замовлення.</p></div>
+      <nav class="links" aria-label="Розділи сайту"><a href="#metod">Як працюємо</a><a href="#kejsy">Приклади</a><a href="#vartist">Вартість</a><a href="#pytannya">Питання</a><a href="#zayavka">Заявка</a></nav></div>
+    <div class="legal"><span>© 2026 TenderWin · ФОП Щасливий Віталій Олександрович</span><span><a href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a> · <a href="mailto:vitalii@tenderwin.com.ua">vitalii@tenderwin.com.ua</a> · <a href="https://t.me/tenderwin_ua">@TenderWin_UA</a></span><a id="privacy" href="#privacy">Політика конфіденційності</a></div>
+  </div>
+</footer>
+
+<nav class="mbar" id="mbar" aria-label="Замовлення"><span class="t">3&nbsp;499&nbsp;грн · консультація включена</span><a class="btn btn-primary" href="#zayavka">Замовити аналіз</a>
+  <a class="call" href="tel:+380800357135" aria-label="Зателефонувати"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg></a></nav>
+
+<script>window.TW_DATA = {"_note": "Демонстраційні приклади для сайту TenderWin. Закупівлі умовні, назви, суми й номери вигадані. Структура й логіка — як у реальному висновку. Реальні висновки клієнтів конфіденційні й не публікуються.", "disclaimer": "Демонстраційний приклад: закупівля умовна, дані вигадані. Реальні висновки клієнтів конфіденційні.", "cases": [{"id": "doc", "tag": "Документ подано", "title": "Документ є в пропозиції, але замовник його не побачив", "subject": "Поточний ремонт покрівлі навчального закладу", "budget": "2 400 000 грн", "tender": "UA-2026-08-14-004217-a", "verdict": "Є підстави оскаржувати", "strength": "strong", "strengthLabel": "Сильна позиція", "decision": "Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації.", "requirement": {"text": "Довідка в довільній формі з переліком обладнання, яке учасник використовуватиме під час робіт.", "ref": "Додаток 1, п. 3.2 · с. 14"}, "proposal": {"text": "Довідка з переліком 11 одиниць техніки й інструменту, підписана кваліфікованим електронним підписом.", "ref": "Файл «Довідка_техніка.pdf» · с. 3"}, "assessment": "Підстава відхилення не підтверджується документами: довідка є у складі пропозиції й відповідає вимозі за змістом. Якщо замовник вважав документ неналежним, він мав зазначити невідповідність і дати можливість її виправити.", "risks": "Замовник може послатися на назву чи формат файлу. До подання скарги варто перевірити чинність підпису й дату завантаження документа.", "next": "Підготувати скаргу до органу оскарження в межах строку й урахувати плату за її подання.", "saving": "Аргументи для скарги зібрано з посиланнями на конкретні сторінки."}, {"id": "spec", "tag": "Технічна специфікація", "title": "Замовник має рацію — і це теж цінний висновок", "subject": "Постачання ноутбуків для управління освіти, 38 одиниць", "budget": "1 140 000 грн", "tender": "UA-2026-07-29-011384-a", "verdict": "Оскарження не рекомендовано", "strength": "weak", "strengthLabel": "Позиція замовника стійка", "decision": "Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ.", "requirement": {"text": "Оперативна пам’ять — не менше 16 ГБ.", "ref": "Додаток 2 «Технічна специфікація», рядок 4 · с. 22"}, "proposal": {"text": "«8 ГБ з можливістю розширення до 16 ГБ».", "ref": "Технічна пропозиція учасника, рядок 4 · с. 2"}, "assessment": "Невідповідність стосується характеристики самого товару, а не оформлення документа. Можливість розширення пам’яті не означає, що запропонований товар відповідає мінімальній вимозі.", "risks": "Скарга з високою ймовірністю не дасть результату, а плата за її подання та час будуть витрачені.", "next": "Не подавати скаргу. Для наступних закупівель — звіряти мінімальні параметри специфікації до подання пропозиції.", "saving": "Клієнт не витратив кошти на подання скарги з низькими шансами."}, {"id": "exp", "tag": "Аналогічний договір", "title": "Спірна підстава: шанси є, але є й ризики", "subject": "Послуги з прибирання адміністративних приміщень", "budget": "860 000 грн", "tender": "UA-2026-09-02-007751-a", "verdict": "Оскарження можливе", "strength": "medium", "strengthLabel": "Середня позиція", "decision": "Учасник не підтвердив досвід виконання аналогічного договору: наданий договір не є аналогічним за предметом.", "requirement": {"text": "Аналогічним вважається договір на послуги з прибирання приміщень.", "ref": "Додаток 1, п. 2.1 · с. 9"}, "proposal": {"text": "Договір на комплексне обслуговування будівлі, зокрема щоденне прибирання, та акти з обсягами прибирання.", "ref": "Файл «Досвід.pdf» · с. 1–6"}, "assessment": "На користь учасника: прибирання прямо входить до предмета договору, а акти підтверджують обсяги саме цих послуг. На користь замовника: документація вимагає договору, аналогічного за предметом, і комплексний договір можна трактувати інакше.", "risks": "Результат залежить від того, як орган оскарження витлумачить поняття «аналогічний». Варто врахувати плату за подання скарги.", "next": "Рішення за клієнтом. Якщо подавати скаргу — зробити акцент на актах і частці прибирання в обсязі договору.", "saving": "Клієнт ухвалює рішення, знаючи і сильні, і слабкі сторони позиції."}]};</script>
+<script>/* TenderWin — спільна поведінка концепцій (без бібліотек).
+   data-r            — поява під час прокрутки (клас .in), data-d="120" — затримка в мс
+   data-split        — розбити текст на слова (span.w з --i) для покрокової анімації
+   data-count="3499" — лічильник до числа, коли елемент у кадрі
+   data-magnet       — кнопка злегка тягнеться до курсора
+   details у .faq    — плавне відкриття
+   form[data-demo]   — демонстраційна заявка (нічого не надсилає)
+   #mbar             — мобільна панель ховається біля форми
+   --sp на <html>    — прогрес прокрутки сторінки 0…1                           */
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (RM) root.classList.add("rm");
+  root.classList.add("js");
+  window.TW = window.TW || {};
+  TW.RM = RM;
+
+  /* ---------- розбиття тексту на слова ---------- */
+  function split(el) {
+    if (el.dataset.splitDone) return;
+    var i = 0;
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var parts = n.textContent.split(/([ \t\n\r\f]+)/); // нерозривний пробіл не розбиваємо
+          var frag = document.createDocumentFragment();
+          parts.forEach(function (p) {
+            if (!p) return;
+            if (/^[ \t\n\r\f]+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+            var s = document.createElement("span");
+            s.className = "w";
+            s.style.setProperty("--i", i++);
+            var inner = document.createElement("span");
+            inner.textContent = p;
+            s.appendChild(inner);
+            frag.appendChild(s);
+          });
+          n.parentNode.replaceChild(frag, n);
+        } else if (n.nodeType === 1 && !n.classList.contains("w")) {
+          if (n.classList.contains("nw")) {
+            var inner = document.createElement("span");
+            while (n.firstChild) inner.appendChild(n.firstChild);
+            n.appendChild(inner);
+            n.classList.add("w"); n.style.setProperty("--i", i++); return;
+          }
+          walk(n);
+        }
+      });
+    })(el);
+    el.dataset.splitDone = "1";
+    el.style.setProperty("--n", i);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-split]"), split);
+  TW.split = split;
+
+  /* ---------- поява під час прокрутки ---------- */
+  var revealEls = document.querySelectorAll("[data-r]");
+  function show(el) {
+    var d = Number(el.getAttribute("data-d") || 0);
+    if (d && !RM) setTimeout(function () { el.classList.add("in"); }, d); else el.classList.add("in");
+    el.dispatchEvent(new CustomEvent("tw:in"));
+  }
+  if ("IntersectionObserver" in window && !RM) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -10% 0px", threshold: 0.12 });
+    Array.prototype.forEach.call(revealEls, function (el) { io.observe(el); });
+    setTimeout(function () { Array.prototype.forEach.call(revealEls, function (el) { if (!el.classList.contains("in")) show(el); }); }, 9000);
+  } else {
+    Array.prototype.forEach.call(revealEls, show);
+  }
+  TW.onIn = function (el, fn) {
+    if (!el) return;
+    if (el.classList.contains("in")) fn(); else el.addEventListener("tw:in", fn, { once: true });
+  };
+  TW.whenVisible = function (el, fn, threshold) {
+    if (!el) return;
+    if (!("IntersectionObserver" in window)) { fn(); return; }
+    var o = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { fn(); o.disconnect(); } });
+    }, { threshold: threshold || 0.3 });
+    o.observe(el);
+  };
+
+  /* ---------- лічильники ---------- */
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-count]"), function (el) {
+    var target = Number(el.getAttribute("data-count"));
+    var dur = Number(el.getAttribute("data-dur") || 1400);
+    if (RM) { el.textContent = fmt(target); return; }
+    el.textContent = fmt(0);
+    TW.whenVisible(el, function () {
+      var t0 = performance.now();
+      (function tick(t) {
+        var k = Math.min(1, (t - t0) / dur);
+        var e = 1 - Math.pow(1 - k, 4);
+        el.textContent = fmt(Math.round(target * e));
+        if (k < 1) requestAnimationFrame(tick);
+      })(t0);
+    }, 0.6);
+  });
+
+  /* ---------- прогрес прокрутки ---------- */
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var h = root.scrollHeight - innerHeight;
+      root.style.setProperty("--sp", h > 0 ? (scrollY / h).toFixed(4) : 0);
+      Array.prototype.forEach.call(document.querySelectorAll("[data-progress]"), function (el) {
+        var r = el.getBoundingClientRect();
+        var p = (innerHeight - r.top) / (r.height + innerHeight);
+        el.style.setProperty("--p", Math.max(0, Math.min(1, p)).toFixed(4));
+      });
+      var hdr = document.querySelector("[data-header]");
+      if (hdr) hdr.classList.toggle("scrolled", scrollY > 10);
+      ticking = false;
+    });
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  /* ---------- магнітні кнопки ---------- */
+  if (!RM && window.matchMedia("(pointer:fine)").matches) {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-magnet]"), function (b) {
+      b.addEventListener("pointermove", function (e) {
+        var r = b.getBoundingClientRect();
+        var x = (e.clientX - r.left - r.width / 2) / r.width, y = (e.clientY - r.top - r.height / 2) / r.height;
+        b.style.transform = "translate(" + (x * 10).toFixed(1) + "px," + (y * 8).toFixed(1) + "px)";
+      });
+      b.addEventListener("pointerleave", function () { b.style.transform = ""; });
+    });
+  }
+
+  /* ---------- плавний FAQ ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".faq details"), function (d) {
+    var s = d.querySelector("summary"), a = d.querySelector(".ans");
+    if (!s || !a) return;
+    s.addEventListener("click", function (e) {
+      if (RM) return;
+      e.preventDefault();
+      if (d.open) {
+        a.style.height = a.scrollHeight + "px";
+        requestAnimationFrame(function () { a.style.height = "0px"; a.style.opacity = "0"; });
+        setTimeout(function () { d.open = false; a.style.height = ""; a.style.opacity = ""; }, 320);
+      } else {
+        d.open = true;
+        a.style.height = "0px"; a.style.opacity = "0";
+        requestAnimationFrame(function () { a.style.height = a.scrollHeight + "px"; a.style.opacity = "1"; });
+        setTimeout(function () { a.style.height = ""; }, 340);
+      }
+    });
+  });
+
+  /* ---------- демонстраційна форма ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("form[data-demo]"), function (f) {
+    var msg = f.querySelector(".msg");
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var bad = null;
+      Array.prototype.forEach.call(f.querySelectorAll("[required]"), function (i) {
+        var ok = i.type === "checkbox" ? i.checked : i.value.trim().length > 1;
+        var err = f.querySelector("#" + i.id + "-err");
+        i.setAttribute("aria-invalid", ok ? "false" : "true");
+        if (err) err.textContent = ok ? "" : (i.type === "checkbox" ? "Потрібна Ваша згода." : "Заповніть це поле.");
+        if (!ok && !bad) bad = i;
+      });
+      if (bad) { bad.focus(); msg.className = "msg err"; msg.textContent = "Перевірте позначені поля."; return; }
+      var btn = f.querySelector("[type=submit]");
+      btn.classList.add("loading");
+      setTimeout(function () {
+        btn.classList.remove("loading");
+        msg.className = "msg ok";
+        msg.innerHTML = "Дякуємо! Заявку № 20261003-1 збережено. Перед оплатою підтвердимо обсяг і строк роботи." +
+          "<small>Це демонстрація макета: заявку не надіслано.</small>";
+      }, RM ? 0 : 900);
+    });
+  });
+
+  /* ---------- мобільна панель ---------- */
+  var bar = document.getElementById("mbar"), form = document.getElementById("zayavka");
+  if (bar && form && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) { es.forEach(function (e) { bar.classList.toggle("away", e.isIntersecting); }); }, { threshold: 0.05 }).observe(form);
+  }
+
+  /* ---------- допоміжне для кейсів ---------- */
+  TW.cases = (window.TW_DATA && window.TW_DATA.cases) || [];
+  TW.disclaimer = (window.TW_DATA && window.TW_DATA.disclaimer) || "";
+  TW.esc = function (t) {
+    return String(t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; });
+  };
+  TW.rows = function (c) {
+    return [
+      { k: "Що зазначив замовник", v: c.decision, r: "Рішення про відхилення" },
+      { k: "Вимога документації", v: c.requirement.text, r: c.requirement.ref },
+      { k: "Що є в пропозиції", v: c.proposal.text, r: c.proposal.ref },
+      { k: "Оцінка", v: c.assessment, r: "" },
+      { k: "Ризики", v: c.risks, r: "" },
+      { k: "Наступні кроки", v: c.next, r: "" }
+    ];
+  };
+  TW.level = function (c) { return c.strength === "strong" ? 3 : c.strength === "medium" ? 2 : 1; };
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var RM = TW.RM, root = document.documentElement, e = TW.esc;
+  requestAnimationFrame(function () { root.classList.add("go"); });
+  Array.prototype.forEach.call(document.querySelectorAll("#h1 .w"), function (w) { if (/24/.test(w.textContent)) w.classList.add("hl"); });
+
+  /* прилад: дуга й стрілка за рівнем 0…1 */
+  var ARC = Math.PI * 60;
+  function gauge(fg, ndl, v, col) {
+    fg.style.setProperty("--c", col); fg.style.stroke = col;
+    fg.style.strokeDasharray = (ARC * v).toFixed(1) + " 400";
+    ndl.style.transform = "rotate(" + (-90 + 180 * v).toFixed(1) + "deg)";
+  }
+
+  /* консоль: нахил під час прокрутки */
+  var con = document.getElementById("console");
+  function tilt() {
+    var r = con.getBoundingClientRect(), p = Math.max(0, Math.min(1, 1 - (r.top - innerHeight * 0.25) / (innerHeight * 0.6)));
+    con.style.setProperty("--tilt", (16 * (1 - p)).toFixed(2) + "deg"); con.style.setProperty("--sc", (0.94 + 0.06 * p).toFixed(3));
+  }
+  if (!RM) { addEventListener("scroll", tilt, { passive: true }); tilt(); } else { con.style.setProperty("--tilt", "0deg"); con.style.setProperty("--sc", "1"); }
+
+  /* консоль: сценарій */
+  var ID = "UA-2026-08-14-004217-a", typed = document.getElementById("typed"), chk = document.querySelectorAll("#chk li"), logs = document.querySelectorAll("#log p"),
+      res = document.getElementById("res"), prog = document.getElementById("prog"), rep = document.getElementById("replay"), timers = [];
+  function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+  function reset() {
+    timers.forEach(clearTimeout); timers = [];
+    typed.textContent = ""; prog.style.width = "0";
+    chk.forEach(function (l) { l.className = ""; }); logs.forEach(function (l) { l.className = ""; });
+    res.classList.remove("on"); rep.classList.remove("on");
+    gauge(document.getElementById("g0"), document.getElementById("n0"), 0, "var(--mint)");
+  }
+  function finalState() {
+    typed.textContent = ID; prog.style.width = "100%";
+    chk.forEach(function (l) { l.className = "done"; }); logs.forEach(function (l) { l.className = "on"; });
+    res.classList.add("on"); rep.classList.add("on");
+    gauge(document.getElementById("g0"), document.getElementById("n0"), 0.85, "var(--mint)");
+  }
+  function play() {
+    reset();
+    if (RM) { finalState(); return; }
+    var t = 300;
+    ID.split("").forEach(function (ch, i) { at(t + i * 38, function () { typed.textContent = ID.slice(0, i + 1); }); });
+    t += ID.length * 38 + 300;
+    for (var k = 0; k < 5; k++) (function (k) {
+      at(t, function () { chk[k].className = "run"; prog.style.width = (k * 20 + 8) + "%"; });
+      at(t + 650, function () { chk[k].className = "done"; logs[k].className = "on"; prog.style.width = ((k + 1) * 20) + "%"; });
+      t += 900;
+    })(k);
+    at(t, function () { res.classList.add("on"); gauge(document.getElementById("g0"), document.getElementById("n0"), 0.85, "var(--mint)"); });
+    at(t + 1400, function () { rep.classList.add("on"); });
+  }
+  rep.addEventListener("click", play);
+  reset();
+  TW.whenVisible(con, play, 0.35);
+
+  /* хвиля консультації */
+  var wave = document.getElementById("wave"), wh = "";
+  for (var i = 0; i < 28; i++) wh += '<i style="--i:' + i + ';--h:' + (25 + Math.round(Math.abs(Math.sin(i * 1.7)) * 70)) + '%"></i>';
+  wave.innerHTML = wh;
+
+  /* чесна оцінка: перемикач рівнів */
+  var seg = document.querySelectorAll("#seg span"), si = 0;
+  seg[0].classList.add("on");
+  if (!RM) setInterval(function () { seg[si].classList.remove("on"); si = (si + 1) % seg.length; seg[si].classList.add("on"); }, 1800);
+
+  /* картки: підсвітка за курсором */
+  document.querySelectorAll(".card").forEach(function (c) {
+    c.addEventListener("pointermove", function (ev) { var r = c.getBoundingClientRect(); c.style.setProperty("--gx", (ev.clientX - r.left) + "px"); c.style.setProperty("--gy", (ev.clientY - r.top) + "px"); });
+  });
+  var pc = document.querySelector(".pcard"); TW.onIn(pc, function () { pc.classList.add("in"); });
+
+  /* кейси: застосунок зі звітом */
+  var lst = document.getElementById("lst"), rpt = document.getElementById("rpt");
+  var COL = { strong: "var(--strong)", medium: "var(--medium)", weak: "var(--weak)" }, LV = { strong: 0.85, medium: 0.5, weak: 0.15 };
+  var MATCH = { strong: ["=", "Пропозиція відповідає вимозі — підстава не підтверджується"], medium: ["≈", "Відповідність спірна — залежить від тлумачення"], weak: ["≠", "Невідповідність підтверджується документами"] };
+  var items = [];
+  function show(i) {
+    var c = TW.cases[i];
+    items.forEach(function (b, k) { b.setAttribute("aria-selected", k === i ? "true" : "false"); b.tabIndex = k === i ? 0 : -1; });
+    rpt.style.setProperty("--c", COL[c.strength]);
+    rpt.innerHTML = '<div class="anim"><div class="hd"><div><span class="m">' + e(c.tender) + ' · ' + e(c.budget) + '</span><h3>' + e(c.title) + '</h3><span class="vpill">' + e(c.verdict) + '</span></div>' +
+      '<div class="gbox"><svg class="gauge" viewBox="0 0 140 80" aria-hidden="true"><path class="bgp" d="M10,70 A60,60 0 0 1 130,70"/><path class="fg" d="M10,70 A60,60 0 0 1 130,70"/><g class="ndl"><line x1="70" y1="70" x2="70" y2="22"/><circle cx="70" cy="70" r="5"/></g></svg>' +
+      '<div><small>Сила позиції</small><b>' + e(c.strengthLabel) + '</b></div></div></div>' +
+      '<div class="q"><span class="k">Що зазначив замовник · ' + e(c.subject) + '</span>«' + e(c.decision) + '»</div>' +
+      '<div class="diff"><div class="col a"><div class="dh"><span>Вимога документації</span><span class="rf">' + e(c.requirement.ref) + '</span></div><div class="db"><span class="ln">1</span><span class="tx">' + e(c.requirement.text) + '</span></div></div>' +
+      '<div class="mid"><b aria-hidden="true">' + MATCH[c.strength][0] + '</b></div>' +
+      '<div class="col b"><div class="dh"><span>Що є в пропозиції</span><span class="rf">' + e(c.proposal.ref) + '</span></div><div class="db"><span class="ln">1</span><span class="tx">' + e(c.proposal.text) + '</span></div></div></div>' +
+      '<p class="dcap">' + MATCH[c.strength][1] + '</p>' +
+      '<div class="rcards"><div><b>Оцінка</b>' + e(c.assessment) + '</div><div><b>Ризики</b>' + e(c.risks) + '</div><div><b>Наступні кроки</b>' + e(c.next) + '</div></div></div>';
+    var fg = rpt.querySelector(".fg"), nd = rpt.querySelector(".ndl");
+    requestAnimationFrame(function () { requestAnimationFrame(function () { gauge(fg, nd, LV[c.strength], COL[c.strength]); }); });
+  }
+  TW.cases.forEach(function (c, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "item"; b.setAttribute("role", "tab"); b.style.setProperty("--c", COL[c.strength]);
+    b.innerHTML = '<span class="t"><i></i>' + e(c.tag) + '</span><span class="s">' + e(c.tender) + '</span><span class="v">' + e(c.verdict) + '</span>';
+    b.addEventListener("click", function () { show(i); });
+    b.addEventListener("keydown", function (ev) {
+      if (ev.key === "ArrowDown" || ev.key === "ArrowUp" || ev.key === "ArrowRight" || ev.key === "ArrowLeft") {
+        ev.preventDefault(); var n = (i + (ev.key === "ArrowDown" || ev.key === "ArrowRight" ? 1 : TW.cases.length - 1)) % TW.cases.length; show(n); items[n].focus();
+      }
+    });
+    items.push(b); lst.appendChild(b);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

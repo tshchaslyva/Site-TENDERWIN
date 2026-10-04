@@ -62,7 +62,6 @@ function wrap(text, font, size, width) {
  * @param {Date}   p.date
  * @param {Date}   p.validUntil
  * @param {{title:string, unit:string, qty:number, price:number}[]} p.items
- * @param {{label:string, url:string}} [p.channel]  канал «Тендер+» для колонтитула
  * @param {string} p.purpose     призначення платежу
  * @returns {Promise<Uint8Array>}
  */
@@ -225,12 +224,11 @@ export async function buildInvoicePdf(p) {
     "Договір та акт наданих послуг підписуються через сервіс «Вчасно».",
     "Рахунок сформовано в електронному вигляді, дійсний без підпису та печатки.",
   ];
-  if (!p.seller.iban) notes.unshift("Реквізити для оплати буде надіслано окремо.");
+  if (!p.seller.iban) notes.unshift("Реквізити для оплати (IBAN) надішлемо окремим листом.");
   notes.forEach((n) => { y -= para("•  " + n, M, y, CW, { size: 9.5, color: MUTED }) + 2; });
 
-  // низ сторінки: сайт, телефон, канал «Тендер+», номер рахунку
-  const foot = [p.seller.site, p.seller.phone, p.channel ? `${p.channel.label}: ${p.channel.url.replace(/^https:\/\//, "")}` : ""]
-    .filter(Boolean).join("  ·  ");
+  // низ сторінки: сайт, телефон, пошта, номер рахунку
+  const foot = [p.seller.site, p.seller.phone, p.seller.email].filter(Boolean).join("  ·  ");
   text(foot, M, 30, { size: 8, color: MUTED });
   const numW = R.widthOfTextAtSize(p.number, 8);
   text(p.number, W - M - numW, 30, { size: 8, color: MUTED });

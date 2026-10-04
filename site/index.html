@@ -267,9 +267,6 @@ form .row .field{margin-bottom:0}
 .contact-line small a{color:#D3DEE8}
 .contact-card .executor{margin-top:16px; padding-top:14px; border-top:1px dashed var(--line-dark); font-size:.88rem; color:var(--soft-dark)}
 
-/* ---------- останні розбори (резерв) ---------- */
-.posts[hidden]{display:none}
-.posts{padding:48px 0; border-top:1px solid var(--line)}
 
 /* ---------- футер ---------- */
 footer{background:#07131F; color:var(--soft-dark); padding:52px 0 34px; font-size:.93rem}
@@ -670,11 +667,6 @@ input, textarea { min-width:0; max-width:100% }
             <span class="v"><a href="https://t.me/tenderwin_ua" data-tg="contact" target="_blank" rel="noopener">@TenderWin_UA</a></span>
             <small><a href="https://t.me/tenderwin_ua" data-tg="contact" data-prefill target="_blank" rel="noopener">Написати в Telegram</a></small></div>
         </div>
-        <div class="contact-line" data-tg-wrap="channel">
-          <span class="ci" aria-hidden="true"><svg><use href="#i-news"/></svg></span>
-          <div><span class="k">Канал</span>
-            <span class="v"><a href="https://t.me/tenderwin_plus" data-tg="channel" target="_blank" rel="noopener">Тендер+ — щотижневий розбір відхилень</a></span></div>
-        </div>
         <div class="contact-line">
           <span class="ci" aria-hidden="true"><svg><use href="#i-globe"/></svg></span>
           <div><span class="k">Сайт</span>
@@ -682,19 +674,6 @@ input, textarea { min-width:0; max-width:100% }
         </div>
         <p class="executor">Виконавець — ФОП Щасливий Віталій Олександрович.</p>
       </aside>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 7. ОСТАННІ РОЗБОРИ (резерв) ============
-     Увімкнути, коли в каналі «Тендер+» буде щонайменше 3–4 пости (інструкція v2.0, розділ 18.3):
-     прибрати атрибут hidden, вставити віджет постів Telegram і додати https://telegram.org у CSP (site/_headers). -->
-<section id="rozbory" class="posts alt" hidden>
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Останні розбори</p>
-      <h2>Тендер+ — щотижневий розбір відхилень</h2>
-      <p class="lede"><a href="https://t.me/tenderwin_plus" data-tg="channel" target="_blank" rel="noopener">Відкрити канал у Telegram</a></p>
     </div>
   </div>
 </section>
@@ -714,7 +693,6 @@ input, textarea { min-width:0; max-width:100% }
         </a>
         <p>TenderWin. Аналіз відхилення тендерної пропозиції та <span class="nowrap">30-хвилинна</span> консультація за 3&nbsp;499&nbsp;грн.
           Письмовий аналіз протягом 24&nbsp;годин після оплати погодженого замовлення.</p>
-        <p data-tg-wrap="channel"><a href="https://t.me/tenderwin_plus" data-tg="channel" target="_blank" rel="noopener">Тендер+ — щотижневий розбір відхилень у Telegram.</a></p>
       </div>
       <nav class="foot-links" aria-label="Розділи сайту">
         <a href="#rezultat">Що входить</a>
@@ -735,7 +713,10 @@ input, textarea { min-width:0; max-width:100% }
         й лот, назва та код ЄДРПОУ або РНОКПП учасника, телефон або Telegram для уточнень, текст звернення,
         позначка про іншого платника. Після погодження замовлення — дані платника, рахунку, оплати, а також час
         консультації. Для захисту форми від зловживань обробник заявок тимчасово зберігає IP-адресу, з якої надіслано
-        заявку. Статистика відвідувань (Cloudflare Web Analytics) ведеться без файлів cookie й не містить даних форми.</p>
+        заявку. Знеособлена статистика відвідувань ведеться власним обробником сайту без файлів cookie: кількість
+        переглядів і дій на сторінці, назва сайту, з якого Ви перейшли, тип пристрою та країна. IP-адреса для статистики
+        не зберігається; для підрахунку відвідувачів за день використовується неповоротний код, який видаляється
+        не пізніше ніж за дві доби. Дані форми до статистики не потрапляють.</p>
       <p><b>Мета обробки.</b> Опрацювання Вашого звернення, зв’язок із Вами, погодження й виконання замовлення
         (рахунок, договір, аналіз, консультація), ведення обліку, захист сайту від автоматизованих зловживань.
         Для розсилок і маркетингу ці дані без окремої згоди не використовуються.</p>
@@ -789,7 +770,7 @@ input, textarea { min-width:0; max-width:100% }
       "image": "https://tenderwin.in.ua/og.png",
       "telephone": "+380800357135",
       "email": "vitalii@tenderwin.com.ua",
-      "sameAs": ["https://t.me/tenderwin_plus", "https://t.me/tenderwin_ua"],
+      "sameAs": ["https://t.me/tenderwin_ua"],
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+380800357135",

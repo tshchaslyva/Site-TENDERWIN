@@ -27,10 +27,8 @@ test("контакти сайту збігаються з contacts.json", () => 
     assert.ok(html.includes(nbspPhone), `${name}: номер ${contacts.phone.display}`);
     assert.ok(html.includes(contacts.telegram.url), `${name}: Telegram-контакт`);
     assert.ok(html.includes("@" + contacts.telegram.username), `${name}: @${contacts.telegram.username}`);
-    assert.ok(html.includes(contacts.channel.url), `${name}: канал`);
   }
   assert.ok(index.includes(contacts.email));
-  assert.ok(index.includes(contacts.channel.label));
   assert.ok(index.includes(contacts.executor), "повне найменування виконавця");
   // app.js
   assert.ok(appJs.includes(`phone: "${contacts.phone.display}"`));
@@ -39,8 +37,6 @@ test("контакти сайту збігаються з contacts.json", () => 
   assert.ok(appJs.includes(`telegramUser: "${contacts.telegram.username}"`));
   assert.ok(appJs.includes(`telegramUrl: "${contacts.telegram.url}"`));
   assert.ok(appJs.includes(`telegramPrefill: "${contacts.telegram.prefill}"`));
-  assert.ok(appJs.includes(`channelUrl: "${contacts.channel.url}"`));
-  assert.ok(appJs.includes(`channelLabel: "${contacts.channel.label}"`));
 });
 
 test("T24: попередніх номерів немає в активних файлах", () => {
@@ -53,12 +49,13 @@ test("T24: попередніх номерів немає в активних ф
   }
 });
 
-test("TG02/TG05: Telegram-посилання лише на @TenderWin_UA і канал «Тендер+»", () => {
+test("TG02/TG05: Telegram-посилання лише на @TenderWin_UA; каналу «Тендер+» немає", () => {
   for (const f of ACTIVE) {
     const s = read(f);
     assert.ok(!/t\.me\/\+/.test(s), `${f}: посилання t.me/+…`);
+    assert.ok(!/Тендер\+|tenderwin_plus/.test(s), `${f}: згадка каналу «Тендер+»`);
     for (const m of s.matchAll(/t\.me\/([A-Za-z0-9_+]+)/g)) {
-      assert.ok(["tenderwin_ua", "tenderwin_plus", "s"].includes(m[1].toLowerCase()), `${f}: t.me/${m[1]}`);
+      assert.ok(m[1].toLowerCase() === "tenderwin_ua", `${f}: t.me/${m[1]}`);
     }
   }
 });
@@ -69,7 +66,7 @@ test("T25/TG06: JSON-LD валідний і збігається з видими
   const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage");
   assert.equal(biz.telephone, contacts.phone.e164);
   assert.equal(biz.contactPoint.telephone, contacts.phone.e164);
-  assert.deepEqual([...biz.sameAs].sort(), [contacts.channel.url, contacts.telegram.url].sort());
+  assert.deepEqual(biz.sameAs, [contacts.telegram.url]);
   assert.equal(biz.makesOffer.price, "3499");
   assert.equal(biz.makesOffer.priceCurrency, "UAH");
 

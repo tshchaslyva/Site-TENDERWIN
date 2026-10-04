@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Аналіз відхилення за 24 години — TenderWin · прототип В</title>
+<meta name="description" content="Аналіз відхилення тендерної пропозиції за 24 години та 30-хвилинна консультація. Письмовий висновок із посиланнями на документи. Вартість 3 499 грн.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preload" href="fonts/FixelDisplay-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/FixelText-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* ===== спільна основа прототипів v3 (кольори й шрифти задає концепція) ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%}
+a{color:inherit}
+h1,h2,h3,h4,p,ul,ol,figure,blockquote{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit}
+.nw{white-space:nowrap}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{width:min(100% - 32px, var(--wrap,1200px));margin-inline:auto}
+@media(min-width:700px){.wrap{width:min(100% - 64px, var(--wrap,1200px))}}
+:focus-visible{outline:3px solid var(--focus,#1f4fd1);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:12px;top:-60px;z-index:999;padding:10px 14px;border-radius:8px;background:#111;color:#fff;text-decoration:none}
+.skip:focus{top:12px}
+
+/* поява: стан спокою видимий; приховуються лише елементи нижче першого екрана й ненадовго */
+.pre{opacity:0;transform:translateY(14px)}
+.pre.in{opacity:1;transform:none;transition:opacity .42s ease,transform .42s cubic-bezier(.2,.7,.2,1)}
+
+/* кнопки: реакція 150 мс */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;min-height:48px;padding:0 1.4em;border-radius:var(--btn-r,10px);font-weight:700;font-size:1rem;line-height:1.1;text-decoration:none;border:2px solid transparent;cursor:pointer;
+  transition:background-color .15s,border-color .15s,color .15s,transform .15s,box-shadow .15s}
+.btn:active{transform:translateY(1px)}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* FAQ */
+.faq details{overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq .ans{overflow:hidden;transition:height .22s ease}
+.faq .ans ol{list-style:decimal;padding-left:1.3em;margin-top:8px}
+.faq .ans li+li{margin-top:6px}
+
+/* форма */
+.tw-form{display:grid;gap:16px}
+.tw-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.tw-form .row2{grid-template-columns:1fr}}
+.tw-form .fld{display:grid;gap:6px;min-width:0}
+.tw-form label{font-weight:600;font-size:.92rem}
+.tw-form .opt{font-weight:400;opacity:.8}
+.tw-form input[type=text],.tw-form input[type=email],.tw-form input:not([type]),.tw-form textarea{width:100%;min-width:0;font:inherit;font-size:1rem;min-height:48px;padding:11px 13px;border-radius:var(--field-r,10px);
+  border:1.5px solid var(--field-line,#a9b0ba);background:var(--field-bg,#fff);color:inherit;transition:border-color .15s,box-shadow .15s}
+.tw-form textarea{min-height:110px;resize:vertical}
+.tw-form input:focus,.tw-form textarea:focus{outline:none;border-color:var(--focus,#1f4fd1);box-shadow:0 0 0 3px color-mix(in srgb,var(--focus,#1f4fd1) 25%,transparent)}
+.tw-form input:disabled{opacity:.55}
+.tw-form [aria-invalid="true"]{border-color:var(--err,#b42318)}
+.tw-form .hint{font-size:.86rem;opacity:.85}
+.tw-form .err{font-size:.88rem;font-weight:600;color:var(--err,#b42318)}
+.tw-form .err:empty{display:none}
+.tw-form .chk{display:flex;gap:11px;align-items:flex-start;cursor:pointer;font-weight:400;font-size:.95rem}
+.tw-form .chk input{width:20px;height:20px;margin-top:2px;flex-shrink:0;accent-color:var(--accent,#1f4fd1)}
+.tw-form .count{font-size:.8rem;opacity:.75;text-align:right;font-variant-numeric:tabular-nums}
+.tw-form button[type=submit]{width:100%;min-height:54px}
+.tw-form .msg{padding:14px 16px;border-radius:10px;font-weight:600;border:1.5px solid}
+.tw-form .msg:empty{display:none}
+.tw-form .msg.ok{background:#e9f6ef;border-color:#9bd3b5;color:#0f5132}
+.tw-form .msg.err{background:#fdecea;border-color:#f1b8b1;color:#8a1c12}
+.tw-form .msg.warn{background:#fff6e0;border-color:#efd18a;color:#6b4a00}
+.tw-form .msg.info{background:#eef3ff;border-color:#b9c9f5;color:#1c3474}
+.tw-form .msg .demo-tag{display:block;margin-top:6px;font-weight:500;font-size:.85rem;opacity:.85}
+.tw-form .note{font-size:.88rem;opacity:.85}
+.demo-states{margin-top:14px;padding:12px 14px;border-radius:10px;border:1.5px dashed var(--field-line,#a9b0ba);font-size:.88rem}
+.demo-states p{margin-bottom:8px;font-weight:600}
+.demo-states div{display:flex;flex-wrap:wrap;gap:6px}
+.demo-states button{padding:6px 11px;border-radius:8px;border:1.5px solid var(--field-line,#a9b0ba);background:transparent;cursor:pointer;font-size:.85rem}
+.demo-states button:hover{border-color:var(--focus,#1f4fd1)}
+
+/* мобільна панель */
+.mbar{display:none}
+@media(max-width:767px){
+  .mbar{display:flex;align-items:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:80;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));transition:transform .25s ease}
+  .mbar.away{transform:translateY(110%)}
+  .mbar .t{flex:1;min-width:0;font-size:.86rem;line-height:1.25;font-weight:600}
+  .mbar .btn{min-height:44px;padding:0 1em;white-space:nowrap}
+  .mbar .call{width:44px;height:44px;display:grid;place-items:center;border-radius:10px;flex-shrink:0}
+  .mbar .call svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:359px){.mbar .t{display:none}.mbar .btn{flex:1}}
+
+/* місце віджета Zadarma: лише від 768 px; на телефоні — дзвінок у мобільній панелі */
+.cb{display:none}
+@media(min-width:768px){
+  .cb{display:flex;position:fixed;right:20px;bottom:20px;z-index:70;align-items:center;gap:8px;min-height:52px;padding:0 18px 0 14px;border-radius:999px;border:0;cursor:pointer;font-weight:700;box-shadow:0 10px 30px -10px rgba(0,0,0,.45);transition:transform .2s,opacity .2s}
+  .cb:hover{transform:translateY(-1px)}
+  .cb.away{opacity:0;pointer-events:none;transform:translateY(20px)}
+  .cb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+}
+.cb-pop{position:fixed;right:20px;bottom:84px;z-index:71;width:min(340px,100vw - 40px);padding:18px;border-radius:14px;background:#fff;color:#14181d;box-shadow:0 20px 50px -15px rgba(0,0,0,.45);border:1px solid #e3e0d9}
+.cb-pop[hidden]{display:none}
+.cb-pop h2{font-size:1.05rem;margin-bottom:10px}
+.cb-pop label{display:block;font-size:.88rem;font-weight:600;margin-bottom:6px}
+.cb-pop input{width:100%;min-height:46px;padding:10px 12px;border-radius:10px;border:1.5px solid #a9b0ba;font:inherit}
+.cb-pop .cb-send{width:100%;margin-top:10px;min-height:46px;border-radius:10px;border:0;background:#c9ced6;color:#3a4048;font-weight:700;cursor:not-allowed}
+.cb-pop .cb-note{margin-top:10px;font-size:.82rem;color:#5f6670}
+.cb-pop .cb-x{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:8px;border:1px solid #e3e0d9;background:#fff;cursor:pointer}
+
+/* менше руху (і без JS — за налаштуванням системи) */
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+.rm *,.rm *::before,.rm *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+.rm .pre{opacity:1!important;transform:none!important}
+
+/* ===== переглядач звіту: структура (кольори — змінні концепції) ===== */
+.rv{--rv-line:rgba(0,0,0,.14);--rv-fg:inherit;--rv-muted:#5f6670;--rv-accent:#1f4fd1;--rv-btn:#fff;--rv-frame:#e9e6df;--rv-radius:12px;
+  --hl-pidstava:#e3a514;--hl-dokument:#2f6fd6;--hl-ryzyk:#cf3e36;--hl-rekomendatsiia:#1d8a5c;--hl-focus:transparent}
+.rv{min-width:0;max-width:100%}
+.rv svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.rv-docs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.rv-doc{display:grid;gap:2px;text-align:left;padding:10px 14px;border-radius:10px;border:1.5px solid var(--rv-line);background:var(--rv-btn);color:inherit;font:inherit;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+.rv-doc b{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.rv-doc span{font-weight:600;font-size:.95rem}
+.rv-doc:hover{border-color:var(--rv-accent)}
+.rv-doc[aria-selected="true"]{border-color:var(--rv-accent);box-shadow:inset 0 0 0 1px var(--rv-accent)}
+.rv-kind{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.86rem;color:var(--rv-muted);margin:0 0 10px}
+.rv-badge{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:#fff1c7;color:#6b4a00;border:1px solid #e7cf86}
+.rv-badge.rv-draft{background:#e6f0ff;color:#1c3d7a;border-color:#a9c2ee}
+.rv-frame{position:relative;overflow:hidden;border-radius:var(--rv-radius);background:var(--rv-frame);border:1px solid var(--rv-line)}
+.rv-page .rv-frame{padding:clamp(10px,2.5vw,22px)}
+.rv-canvas{position:relative;transform-origin:0 0;will-change:transform}
+.rv-page .rv-canvas{width:100%;box-shadow:0 10px 30px -18px rgba(0,0,0,.45);background:#fff}
+.rv-focus .rv-frame{aspect-ratio:var(--rv-aspect,16/10)}
+.rv-focus .rv-canvas{position:absolute;left:0;top:0;background:#fff}
+.rv-anim .rv-canvas{transition:transform .28s cubic-bezier(.3,.7,.3,1),width .28s cubic-bezier(.3,.7,.3,1)}
+.rv-img{display:block;width:100%;height:auto;user-select:none}
+.rv-layer{position:absolute;inset:0;pointer-events:none}
+.rv-hl{position:absolute;display:block;border-radius:4px;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 16%,transparent)}
+.rv-anim .rv-hl{animation:rvhl .34s cubic-bezier(.3,.7,.3,1) both}
+@keyframes rvhl{from{clip-path:inset(0 100% 0 0);opacity:.4}to{clip-path:inset(0 0 0 0);opacity:1}}
+.rv-turn{animation:rvturn .24s ease-out both}
+@keyframes rvturn{from{opacity:.25;transform:translateY(6px)}}
+.rv-rail{max-width:100%;display:flex;gap:8px;overflow-x:auto;padding:10px 2px 6px;margin-top:8px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.rv-th{position:relative;flex:0 0 64px;padding:0;border:2px solid transparent;border-radius:6px;background:#fff;cursor:pointer;scroll-snap-align:center;transition:border-color .15s,transform .15s;box-shadow:0 2px 8px -4px rgba(0,0,0,.35)}
+.rv-th img{display:block;width:100%;height:auto;border-radius:4px}
+.rv-th span{position:absolute;right:3px;bottom:3px;min-width:18px;padding:0 4px;border-radius:4px;background:rgba(20,24,29,.78);color:#fff;font-size:.68rem;line-height:16px;text-align:center;font-variant-numeric:tabular-nums}
+.rv-th:hover{transform:translateY(-2px)}
+.rv-th[aria-current="page"]{border-color:var(--rv-accent)}
+.rv-hl-toc{--c:var(--rv-accent)}.rv-hl-pidstava{--c:var(--hl-pidstava)}.rv-hl-dokument{--c:var(--hl-dokument)}.rv-hl-ryzyk{--c:var(--hl-ryzyk)}.rv-hl-rekomendatsiia{--c:var(--hl-rekomendatsiia)}
+.rv-zoomhint{position:absolute;right:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;border:1px solid var(--rv-line);background:rgba(255,255,255,.94);color:#1b1f24;font-family:inherit;font-weight:600;font-size:.8rem;line-height:1;cursor:pointer;box-shadow:0 4px 14px -6px rgba(0,0,0,.35);transition:background .15s}
+.rv-zoomhint:hover{background:#fff}
+.rv-page .rv-zoomhint{display:none}
+.rv-ctrl{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.rv-ctrl[hidden]{display:none}
+.rv-nav,.rv-act{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.rv-pn{font-size:.88rem;font-variant-numeric:tabular-nums;min-width:8.5em;text-align:center}
+.rv-ic{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1.5px solid var(--rv-line);background:var(--rv-btn);color:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.rv-ic:hover:not(:disabled){border-color:var(--rv-accent)}
+.rv-ic:disabled{opacity:.4;cursor:default}
+.rv-btn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 13px;border-radius:10px;border:1.5px solid var(--rv-line);background:var(--rv-btn);color:inherit;font-family:inherit;font-weight:600;font-size:.88rem;line-height:1;text-decoration:none;cursor:pointer;transition:border-color .15s,background .15s}
+.rv-btn:hover{border-color:var(--rv-accent)}
+@media(max-width:520px){.rv-act{width:100%}.rv-act .rv-btn{flex:1 1 auto;justify-content:center}.rv-nav{width:100%;justify-content:space-between}}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* вікно читання */
+.rv-lock,.rv-lock body{overflow:hidden}
+.rv-modal{width:min(1180px,100vw - 24px);height:min(100dvh - 24px,1000px);max-width:none;max-height:none;padding:0;border:0;border-radius:16px;background:#f2f1ee;color:#14181d;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.5);overflow:hidden;font-family:inherit}
+.rv-modal[open]{display:flex;flex-direction:column}
+.rv-modal::backdrop{background:rgba(10,14,20,.62)}
+@media(max-width:640px){.rv-modal{width:100vw;height:100dvh;border-radius:0}}
+.rv-modal svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rv-m-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px 16px 10px;background:#fff;border-bottom:1px solid #e1ded7}
+.rv-m-title{font-size:1.05rem;margin:0;line-height:1.3}
+.rv-m-kind{margin:3px 0 0;font-size:.82rem;color:#5f6670}
+.rv-m-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;background:#fff;border-bottom:1px solid #e1ded7}
+.rv-modal .rv-ic,.rv-modal .rv-btn{border-color:#d5d1c8;background:#fff;color:#14181d}
+.rv-modal .rv-ic:hover,.rv-modal .rv-btn:hover{border-color:#14181d}
+.rv-zoom{font-size:.86rem;min-width:3.5em;text-align:center;font-variant-numeric:tabular-nums}
+.rv-m-main{flex:1;display:grid;grid-template-columns:220px 1fr;min-height:0}
+@media(max-width:860px){.rv-m-main{grid-template-columns:1fr}.rv-toc{display:none}}
+.rv-toc{overflow:auto;padding:14px 10px;border-right:1px solid #e1ded7;background:#faf9f7}
+.rv-toc-h{margin:0 8px 8px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5f6670}
+.rv-toc-i{display:flex;justify-content:space-between;gap:8px;width:100%;padding:8px;border:0;border-radius:8px;background:none;text-align:left;font:inherit;font-size:.9rem;color:inherit;cursor:pointer}
+.rv-toc-i small{color:#5f6670;white-space:nowrap}
+.rv-toc-i:hover{background:#efece6}
+.rv-m-body{overflow:auto;padding:18px;outline:none;--z:1}
+.rv-m-page{margin:0 auto 18px;width:calc(min(860px,100%) * var(--z));max-width:none}
+.rv-m-wrap{position:relative;background:#fff;box-shadow:0 8px 24px -14px rgba(0,0,0,.4)}
+.rv-m-wrap img{display:block;width:100%;height:100%}
+.rv-m-body:focus-visible{box-shadow:inset 0 0 0 3px #1f4fd1}
+
+.proto{position:relative;z-index:300;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 16px;background:#111318;color:#c9ccd3;font:500 13px/1.3 system-ui,sans-serif}.proto a{color:#fff;font-weight:600;text-decoration:none;white-space:nowrap}.proto a:hover{text-decoration:underline}.proto b{color:#fff}@media(max-width:620px){.proto>span{display:none}}@media(max-width:420px){.proto .pn{display:none}}
+/* ============ В «ТОЧНІСТЬ І СПОКІЙ» — розвиток темно-синьої та золотої системи ============
+   Світлі площини, темно-сині смуги для головних акцентів, золото лише в деталях; впевнена сітка 12 колонок. */
+:root{
+  --navy:#0E2442; --navy2:#173459; --navy3:#22446F; --gold:#C49A3E; --gold-l:#E5C77F; --paper:#F6F7F9; --white:#FFFFFF;
+  --ink:#13202F; --ink2:#334356; --muted:#536276; --line:#DCE1E8; --line2:#C3CBD6;
+  --disp:"Fixel Display","Fixel",system-ui,sans-serif; --f:"Fixel",system-ui,sans-serif;
+  --focus:#173459; --err:#B42318; --wrap:1200px; --btn-r:8px; --field-r:8px; --field-line:#9AA6B6;
+}
+body{background:var(--white);color:var(--ink);font:400 17px/1.62 var(--f)}
+h1,h2,h3{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;line-height:1.08;text-wrap:balance}
+h2{font-size:clamp(1.9rem,3.6vw,2.9rem)}
+h3{font-family:var(--f);font-weight:700;font-size:1.2rem;letter-spacing:-.005em;line-height:1.3}
+.kick{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;color:var(--navy3)}
+.kick::before{content:"";width:22px;height:2px;background:var(--gold)}
+.lede{font-size:1.12rem;color:var(--ink2);max-width:62ch}
+.num{font-variant-numeric:tabular-nums}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-primary:hover{background:var(--navy2);border-color:var(--navy2)}
+.btn-ghost{background:transparent;color:var(--navy);border-color:var(--line2)}
+.btn-ghost:hover{border-color:var(--navy)}
+.btn-gold{background:var(--gold-l);color:var(--navy);border-color:var(--gold-l)}
+.btn-gold:hover{background:#fff;border-color:#fff}
+
+/* шапка */
+.hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.hdr .in{display:flex;align-items:center;gap:24px;height:70px}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--navy)}
+.logo svg{width:34px;height:34px;flex-shrink:0}
+.logo span{font:800 1.18rem var(--disp);letter-spacing:-.01em}
+.logo span b{color:var(--gold);font-weight:800}
+.nav{display:flex;gap:24px;margin-left:auto;font-size:.95rem}
+.nav a{text-decoration:none;color:var(--ink2);padding:6px 0;border-bottom:2px solid transparent;transition:border-color .15s,color .15s}
+.nav a:hover{color:var(--navy);border-color:var(--gold)}
+.hdr .tel{font-weight:600;text-decoration:none;white-space:nowrap;color:var(--navy)}
+.hdr .btn{min-height:42px;font-size:.95rem}
+@media(max-width:1080px){.nav{display:none}.hdr .tel{margin-left:auto}}
+@media(max-width:620px){.hdr .btn{display:none}.hdr .in{height:60px}}
+@media(max-width:400px){.hdr .in{gap:12px}.logo svg{width:30px;height:30px}.logo span{font-size:1.02rem}.hdr .tel{font-size:.92rem}}
+
+/* перший екран */
+.hero{background:var(--paper);padding:56px 0 64px;border-bottom:1px solid var(--line)}
+.hero .g{display:grid;grid-template-columns:7fr 5fr;grid-template-areas:"t o" "a o";gap:0 clamp(28px,4vw,64px);align-items:center}
+.hero .t{grid-area:t}.hero .offer{grid-area:o}.hero .a{grid-area:a;align-self:start}
+@media(max-width:960px){.hero .g{grid-template-columns:1fr;grid-template-areas:"t" "o" "a";gap:24px}}
+.hero h1{font-size:clamp(2.3rem,4.8vw,4.1rem);color:var(--navy);margin-top:18px}
+.hero .lede{margin-top:20px}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+@media(max-width:960px){.acts{margin-top:0}}
+.hero .note{margin-top:14px;font-size:.92rem;color:var(--muted)}
+@media(max-width:560px){.acts .btn{flex:1 1 100%}.hero{padding-top:30px}.hero h1{font-size:2.15rem}.hero .lede{font-size:1.04rem}}
+.offer{background:var(--navy);color:#fff;border-radius:14px;padding:30px;position:relative;overflow:hidden}
+.offer::before{content:"";position:absolute;left:30px;right:30px;top:0;height:3px;background:var(--gold)}
+.offer .amt{font:800 clamp(2.8rem,5vw,3.8rem)/1 var(--disp);letter-spacing:-.03em}
+.offer .amt small{font-size:.38em;font-family:var(--f);font-weight:600;margin-left:.2em;color:var(--gold-l)}
+.offer .what{margin-top:6px;color:#C9D3E1}
+.offer dl{margin:22px 0 0;display:grid;gap:0;border-top:1px solid rgba(255,255,255,.16)}
+.offer dl div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.16)}
+.offer dt{font-weight:700;color:var(--gold-l)}
+.offer dd{margin:0;color:#E4E9F1}
+.offer .term{margin-top:16px;font-size:.92rem;color:#C9D3E1}
+
+section{padding:96px 0}
+@media(max-width:760px){section{padding:64px 0}}
+.sh{display:grid;grid-template-columns:4fr 8fr;gap:24px;margin-bottom:40px}
+.sh h2{margin-top:6px}
+.sh .lede{margin-top:14px}
+@media(max-width:860px){.sh{grid-template-columns:1fr;gap:8px}}
+
+/* що входить: специфікація */
+.spec{border-top:2px solid var(--navy)}
+.spec>div{display:grid;grid-template-columns:4fr 8fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line)}
+@media(max-width:860px){.spec>div{grid-template-columns:1fr;gap:8px}}
+.spec dt{display:flex;align-items:baseline;gap:12px}
+.spec dt b{font:800 1.25rem var(--disp);color:var(--navy);letter-spacing:-.01em}
+.spec dt span{font-size:.85rem;font-weight:600;color:var(--gold);letter-spacing:.06em;text-transform:uppercase}
+.spec dd{margin:0;color:var(--ink2)}
+.spec dd ol{margin-top:12px;display:grid;gap:6px}
+.spec dd ol li{display:grid;grid-template-columns:28px 1fr;gap:8px}
+.spec dd ol .i{font-weight:700;color:var(--navy3);font-variant-numeric:tabular-nums}
+.spec .big{font:800 2.2rem/1 var(--disp);color:var(--navy);letter-spacing:-.02em}
+.spec .out{color:var(--ink2)}
+
+/* великий перегляд звіту */
+.band{background:var(--navy);color:#fff}
+.band .kick{color:var(--gold-l)}
+.band h2{color:#fff}
+.band .lede{color:#C9D3E1}
+.reader{display:grid;grid-template-columns:3fr 9fr;gap:clamp(20px,3vw,40px);align-items:start}
+@media(max-width:900px){.reader{grid-template-columns:1fr}}
+.toc{position:sticky;top:90px;background:var(--navy2);border-radius:12px;padding:16px}
+@media(max-width:900px){.toc{position:static}}
+.toc p{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-l);margin:0 6px 10px}
+.toc button{display:flex;justify-content:space-between;gap:10px;width:100%;padding:10px;border:0;border-radius:8px;background:none;color:#E4E9F1;text-align:left;font:inherit;font-size:.95rem;cursor:pointer;transition:background .15s}
+.toc button small{color:#9FB0C6;white-space:nowrap;font-variant-numeric:tabular-nums}
+.toc button:hover{background:rgba(255,255,255,.07)}
+.toc button[aria-current="true"]{background:rgba(229,199,127,.16);color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+.toc .hint{margin:12px 6px 0;font-size:.84rem;color:#9FB0C6;text-transform:none;letter-spacing:0;font-weight:400}
+.band .rv{--rv-line:rgba(255,255,255,.22);--rv-muted:#C9D3E1;--rv-accent:var(--gold-l);--rv-btn:transparent;--rv-frame:#0A1B33;--rv-radius:12px;color:#fff}
+.band .rv .rv-doc{color:#fff}
+.band .rv-badge{background:#3B3215;color:#F3DFA6;border-color:#6F5B23}
+.band .wide{margin-top:12px}
+
+/* кроки */
+.steps{display:grid;gap:0;border-top:2px solid var(--navy);counter-reset:s}
+.step{display:grid;grid-template-columns:90px 1fr auto;gap:8px 24px;padding:24px 0;border-bottom:1px solid var(--line);align-items:start}
+.step .n{grid-row:1 / span 3;font:800 2.6rem/1 var(--disp);color:var(--navy);letter-spacing:-.03em}
+.step h3{grid-column:2}
+.step p{grid-column:2;color:var(--ink2)}
+.step .tag{grid-column:3;grid-row:1;font-weight:700;font-size:.82rem;padding:4px 10px;border-radius:6px;border:1px solid var(--gold);color:#7A5B17;white-space:nowrap}
+.step .iban{grid-column:2;margin-top:4px;padding:10px 12px;border-left:3px solid var(--gold);background:#FBF7EC;font-size:.92rem}
+@media(max-width:620px){.step{grid-template-columns:52px 1fr}.step .n{font-size:1.8rem;grid-row:1 / span 4}.step .tag{grid-column:2;grid-row:auto;justify-self:start}}
+
+/* межі послуги й FAQ */
+.limits{display:grid;grid-template-columns:4fr 8fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:900px){.limits{grid-template-columns:1fr}}
+.callout{padding:22px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.callout+.callout{margin-top:14px}
+.callout b{display:block;font:800 1.1rem var(--disp);color:var(--navy);margin-bottom:6px}
+.callout p{color:var(--ink2)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:2px solid var(--navy)}
+.faq summary{padding:20px 0;font-weight:700;font-size:1.08rem;color:var(--navy)}
+.faq summary i{width:28px;height:28px;flex-shrink:0;border-radius:6px;border:1.5px solid var(--line2);position:relative;transition:border-color .2s,background .2s}
+.faq summary i::before,.faq summary i::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:2px;background:var(--navy);transform:translate(-50%,-50%)}
+.faq summary i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .2s}
+.faq details[open] summary i{border-color:var(--gold);background:#FBF7EC}
+.faq details[open] summary i::after{transform:translate(-50%,-50%) rotate(0)}
+.faq .ans{color:var(--ink2);padding-bottom:20px;max-width:75ch}
+
+/* форма */
+.formsec{background:var(--paper);border-top:1px solid var(--line)}
+.fg{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:960px){.fg{grid-template-columns:1fr}}
+.fcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:clamp(20px,3vw,36px);box-shadow:0 20px 40px -32px rgba(14,36,66,.45)}
+.fcard .sub{margin:12px 0 24px;color:var(--ink2)}
+.tw-form .chk a{color:var(--navy3)}
+.tw-form .msg{transition:background-color .2s,border-color .2s}
+.side{position:sticky;top:96px}
+@media(max-width:960px){.side{position:static}}
+.side h3{font:800 1.4rem var(--disp);color:var(--navy)}
+.side>p{margin:10px 0 16px;color:var(--ink2)}
+.contacts li{display:grid;grid-template-columns:140px 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.contacts .k{font-weight:600;font-size:.84rem;color:var(--muted)}
+.contacts .v{font-weight:700;text-decoration:none;color:var(--navy);overflow-wrap:anywhere}
+@media(max-width:420px){.contacts li{grid-template-columns:1fr;gap:2px}}
+
+/* футер */
+.ft{background:var(--navy);color:#C9D3E1;padding:48px 0 30px;font-size:.94rem}
+.ft .g{display:grid;grid-template-columns:6fr 6fr;gap:24px}
+@media(max-width:760px){.ft .g{grid-template-columns:1fr}}
+.ft nav{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:flex-end}
+@media(max-width:760px){.ft nav{justify-content:flex-start}}
+.ft a{color:#fff}
+.ft .legal{margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:.84rem}
+.privacy{margin-top:16px}.privacy summary{cursor:pointer;font-weight:600;color:#fff}.privacy p{margin-top:8px;max-width:75ch}
+
+.mbar{background:#fff;border-top:1px solid var(--line2);box-shadow:0 -6px 20px -12px rgba(14,36,66,.3)}
+.mbar .call{border:1.5px solid var(--line2);color:var(--navy)}
+.cb{background:var(--navy);color:#fff}
+.cb svg{color:var(--gold-l)}
+.rv-fallback img{width:100%;height:auto;border-radius:8px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">До змісту</a>
+<div class="proto"><a href="./">← Усі концепції</a><span>Прототип В · <b>«Точність і спокій»</b> · етап 1, демонстрація</span><a href="dosie.html">А<span class="pn"> «Відкрите досьє»</span> →</a></div><script>if(/githack\.com$/.test(location.hostname)||location.protocol==="file:")document.querySelector(".proto a").href="index.html"</script>
+<header class="hdr">
+  <div class="wrap in">
+    <a class="logo" href="#top" aria-label="TenderWin — на початок"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E2442"/><path d="M14 20h36M32 20v26M22 44h20" stroke="#C49A3E" stroke-width="6" stroke-linecap="round"/></svg><span>Tender<b>Win</b></span></a>
+    <nav class="nav" aria-label="Розділи"><a href="#rezultat">Результат</a><a href="#zrazok">Приклад звіту</a><a href="#yak">Як замовити</a><a href="#vartist">Вартість</a><a href="#kontakty">Контакти</a></nav>
+    <a class="tel" href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a>
+    <a class="btn btn-primary" href="#zayavka">Замовити аналіз</a>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" id="top">
+  <div class="wrap g">
+    <div class="t">
+      <p class="kick">Для учасників публічних закупівель Prozorro</p>
+      <h1>Аналіз відхилення тендерної пропозиції за&nbsp;24&nbsp;години</h1>
+      <p class="lede">Допоможемо оцінити, чи є підстави оскаржувати відхилення. Перевіримо аргументи замовника за документами Вашої закупівлі, підготуємо письмовий висновок і пояснимо його на <span class="nw">30-хвилинній</span> консультації.</p>
+    </div>
+    <div class="a">
+      <div class="acts"><a class="btn btn-primary" href="#zayavka">Замовити аналіз</a><a class="btn btn-ghost" href="#zrazok">Переглянути зразок аналізу</a></div>
+      <p class="note">Перед оплатою підтвердимо обсяг роботи та можливість виконати її вчасно.</p>
+    </div>
+    <div class="offer" id="vartist">
+      <p class="amt num">3&nbsp;499<small>грн</small></p>
+      <p class="what">за аналіз і консультацію</p>
+      <dl>
+        <div><dt>Аналіз</dt><dd>письмовий, протягом 24&nbsp;годин після оплати</dd></div>
+        <div><dt>Консультація</dt><dd>30 хвилин, після отримання висновку в погоджений час</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="rezultat">
+  <div class="wrap">
+    <div class="sh"><p class="kick">Що входить у 3&nbsp;499&nbsp;грн</p><div><h2>Аналіз відхилення та <span class="nw">30-хвилинна</span> консультація</h2><p class="lede">Письмовий аналіз із посиланнями на документи, оцінка кожної підстави відхилення, рекомендації щодо наступних дій та одна консультація за результатами аналізу.</p></div></div>
+    <dl class="spec">
+      <div data-r><dt><b>Письмовий висновок</b></dt><dd><b>Письмовий висновок, який допомагає прийняти рішення.</b> У висновку розглянемо кожну підставу відхилення та покажемо, на яких документах ґрунтується оцінка.<ol><li data-r><span class="i">01</span><span>Що саме зазначив замовник у рішенні про відхилення.</span></li><li data-r><span class="i">02</span><span>Яка вимога документації стосується цієї підстави.</span></li><li data-r><span class="i">03</span><span>Що міститься у відповідних документах Вашої пропозиції.</span></li><li data-r><span class="i">04</span><span>Які аргументи підтримують оскарження, а які послаблюють позицію.</span></li><li data-r><span class="i">05</span><span>Які наступні дії доцільно розглянути та які ризики врахувати.</span></li></ol></dd></div>
+      <div data-r><dt><b>Консультація</b><span>30 хв</span></dt><dd><b>30 хвилин для пояснення висновків.</b> На консультації розберемо незрозумілі моменти, відповімо на Ваші запитання щодо аналізу та обговоримо можливі наступні кроки. Консультація входить у ціну послуги.</dd></div>
+      <div data-r><dt><b>Строк</b><span>24 год</span></dt><dd>Письмовий аналіз протягом 24&nbsp;годин після оплати. Консультація після отримання висновку в погоджений час.</dd></div>
+      <div data-r><dt><b>Вартість</b></dt><dd><p class="big num">3&nbsp;499&nbsp;грн</p><p style="margin-top:6px">Консультація входить у ціну послуги.</p></dd></div>
+      <div data-r><dt><b>Не входить</b></dt><dd class="out">Підготовка і подання скарги, представництво та плата за подання скарги до цієї послуги не входять. Рішення органу оскарження не залежить від TenderWin.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="band" id="zrazok">
+  <div class="wrap">
+    <div class="sh"><p class="kick">Приклад звіту</p><div><h2>Переглянути зразок аналізу</h2><p class="lede">Великий перегляд документа, який отримує клієнт. Оберіть розділ у змісті — переглядач перейде до відповідної сторінки.</p></div></div>
+    <div class="reader">
+      <nav class="toc" aria-label="Зміст прикладу звіту"><p>Зміст документа</p><div id="toc"></div><p class="hint">Повний PDF — кнопками під документом, без реєстрації.</p></nav>
+      <div>
+        <div id="big" data-viewer data-doc="first" data-mode="page"><figure class="rv-fallback"><img src="report/pos/p1.webp" alt="Приклад 1: є підстави оскаржувати, сторінка 1" width="1000" height="1414" loading="lazy"><figcaption><a href="report/zrazok-analizu-1.pdf">Відкрити PDF (2 с.)</a></figcaption></figure></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="yak">
+  <div class="wrap">
+    <div class="sh"><p class="kick">Як замовити</p><h2>Як замовити аналіз і консультацію</h2></div>
+    <ol class="steps"><li class="step" data-r><span class="n">01</span><h3>Заповніть заявку</h3><p>Укажіть закупівлю, учасника та контакти для зв’язку. Для багатолотової закупівлі зазначте потрібний лот.</p></li><li class="step" data-r><span class="n">02</span><h3>Погодьте обсяг роботи та оплатіть рахунок</h3><p>Перевіримо вихідні дані й можливість виконати аналіз вчасно, погодимо умови та надішлемо рахунок на 3&nbsp;499&nbsp;грн.</p><p class="iban"><b>Зараз:</b> Платіжні реквізити надамо додатково. До їх отримання оплату за цим рахунком здійснити неможливо.</p></li><li class="step" data-r><span class="n">03</span><span class="tag">24 години</span><h3>Отримайте письмовий аналіз</h3><p>Підготуємо висновок протягом 24&nbsp;годин після зарахування оплати. Точний строк підтвердимо в листі.</p></li><li class="step" data-r><span class="n">04</span><span class="tag">30 хвилин</span><h3>Обговоріть висновки на консультації</h3><p>Після передання аналізу погодимо час <span class="nw">30-хвилинної</span> консультації. Вона вже входить у сплачену вартість.</p></li></ol>
+  </div>
+</section>
+
+<section id="pytannya" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sh"><p class="kick">Межі послуги та питання</p><h2>Що зазвичай запитують</h2></div>
+    <div class="limits">
+      <div>
+        <div class="callout" data-r><b>Чесна оцінка</b><p>Якщо документи не дають достатніх підстав рекомендувати оскарження, пояснимо це у висновку. Якщо для оцінки бракує даних, прямо зазначимо обмеження.</p></div>
+        <div class="callout" data-r><b>Що не входить</b><p>Підготовка і подання скарги, представництво та плата за подання скарги до цієї послуги не входять. Рішення органу оскарження не залежить від TenderWin.</p></div>
+      </div>
+      <div class="faq"><details open><summary><span>Як відбувається опрацювання моєї справи і коли я отримаю аналіз?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Після зарахування оплати ми беремо справу в роботу.</p><ol><li>Збираємо першоджерела з Prozorro: рішення замовника про відхилення, тендерну документацію, Вашу пропозицію та листування за закупівлею.</li><li>Розбираємо кожну підставу відхилення окремо: що написав замовник, що вимагала документація і що є у Ваших документах.</li><li>Якщо для висновку бракує даних, уточнюємо їх у Вас телефоном або в Telegram — тому вкажіть у заявці контакт, за яким Ви на зв’язку.</li><li>Перед надсиланням висновок проходить незалежну перевірку.</li><li>Готовий аналіз надсилаємо на Вашу електронну пошту окремим документом із посиланнями на джерела — до 24&nbsp;годин з моменту зарахування оплати.</li></ol></div></details><details><summary><span>Коли відбудеться консультація?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Після того як Ви отримаєте письмовий висновок. Час і спосіб зв’язку погодимо з Вами. Одна <span class="nw">30-хвилинна</span> консультація за результатами аналізу входить у вартість 3&nbsp;499&nbsp;грн. Строк 24&nbsp;години стосується підготовки письмового аналізу.</p></div></details><details><summary><span>Що потрібно для початку?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Заповніть заявку на сайті: укажіть ID або посилання на закупівлю, дані учасника й контакти. Якщо потрібного документа немає у відкритому доступі, узгодимо його передання до початку роботи.</p></div></details><details><summary><span>Чи підготуєте Ви скаргу?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Ця послуга включає аналіз відхилення та консультацію щодо висновків. Підготовка й подання скарги до неї не входять.</p></div></details><details><summary><span>Що буде, якщо підстав для оскарження недостатньо?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Ви отримаєте висновок із поясненням причин і ризиків. На консультації розберемо ці висновки та можливі наступні дії. Оцінка слабкої позиції також є результатом аналізу; ми не обіцяємо позитивної рекомендації незалежно від документів.</p></div></details><details><summary><span>Чи входить плата за подання скарги у 3&nbsp;499&nbsp;грн?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Ні. Це вартість аналізу та консультації. Якщо Ви вирішите подавати скаргу, плату за її подання потрібно врахувати окремо за правилами, що застосовуються до Вашої закупівлі.</p></div></details><details><summary><span>Що робити, якщо строк оскарження спливає?</span><i aria-hidden="true"></i></summary><div class="ans"><p>Укажіть це в заявці та зв’яжіться з нами за контактами на сайті. До оплати потрібно перевірити строк саме Вашої процедури та можливість виконати аналіз вчасно. Звернення до TenderWin й оплата аналізу не зупиняють строку оскарження.</p></div></details><details><summary><span>Як оформлюється замовлення?</span><i aria-hidden="true"></i></summary><div class="ans"><p>До оплати погоджуємо предмет, строк та умови послуги, після чого надсилаємо рахунок. Документи оформлюємо відповідно до погодженого договору.</p></div></details></div>
+    </div>
+  </div>
+</section>
+
+<section class="formsec" id="zayavka">
+  <div class="wrap fg">
+    <div class="fcard"><p class="kick">Заявка</p><h2 style="margin-top:10px">Замовити аналіз відхилення</h2><p class="sub">Аналіз і <span class="nw">30-хвилинна</span> консультація за 3&nbsp;499&nbsp;грн. Після заявки підтвердимо можливість виконання та надішлемо умови оплати.</p><form class="tw-form" data-demo novalidate aria-label="Заявка на аналіз (демонстрація)">
+  <div class="row2"><div class="fld"><label for="f-name">Ім’я<span aria-hidden="true"> *</span></label><input id="f-name" type="text" aria-describedby="f-name-err" required aria-required="true" autocomplete="off"><span class="err" id="f-name-err" aria-live="polite"></span></div><div class="fld"><label for="f-mail">Електронна пошта<span aria-hidden="true"> *</span></label><input id="f-mail" type="email" aria-describedby="f-mail-err f-mail-hint" placeholder="name@company.ua" required aria-required="true" autocomplete="off"><span class="hint" id="f-mail-hint">Для підтвердження заявки, рахунку й аналізу.</span><span class="err" id="f-mail-err" aria-live="polite"></span></div></div>
+  <div class="fld"><label for="f-tender">ID або посилання на закупівлю<span aria-hidden="true"> *</span></label><input id="f-tender" type="text" aria-describedby="f-tender-err f-tender-hint" required aria-required="true" autocomplete="off"><span class="hint" id="f-tender-hint">Формат ID: UA-РРРР-ММ-ДД-000000-a. Можна вставити посилання з Prozorro.</span><span class="err" id="f-tender-err" aria-live="polite"></span></div>
+  <div class="fld"><label for="f-org">Назва учасника / ПІБ ФОП<span aria-hidden="true"> *</span></label><input id="f-org" type="text" aria-describedby="f-org-err f-org-hint" required aria-required="true" autocomplete="off"><span class="hint" id="f-org-hint">Як у тендерній пропозиції.</span><span class="err" id="f-org-err" aria-live="polite"></span></div>
+  <div class="fld"><label for="f-code">Код ЄДРПОУ або РНОКПП ФОП<span aria-hidden="true"> *</span></label><input id="f-code" type="text" aria-describedby="f-code-err f-code-hint" required aria-required="true" inputmode="numeric" autocomplete="off"><span class="hint" id="f-code-hint">8 цифр — ЄДРПОУ, 10 цифр — РНОКПП.</span><span class="err" id="f-code-err" aria-live="polite"></span></div>
+  <label class="chk"><input type="checkbox" id="f-nocode"><span>Коду немає — уточню окремо</span></label>
+  <div class="row2"><div class="fld"><label for="f-lot">Лот / рішення <span class="opt">(за потреби)</span></label><input id="f-lot" type="text" aria-describedby="f-lot-err" placeholder="Наприклад, лот 2" autocomplete="off"><span class="err" id="f-lot-err" aria-live="polite"></span></div><div class="fld"><label for="f-contact">Телефон або Telegram для уточнень<span aria-hidden="true"> *</span></label><input id="f-contact" type="text" aria-describedby="f-contact-err" placeholder="+380 … або @username" required aria-required="true" autocomplete="off"><span class="err" id="f-contact-err" aria-live="polite"></span></div></div>
+  <div class="fld"><label for="f-msg">Коротко про ситуацію <span class="opt">(необов’язково)</span></label><textarea id="f-msg" aria-describedby="f-msg-err" placeholder="Коли оприлюднено рішення, чи спливає строк оскарження" maxlength="2400"></textarea><span class="count" id="f-msg-count" aria-live="polite">0 / 2000</span><span class="err" id="f-msg-err" aria-live="polite"></span></div>
+  <label class="chk"><input type="checkbox" id="f-payer"><span>Рахунок оплачуватиме інша особа, ніж учасник (дані платника уточнимо до рахунку)</span></label>
+  <label class="chk"><input type="checkbox" id="f-ok" aria-describedby="f-ok-err"><span>Погоджуюся на обробку моїх персональних даних для опрацювання цього звернення відповідно до <a href="#privacy">політики конфіденційності</a>.</span></label>
+  <span class="err" id="f-ok-err" aria-live="polite"></span>
+  <button type="submit" class="btn btn-primary">Надіслати заявку</button>
+  <div class="msg" role="status" aria-live="polite"></div>
+  <p class="note">Надсилання заявки не є оплатою. Не вставляйте в поле повідомлення паролі, банківські дані або конфіденційні документи. За потреби погодимо спосіб передання матеріалів окремо.</p>
+</form>
+<div class="demo-states" aria-label="Демонстрація станів форми"><p>Прототип: показати стан форми</p><div>
+  <button type="button" data-state="error">Помилка в полях</button><button type="button" data-state="sending">Надсилання</button>
+  <button type="button" data-state="saved">Збережено</button><button type="button" data-state="delayed">Лист затримався</button><button type="button" data-state="">Скинути</button></div></div></div>
+    <aside class="side" id="kontakty"><h3>Маєте запитання?</h3><p>Зателефонуйте за номером +380&nbsp;800&nbsp;357&nbsp;135, замовте зворотний дзвінок або напишіть нам у Telegram: @TenderWin_UA. Для оформлення замовлення заповніть заявку на сайті.</p><ul class="contacts">
+  <li><span class="k">Телефон</span><a class="v" href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a></li>
+  <li><span class="k">Зворотний дзвінок</span><a class="v" href="#cb" data-callback>Замовити дзвінок</a></li>
+  <li><span class="k">Telegram</span><a class="v" href="https://t.me/tenderwin_ua" target="_blank" rel="noopener">@TenderWin_UA</a></li>
+  <li><span class="k">Пошта</span><a class="v" href="mailto:vitalii@tenderwin.com.ua">vitalii@tenderwin.com.ua</a></li>
+  <li><span class="k">Виконавець</span><span class="v">ФОП Щасливий Віталій Олександрович</span></li>
+</ul></aside>
+  </div>
+</section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="g"><p>TenderWin. Аналіз відхилення тендерної пропозиції та <span class="nw">30-хвилинна</span> консультація за 3&nbsp;499&nbsp;грн. Письмовий аналіз протягом 24&nbsp;годин після оплати погодженого замовлення.</p>
+      <nav aria-label="Розділи сайту"><a href="#rezultat">Результат</a><a href="#zrazok">Приклад звіту</a><a href="#yak">Як замовити</a><a href="#vartist">Вартість</a><a href="#kontakty">Контакти</a></nav></div>
+    <details id="privacy" class="privacy"><summary>Політика конфіденційності</summary><p>У прототипі — місце чинної політики конфіденційності сайту. На етапі 2 текст переноситься з робочого сайту й оновлюється з урахуванням фактично підключених сервісів (віджет Zadarma, статистика відвідувань без cookie).</p></details>
+    <div class="legal"><span>© 2026 TenderWin · ФОП Щасливий Віталій Олександрович</span><span><a href="tel:+380800357135">+380&nbsp;800&nbsp;357&nbsp;135</a> · <a href="mailto:vitalii@tenderwin.com.ua">vitalii@tenderwin.com.ua</a> · <a href="https://t.me/tenderwin_ua">@TenderWin_UA</a></span></div>
+  </div>
+</footer>
+
+<nav class="mbar" id="mbar" aria-label="Замовлення"><span class="t">3&nbsp;499&nbsp;грн · консультація включена</span><a class="btn btn-primary" href="#zayavka">Замовити аналіз</a><a class="call" href="tel:+380800357135" aria-label="Зателефонувати: +380 800 357 135"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg></a></nav>
+<button type="button" class="cb" id="cb" aria-expanded="false" aria-controls="cb-pop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.5l1.8 4.4-2.3 1.4a11 11 0 0 0 6.2 6.2l1.4-2.3L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg><span>Зворотний дзвінок</span></button><div class="cb-pop" id="cb-pop" role="dialog" aria-label="Зворотний дзвінок" hidden><button type="button" class="cb-x" aria-label="Закрити">✕</button><h2>Зателефонуйте мені, будь ласка</h2><label for="cb-tel">Телефон</label><input id="cb-tel" type="tel" placeholder="+380 …" disabled><button type="button" class="cb-send" disabled>Замовити дзвінок</button><p class="cb-note">Місце штатного віджета Zadarma. У прототипі дзвінок не замовляється; у робочій версії — після отримання коду віджета й графіка відповіді.</p></div>
+
+<script>window.TW_REPORTS = {"explain": {"pidstava": "Підстава: дослівне формулювання замовника, з якого починається розбір.", "dokument": "Документ: що вимагала документація і що є у Вашій пропозиції — з номером сторінки.", "ryzyk": "Ризик: що може послабити позицію або вплинути на рішення органу оскарження.", "rekomendatsiia": "Рекомендація: що робити далі й чому — оскаржувати чи ні."}, "documents": [{"id": "pos", "short": "Оскарження рекомендовано", "title": "Приклад 1: є підстави оскаржувати", "kind": "Заглушка — тут буде справжній знеособлений звіт", "placeholder": true, "draft": false, "pdf": "report/zrazok-analizu-1.pdf", "pdfKb": 35, "pageCount": 2, "pages": [{"n": 1, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 1 Висновок щодо відхилення тендерної пропозиції Закупівля UA-2026-08-14-004217-a (умовна) Предмет Поточний ремонт покрівлі навчального закладу Очікувана вартість 2 400 000 грн Учасник ТОВ «Умовна будівельна компанія» Рішення замовника протокол про відхилення від 21.08.2026 ВИСНОВОК Є підстави оскаржувати · сильна позиція Підстава відхилення не підтверджується документами пропозиції. Рекомендуємо розглянути подання скарги в межах строку. 1. Підстава відхилення (дослівно з рішення) «Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації.» 2. Зіставлення документів Що зазначив замовник Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації. Рішення про відхилення Вимога документації Довідка в довільній формі з переліком обладнання, яке учасник використовуватиме під час робіт. Додаток 1, п. 3.2 · с. 14 Що є в пропозиції Довідка з переліком 11 одиниць техніки й інструменту, підписана кваліфікованим електронним підписом. Файл «Довідка_техніка.pdf» · с. 3 3. Оцінка Підстава відхилення не підтверджується документами: довідка є у складі пропозиції й відповідає вимозі за змістом. Якщо замовник вважав документ неналежним, він мав зазначити невідповідність і дати можливість її виправити. 4. Ризики Замовник може послатися на назву чи формат файлу. До подання скарги варто перевірити чинність підпису й дату завантаження документа.", "src": "report/pos/p1.webp", "src2x": "report/pos/p1@2x.webp", "srcT": "report/pos/p1-t.webp"}, {"n": 2, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 2 5. Рекомендовані дії Підготувати скаргу до органу оскарження в межах строку й урахувати плату за її подання. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних кроків. 6. Джерела • Рішення замовника про відхилення пропозиції (Prozorro) • Тендерна документація — Додаток 1, п. 3.2 · с. 14 • Пропозиція учасника — Файл «Довідка_техніка.pdf» · с. 3 Заглушка для макета сайту: закупівля умовна, дані вигадані. Висновок має інформаційний характер і не гарантує рішення органу оскарження.", "src": "report/pos/p2.webp", "src2x": "report/pos/p2@2x.webp", "srcT": "report/pos/p2-t.webp"}], "focus": {"page": 1, "x": 6.048, "y": 9.289, "w": 86.928, "h": 63.258}, "highlights": [{"key": "pidstava", "page": 1, "x": 8.063, "y": 39.619, "w": 80.461, "h": 6.723, "text": "1. Підстава відхилення (дослівно з рішення) «Учасник не надав довідку про наявність обладнання та матеріально-технічної бази, передбачену пунктом 3.2 Додатка 1 тендерної документації.»"}, {"key": "dokument", "page": 1, "x": 9.743, "y": 58.048, "w": 74.314, "h": 12.848, "text": "Вимога документації Довідка в довільній формі з переліком обладнання, яке учасник використовуватиме під час робіт. Додаток 1, п. 3.2 · с. 14 Що є в пропозиції Довідка з переліком 11 одиниць техніки й інструменту, підписана кваліфікованим електронним підписом. Файл «Довідка_техніка.pdf» · с. 3"}, {"key": "ryzyk", "page": 1, "x": 8.063, "y": 81.549, "w": 82.035, "h": 6.723, "text": "4. Ризики Замовник може послатися на назву чи формат файлу. До подання скарги варто перевірити чинність підпису й дату завантаження документа."}, {"key": "rekomendatsiia", "page": 2, "x": 8.063, "y": 12.626, "w": 80.293, "h": 8.505, "text": "5. Рекомендовані дії Підготувати скаргу до органу оскарження в межах строку й урахувати плату за її подання. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних кроків."}], "toc": [{"title": "Висновок", "page": 1, "x": 8.399, "y": 10.952, "w": 53.063, "h": 3.323}, {"title": "Підстава відхилення", "page": 1, "x": 8.399, "y": 39.857, "w": 49.367, "h": 2.158}, {"title": "Зіставлення документів", "page": 1, "x": 8.399, "y": 46.746, "w": 29.929, "h": 2.158}, {"title": "Оцінка", "page": 1, "x": 8.399, "y": 73.115, "w": 11.008, "h": 2.158}, {"title": "Ризики", "page": 1, "x": 8.399, "y": 81.786, "w": 11.277, "h": 2.158}, {"title": "Рекомендовані дії", "page": 2, "x": 8.399, "y": 12.864, "w": 23.683, "h": 2.158}, {"title": "Джерела", "page": 2, "x": 8.399, "y": 21.535, "w": 13.33, "h": 2.158}]}, {"id": "neg", "short": "Оскарження не рекомендовано", "title": "Приклад 2: оскаржувати не варто", "kind": "Заглушка — тут буде справжній знеособлений звіт", "placeholder": true, "draft": false, "pdf": "report/zrazok-analizu-2.pdf", "pdfKb": 35, "pageCount": 2, "pages": [{"n": 1, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 1 Висновок щодо відхилення тендерної пропозиції Закупівля UA-2026-07-29-011384-a (умовна) Предмет Постачання ноутбуків для управління освіти, 38 одиниць Очікувана вартість 1 140 000 грн Учасник ТОВ «Умовна будівельна компанія» Рішення замовника протокол про відхилення від 21.08.2026 ВИСНОВОК Оскарження не рекомендовано · позиція замовника стійка Невідповідність підтверджується документами пропозиції. Подання скарги не рекомендуємо: шанси низькі, а плата за подання й час будуть витрачені. 1. Підстава відхилення (дослівно з рішення) «Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ.» 2. Зіставлення документів Що зазначив замовник Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ. Рішення про відхилення Вимога документації Оперативна пам’ять — не менше 16 ГБ. Додаток 2 «Технічна специфікація», рядок 4 · с. 22 Що є в пропозиції «8 ГБ з можливістю розширення до 16 ГБ». Технічна пропозиція учасника, рядок 4 · с. 2 3. Оцінка Невідповідність стосується характеристики самого товару, а не оформлення документа. Можливість розширення пам’яті не означає, що запропонований товар відповідає мінімальній вимозі. 4. Ризики Скарга з високою ймовірністю не дасть результату, а плата за її подання та час будуть витрачені. 5. Рекомендовані дії Не подавати скаргу. Для наступних закупівель — звіряти мінімальні параметри специфікації до подання пропозиції. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних", "src": "report/neg/p1.webp", "src2x": "report/neg/p1@2x.webp", "srcT": "report/neg/p1-t.webp"}, {"n": 2, "ratio": 1.41428, "text": "ЗАГЛУШКА ЗАГЛУШКА: тут буде справжній знеособлений звіт TenderWin. Дані вигадані. TENDERWIN Заглушка · дані вигадані tenderwin.in.ua · +380 800 357 135 · vitalii@tenderwin.com.ua 2 кроків. 6. Джерела • Рішення замовника про відхилення пропозиції (Prozorro) • Тендерна документація — Додаток 2 «Технічна специфікація», рядок 4 · с. 22 • Пропозиція учасника — Технічна пропозиція учасника, рядок 4 · с. 2 Заглушка для макета сайту: закупівля умовна, дані вигадані. Висновок має інформаційний характер і не гарантує рішення органу оскарження.", "src": "report/neg/p2.webp", "src2x": "report/neg/p2@2x.webp", "srcT": "report/neg/p2-t.webp"}], "focus": {"page": 1, "x": 6.048, "y": 9.289, "w": 86.928, "h": 63.258}, "highlights": [{"key": "pidstava", "page": 1, "x": 8.063, "y": 39.619, "w": 83.349, "h": 6.723, "text": "1. Підстава відхилення (дослівно з рішення) «Запропонований товар не відповідає вимозі щодо обсягу оперативної пам’яті: потрібно не менше 16 ГБ, у пропозиції — 8 ГБ.»"}, {"key": "dokument", "page": 1, "x": 9.743, "y": 56.385, "w": 60.037, "h": 9.997, "text": "Вимога документації Оперативна пам’ять — не менше 16 ГБ. Додаток 2 «Технічна специфікація», рядок 4 · с. 22 Що є в пропозиції «8 ГБ з можливістю розширення до 16 ГБ». Технічна пропозиція учасника, рядок 4 · с. 2"}, {"key": "ryzyk", "page": 1, "x": 8.063, "y": 75.728, "w": 79.433, "h": 4.941, "text": "4. Ризики Скарга з високою ймовірністю не дасть результату, а плата за її подання та час будуть витрачені."}, {"key": "rekomendatsiia", "page": 1, "x": 8.063, "y": 80.836, "w": 80.293, "h": 8.505, "text": "5. Рекомендовані дії Не подавати скаргу. Для наступних закупівель — звіряти мінімальні параметри специфікації до подання пропозиції. Консультація тривалістю 30 хвилин: пояснимо висновок і відповімо на запитання щодо наступних"}], "toc": [{"title": "Висновок", "page": 1, "x": 8.399, "y": 10.952, "w": 53.063, "h": 3.323}, {"title": "Підстава відхилення", "page": 1, "x": 8.399, "y": 39.857, "w": 49.367, "h": 2.158}, {"title": "Зіставлення документів", "page": 1, "x": 8.399, "y": 46.746, "w": 29.929, "h": 2.158}, {"title": "Оцінка", "page": 1, "x": 8.399, "y": 69.077, "w": 11.008, "h": 2.158}, {"title": "Ризики", "page": 1, "x": 8.399, "y": 75.966, "w": 11.277, "h": 2.158}, {"title": "Рекомендовані дії", "page": 1, "x": 8.399, "y": 81.074, "w": 23.683, "h": 2.158}, {"title": "Джерела", "page": 2, "x": 8.399, "y": 14.646, "w": 13.33, "h": 2.158}]}]};</script>
+<script>/* TenderWin — переглядач справжнього звіту (спільний для трьох концепцій).
+   Дані — window.TW_REPORTS (готує design3/report/prepare.py): сторінки-зображення, фрагменти, зміст.
+   Підсвічування — окремий шар поверх зображення; PDF не змінюється. Сторінки самі не гортаються.
+
+   RV.mount(el, { doc, mode: "page" | "focus", docs: true, aspect }) → контролер:
+     .show(docId)       — інший документ        .page(n)       — сторінка (режим page)
+     .highlight(key)    — фрагмент або null      .open(page, key) — читання на весь екран
+   Подія "rv:change" на el: { doc, page, key }                                           */
+(function () {
+  "use strict";
+  var DATA = window.TW_REPORTS || { documents: [], explain: {} };
+  var RM = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var byId = {};
+  DATA.documents.forEach(function (d) { byId[d.id] = d; });
+
+  function h(tag, attrs, kids) {
+    var el = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      var v = attrs[k];
+      if (v === null || v === undefined || v === false) return;
+      if (k === "text") el.textContent = v;
+      else if (k === "html") el.innerHTML = v;
+      else if (k.slice(0, 2) === "on") el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? "" : v);
+    });
+    (kids || []).forEach(function (c) { if (c) el.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return el;
+  }
+  function pagesWord(n) { return n % 10 === 1 && n % 100 !== 11 ? "сторінка" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "сторінки" : "сторінок"; }
+  function kindLine(d) {
+    return d.pageCount + " " + pagesWord(d.pageCount) + " · PDF " + d.pdfKb + " КБ";
+  }
+  function pdfName(d) { return d.pdf.split("/").pop(); }
+  var ICON = {
+    prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+    next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',
+    full: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+    pdf: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>',
+    dl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    minus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>'
+  };
+
+  /* ================= вбудований переглядач ================= */
+  function mount(root, opts) {
+    opts = opts || {};
+    var st = { doc: byId[opts.doc] ? opts.doc : (DATA.documents[0] || {}).id, page: 1, key: null, mode: opts.mode || "page" };
+    root.classList.add("rv", "rv-" + st.mode);
+    root.innerHTML = "";
+
+    var tabs = null;
+    if (opts.docs !== false && DATA.documents.length > 1) {
+      tabs = h("div", { class: "rv-docs", role: "tablist", "aria-label": "Приклади звіту" });
+      DATA.documents.forEach(function (d, i) {
+        var b = h("button", { type: "button", role: "tab", class: "rv-doc", "data-doc": d.id, onclick: function () { ctl.show(d.id); } },
+          [h("b", { text: "Приклад " + (i + 1) }), h("span", { text: d.short })]);
+        b.addEventListener("keydown", function (e) {
+          if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+          var n = (i + (e.key === "ArrowRight" ? 1 : DATA.documents.length - 1)) % DATA.documents.length;
+          ctl.show(DATA.documents[n].id); tabs.children[n].focus();
+        });
+        tabs.appendChild(b);
+      });
+      root.appendChild(tabs);
+    }
+    var kind = h("p", { class: "rv-kind" });
+    root.appendChild(kind);
+
+    var frame = h("div", { class: "rv-frame" });
+    var canvas = h("div", { class: "rv-canvas" });
+    var img = h("img", { class: "rv-img", alt: "", decoding: "async" });
+    var layer = h("div", { class: "rv-layer", "aria-hidden": "true" });
+    canvas.appendChild(img); canvas.appendChild(layer); frame.appendChild(canvas);
+    var openBtn = h("button", { type: "button", class: "rv-zoomhint", html: ICON.full + "<span>Читати на весь екран</span>", onclick: function () { ctl.open(st.page, st.key); } });
+    frame.appendChild(openBtn);
+    root.appendChild(frame);
+    var desc = h("p", { class: "rv-desc sr" });
+    root.appendChild(desc);
+
+    var pn = h("span", { class: "rv-pn", "aria-live": "polite" });
+    var prev = h("button", { type: "button", class: "rv-ic", "aria-label": "Попередня сторінка", html: ICON.prev, onclick: function () { ctl.page(st.page - 1); } });
+    var next = h("button", { type: "button", class: "rv-ic", "aria-label": "Наступна сторінка", html: ICON.next, onclick: function () { ctl.page(st.page + 1); } });
+    var full = h("button", { type: "button", class: "rv-btn", html: ICON.full + "<span>На весь екран</span>", onclick: function () { ctl.open(st.page, st.key); } });
+    var pdf = h("a", { class: "rv-btn", target: "_blank", rel: "noopener", "data-stat": "pdf", html: ICON.pdf + "<span>Відкрити PDF</span>" });
+    var dl = h("a", { class: "rv-btn rv-dl", "data-stat": "pdf", html: ICON.dl + "<span>Завантажити</span>" });
+    var ctrl = h("div", { class: "rv-ctrl" }, [h("div", { class: "rv-nav" }, [prev, pn, next]), h("div", { class: "rv-act" }, [full, pdf, dl])]);
+    root.appendChild(ctrl);
+    /* мініатюри сторінок: швидкий перехід, поточна сторінка позначена */
+    var rail = null, railDoc = null;
+    if (opts.thumbs) { rail = h("div", { class: "rv-rail", role: "group", "aria-label": "Сторінки документа" }); root.appendChild(rail); }
+    function paintRail() {
+      if (!rail) return;
+      var d = doc();
+      if (railDoc !== d.id) {
+        railDoc = d.id; rail.innerHTML = "";
+        d.pages.forEach(function (p) {
+          rail.appendChild(h("button", { type: "button", class: "rv-th", "aria-label": "Сторінка " + p.n, "data-n": p.n, onclick: function () { ctl.page(p.n); } },
+            [h("img", { src: p.srcT || p.src, alt: "", loading: "lazy", decoding: "async", style: "aspect-ratio:1 / " + p.ratio }), h("span", { text: String(p.n) })]));
+        });
+      }
+      Array.prototype.forEach.call(rail.children, function (b) {
+        var on = Number(b.getAttribute("data-n")) === st.page;
+        if (on) { b.setAttribute("aria-current", "page"); var l = b.offsetLeft - rail.clientWidth / 2 + b.clientWidth / 2; rail.scrollTo({ left: l, behavior: RM ? "auto" : "smooth" }); }
+        else b.removeAttribute("aria-current");
+      });
+    }
+    var lastPage = null, lastDoc = null;
+
+    function doc() { return byId[st.doc]; }
+    function hlFor(key) { return key ? doc().highlights.filter(function (x) { return x.key === key; })[0] : null; }
+
+    function paintLayer(rects) {
+      layer.innerHTML = "";
+      rects.forEach(function (r) {
+        layer.appendChild(h("i", { class: "rv-hl rv-hl-" + (r.key || "focus"), style: "left:" + r.x + "%;top:" + r.y + "%;width:" + r.w + "%;height:" + r.h + "%" }));
+      });
+    }
+
+    /* у режимі focus показуємо фрагмент крупно: масштаб і зсув полотна */
+    function fit() {
+      var d = doc(), p = d.pages[st.page - 1];
+      if (st.mode !== "focus") { canvas.style.width = ""; canvas.style.transform = ""; return; }
+      var r = hlFor(st.key) || d.focus;
+      var cw = frame.clientWidth, ch = frame.clientHeight;
+      if (!cw || !ch) return;
+      var pad = 0.96;
+      var pw = Math.min(cw * pad / (r.w / 100), ch * pad / (r.h / 100 * p.ratio));
+      pw = Math.max(cw, Math.min(pw, cw * 3.2));
+      var ph = pw * p.ratio;
+      var cx = (r.x + r.w / 2) / 100 * pw, cy = (r.y + r.h / 2) / 100 * ph;
+      var tx = Math.min(0, Math.max(cw - pw, cw / 2 - cx)), ty = Math.min(0, Math.max(ch - ph, ch / 2 - cy));
+      canvas.style.width = pw + "px";
+      canvas.style.transform = "translate(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px)";
+      var want = pw * (window.devicePixelRatio || 1) > 1100 ? p.src2x : p.src;
+      if (img.getAttribute("src") !== want) img.src = want;
+    }
+
+    function render(emit) {
+      var d = doc(), p = d.pages[st.page - 1];
+      if (tabs) Array.prototype.forEach.call(tabs.children, function (b) {
+        var on = b.getAttribute("data-doc") === st.doc;
+        b.setAttribute("aria-selected", on ? "true" : "false"); b.tabIndex = on ? 0 : -1;
+      });
+      kind.innerHTML = "";
+      if (d.placeholder) kind.appendChild(h("span", { class: "rv-badge", text: "Заглушка" }));
+      else if (d.draft) kind.appendChild(h("span", { class: "rv-badge rv-draft", text: "Чорнетка" }));
+      kind.appendChild(h("span", { text: (d.placeholder ? "Тут буде справжній знеособлений звіт · " : d.kind + " · ") + kindLine(d) }));
+      if (st.mode === "page") {
+        var want = (frame.clientWidth || 600) * (window.devicePixelRatio || 1) > 1100 ? p.src2x : p.src;
+        if (img.getAttribute("src") !== want) img.src = want;
+        canvas.style.aspectRatio = "1 / " + p.ratio;
+      }
+      img.alt = d.title + ". Сторінка " + st.page + " з " + d.pageCount + ". Текст сторінки — нижче, для читачів екрана.";
+      if (!RM && lastPage !== null && (lastPage !== st.page || lastDoc !== st.doc) && st.mode === "page") {
+        canvas.classList.remove("rv-turn"); void canvas.offsetWidth; canvas.classList.add("rv-turn");
+      }
+      lastPage = st.page; lastDoc = st.doc;
+      desc.textContent = "Текст сторінки " + st.page + ": " + p.text;
+      var hl = hlFor(st.key);
+      var rects = hl && hl.page === st.page ? [hl] : (st.mode === "focus" && !hl ? [] : []);
+      paintLayer(rects);
+      root.setAttribute("data-key", st.key || "");
+      pn.textContent = "Сторінка " + st.page + " з " + d.pageCount;
+      prev.disabled = st.page <= 1; next.disabled = st.page >= d.pageCount;
+      pdf.href = d.pdf; dl.href = d.pdf; dl.setAttribute("download", pdfName(d));
+      ctrl.hidden = st.mode === "focus" && opts.focusControls === false;
+      paintRail();
+      fit();
+      if (emit !== false) root.dispatchEvent(new CustomEvent("rv:change", { detail: { doc: st.doc, page: st.page, key: st.key } }));
+    }
+
+    var ctl = {
+      el: root,
+      state: st,
+      show: function (id) { if (!byId[id]) return; st.doc = id; st.page = 1; var k = st.key; st.key = null; if (k) { var x = hlFor(k); if (x) { st.key = k; st.page = x.page; } } render(); },
+      page: function (n) { var d = doc(); st.page = Math.max(1, Math.min(d.pageCount, n)); if (st.key && hlFor(st.key).page !== st.page) st.key = null; render(); },
+      highlight: function (key) {
+        var x = hlFor(key);
+        st.key = x ? key : null;
+        if (x) st.page = x.page;
+        render();
+      },
+      /** позначити довільну ділянку (розділ змісту): перейти на сторінку й обвести */
+      mark: function (r) {
+        st.key = null; st.page = r.page; render();
+        paintLayer([{ key: "toc", x: r.x, y: r.y, w: r.w, h: r.h }]);
+        if (st.mode === "page") {
+          var top = frame.getBoundingClientRect().top + canvas.offsetHeight * r.y / 100;
+          if (top < 70 || top > innerHeight - 120) window.scrollTo({ top: scrollY + top - innerHeight * 0.3, behavior: RM ? "auto" : "smooth" });
+        }
+      },
+      open: function (page, key) { Modal.open(st.doc, page || st.page, key === undefined ? st.key : key, document.activeElement); },
+      doc: doc,
+      refit: fit
+    };
+    var rt;
+    window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { render(false); }, 120); });
+    if (!RM) frame.classList.add("rv-anim");
+    render(false);
+    return ctl;
+  }
+
+  /* ================= читання на весь екран (одне вікно на сторінку) ================= */
+  var Modal = (function () {
+    var dlg, body, title, kindEl, pnEl, zoomEl, tocEl, pdfA, dlA, opener, cur = { doc: null, zoom: 1, key: null };
+    var ZOOMS = [1, 1.25, 1.5, 2];
+    function build() {
+      dlg = h("dialog", { class: "rv-modal", "aria-labelledby": "rv-m-title" });
+      title = h("h2", { id: "rv-m-title", class: "rv-m-title" });
+      kindEl = h("p", { class: "rv-m-kind" });
+      pnEl = h("span", { class: "rv-pn", "aria-live": "polite" });
+      zoomEl = h("span", { class: "rv-zoom", "aria-live": "polite" });
+      pdfA = h("a", { class: "rv-btn", target: "_blank", rel: "noopener", "data-stat": "pdf", html: ICON.pdf + "<span>PDF</span>" });
+      dlA = h("a", { class: "rv-btn", "data-stat": "pdf", html: ICON.dl + "<span>Завантажити</span>" });
+      var close = h("button", { type: "button", class: "rv-ic rv-close", "aria-label": "Закрити (Esc)", html: ICON.x, onclick: function () { dlg.close(); } });
+      var zMinus = h("button", { type: "button", class: "rv-ic", "aria-label": "Зменшити", html: ICON.minus, onclick: function () { zoom(-1); } });
+      var zPlus = h("button", { type: "button", class: "rv-ic", "aria-label": "Збільшити", html: ICON.plus, onclick: function () { zoom(1); } });
+      var pPrev = h("button", { type: "button", class: "rv-ic", "aria-label": "Попередня сторінка", html: ICON.prev, onclick: function () { go(curPage() - 1); } });
+      var pNext = h("button", { type: "button", class: "rv-ic", "aria-label": "Наступна сторінка", html: ICON.next, onclick: function () { go(curPage() + 1); } });
+      tocEl = h("nav", { class: "rv-toc", "aria-label": "Зміст документа" });
+      body = h("div", { class: "rv-m-body", tabindex: "0", "aria-label": "Сторінки документа" });
+      dlg.appendChild(h("div", { class: "rv-m-head" }, [h("div", { class: "rv-m-t" }, [title, kindEl]), close]));
+      dlg.appendChild(h("div", { class: "rv-m-tools" }, [h("div", { class: "rv-nav" }, [pPrev, pnEl, pNext]), h("div", { class: "rv-nav" }, [zMinus, zoomEl, zPlus]), h("div", { class: "rv-act" }, [pdfA, dlA])]));
+      dlg.appendChild(h("div", { class: "rv-m-main" }, [tocEl, body]));
+      document.body.appendChild(dlg);
+      dlg.addEventListener("close", function () { document.documentElement.classList.remove("rv-lock"); if (opener && opener.focus) opener.focus(); });
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+      dlg.addEventListener("keydown", function (e) {
+        if (e.target.tagName === "INPUT") return;
+        if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); go(curPage() + 1); }
+        if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(curPage() - 1); }
+        if (e.key === "+" || e.key === "=") { e.preventDefault(); zoom(1); }
+        if (e.key === "-") { e.preventDefault(); zoom(-1); }
+      });
+      body.addEventListener("scroll", function () { pnEl.textContent = "Сторінка " + curPage() + " з " + byId[cur.doc].pageCount; }, { passive: true });
+    }
+    function curPage() {
+      var ps = body.querySelectorAll(".rv-m-page"), top = body.scrollTop + body.clientHeight * 0.35, n = 1;
+      Array.prototype.forEach.call(ps, function (p, i) { if (p.offsetTop <= top) n = i + 1; });
+      return n;
+    }
+    function go(n, yPct) {
+      var d = byId[cur.doc]; n = Math.max(1, Math.min(d.pageCount, n));
+      var p = body.querySelectorAll(".rv-m-page")[n - 1];
+      if (!p) return;
+      var y = p.offsetTop - 12 + (yPct ? p.offsetHeight * yPct / 100 - 24 : 0);
+      body.scrollTo({ top: y, behavior: RM ? "auto" : "smooth" });
+      pnEl.textContent = "Сторінка " + n + " з " + d.pageCount;
+    }
+    function zoom(dir) {
+      var i = ZOOMS.indexOf(cur.zoom) + dir;
+      if (i < 0 || i >= ZOOMS.length) return;
+      var frac = body.scrollTop / Math.max(1, body.scrollHeight);
+      cur.zoom = ZOOMS[i];
+      body.style.setProperty("--z", cur.zoom);
+      zoomEl.textContent = Math.round(cur.zoom * 100) + "%";
+      requestAnimationFrame(function () { body.scrollTop = frac * body.scrollHeight; });
+    }
+    function open(docId, page, key, from) {
+      if (!dlg) build();
+      opener = from;
+      var d = byId[docId];
+      cur.doc = docId; cur.key = key || null; cur.zoom = 1;
+      body.style.setProperty("--z", 1); zoomEl.textContent = "100%";
+      title.textContent = d.title;
+      kindEl.textContent = (d.placeholder ? "Заглушка: тут буде справжній знеособлений звіт" : d.kind) + " · " + kindLine(d);
+      pdfA.href = d.pdf; dlA.href = d.pdf; dlA.setAttribute("download", pdfName(d));
+      body.innerHTML = "";
+      d.pages.forEach(function (p) {
+        var fig = h("figure", { class: "rv-m-page" });
+        var wrap = h("div", { class: "rv-m-wrap", style: "aspect-ratio:1 / " + p.ratio });
+        wrap.appendChild(h("img", { src: p.src2x, alt: d.title + ". Сторінка " + p.n + " з " + d.pageCount, loading: p.n > 2 ? "lazy" : null, decoding: "async" }));
+        d.highlights.forEach(function (x) {
+          if (x.page === p.n && x.key === cur.key) wrap.appendChild(h("i", { class: "rv-hl rv-hl-" + x.key, "aria-hidden": "true", style: "left:" + x.x + "%;top:" + x.y + "%;width:" + x.w + "%;height:" + x.h + "%" }));
+        });
+        fig.appendChild(wrap);
+        fig.appendChild(h("figcaption", { class: "sr", text: "Текст сторінки " + p.n + ": " + p.text }));
+        body.appendChild(fig);
+      });
+      tocEl.innerHTML = "";
+      tocEl.appendChild(h("p", { class: "rv-toc-h", text: "Зміст" }));
+      d.toc.forEach(function (t) {
+        tocEl.appendChild(h("button", { type: "button", class: "rv-toc-i", onclick: function () { go(t.page, t.y); } }, [h("span", { text: t.title }), h("small", { text: "с. " + t.page })]));
+      });
+      document.documentElement.classList.add("rv-lock");
+      if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+      var hl = cur.key ? d.highlights.filter(function (x) { return x.key === cur.key; })[0] : null;
+      requestAnimationFrame(function () {
+        body.scrollTop = 0;
+        if (hl) go(hl.page, hl.y); else if (page > 1) go(page);
+        pnEl.textContent = "Сторінка " + (hl ? hl.page : page || 1) + " з " + d.pageCount;
+        body.focus({ preventScroll: true });
+      });
+      if (window.TWstat) window.TWstat("report");
+    }
+    return { open: open };
+  })();
+
+  window.RV = { mount: mount, open: function (docId, page, key) { Modal.open(docId, page, key, document.activeElement); }, data: DATA, byId: byId, ICON: ICON };
+})();
+</script>
+<script>/* TenderWin — спільна поведінка прототипів етапу 1 (v3.0). Без бібліотек.
+   Прототипи ізольовані: форма нічого не надсилає, дзвінок не замовляється, статистика не збирається.
+   data-r        — другорядний елемент з’являється один раз (300–500 мс); без JS і при збої видно все
+   .faq details  — розкриття 220 мс
+   form[data-demo] — перевірка полів і демонстрація станів «помилка / надсилання / збережено / лист затримався»
+   #mbar         — мобільна панель ховається біля форми
+   [data-viewer] — переглядач звіту (viewer.js)                                                        */
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var RM = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  if (RM) root.classList.add("rm");
+  window.TW = window.TW || {};
+  TW.RM = RM;
+
+  /* ---------- поява: лише для елементів нижче першого екрана ---------- */
+  try {
+    var els = document.querySelectorAll("[data-r]");
+    if (!RM && "IntersectionObserver" in window) {
+      var vh = window.innerHeight || 800;
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+      }, { rootMargin: "0px 0px -6% 0px", threshold: 0.06 });
+      Array.prototype.forEach.call(els, function (el) {
+        if (el.getBoundingClientRect().top > vh) { el.classList.add("pre"); io.observe(el); }
+      });
+      setTimeout(function () { Array.prototype.forEach.call(els, function (el) { el.classList.add("in"); }); }, 2500);
+    }
+  } catch (e) { /* зміст лишається видимим */ }
+
+  /* ---------- FAQ ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".faq details"), function (d) {
+    var s = d.querySelector("summary"), a = d.querySelector(".ans");
+    if (!s || !a) return;
+    s.addEventListener("click", function (e) {
+      if (RM) return;
+      e.preventDefault();
+      if (d.open) {
+        a.style.height = a.scrollHeight + "px";
+        requestAnimationFrame(function () { a.style.height = "0px"; });
+        setTimeout(function () { d.open = false; a.style.height = ""; }, 220);
+      } else {
+        d.open = true;
+        a.style.height = "0px";
+        requestAnimationFrame(function () { a.style.height = a.scrollHeight + "px"; });
+        setTimeout(function () { a.style.height = ""; }, 240);
+      }
+    });
+  });
+
+  /* ---------- форма (демонстрація) ---------- */
+  var TENDER_RE = /UA-\d{4}-\d{2}-\d{2}-\d{6}-[a-z]/i;
+  function demoId() {
+    var d = new Date(), p = function (n) { return String(n).padStart(2, "0"); };
+    return "" + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "-1";
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("form[data-demo]"), function (f) {
+    var msg = f.querySelector(".msg"), btn = f.querySelector("[type=submit]"), btnText = btn.textContent;
+    var noCode = f.querySelector("#f-nocode"), code = f.querySelector("#f-code"), txt = f.querySelector("#f-msg"), cnt = f.querySelector("#f-msg-count");
+    if (txt && cnt) txt.addEventListener("input", function () { cnt.textContent = txt.value.length + " / 2000"; });
+    if (noCode && code) noCode.addEventListener("change", function () { code.disabled = noCode.checked; if (noCode.checked) setErr(code, ""); });
+    function setErr(el, text) {
+      var e = f.querySelector("#" + el.id + "-err");
+      el.setAttribute("aria-invalid", text ? "true" : "false");
+      if (e) e.textContent = text;
+    }
+    function check() {
+      var bad = null, v = function (id) { var el = f.querySelector("#" + id); return el ? el.value.trim() : ""; };
+      var rules = [
+        ["f-name", v("f-name").length >= 2, "Вкажіть Ваше ім’я."],
+        ["f-mail", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("f-mail")), "Вкажіть коректну електронну пошту — на неї надішлемо підтвердження."],
+        ["f-tender", TENDER_RE.test(v("f-tender")), "Вкажіть ID у форматі UA-2026-09-30-000123-a або посилання на закупівлю."],
+        ["f-org", v("f-org").length >= 2, "Вкажіть назву учасника або ПІБ ФОП."],
+        ["f-code", (noCode && noCode.checked) || /^\d{8}$|^\d{10}$/.test(v("f-code").replace(/\s/g, "")), "Код ЄДРПОУ має 8 цифр, РНОКПП — 10. Якщо коду немає, позначте це нижче."],
+        ["f-contact", /^@[A-Za-z0-9_]{4,32}$|^\+?[\d\s()-]{10,18}$/.test(v("f-contact")), "Вкажіть телефон (+380 67 123 45 67) або Telegram (@username)."],
+        ["f-msg", v("f-msg").length <= 2000, "Скоротіть опис до 2000 символів."]
+      ];
+      rules.forEach(function (r) {
+        var el = f.querySelector("#" + r[0]);
+        if (!el) return;
+        setErr(el, r[1] ? "" : r[2]);
+        if (!r[1] && !bad) bad = el;
+      });
+      var ok = f.querySelector("#f-ok");
+      setErr(ok, ok.checked ? "" : "Потрібна Ваша згода на обробку персональних даних.");
+      if (!ok.checked && !bad) bad = ok;
+      return bad;
+    }
+    function state(kind) {
+      var email = (f.querySelector("#f-mail") || {}).value || "name@company.ua", id = demoId();
+      btn.disabled = kind === "sending"; btn.textContent = kind === "sending" ? "Надсилаємо…" : btnText;
+      btn.classList.toggle("loading", kind === "sending");
+      var demo = '<small class="demo-tag">Демонстрація прототипу: заявку не надіслано.</small>';
+      var map = {
+        error: ["err", "Перевірте позначені поля — нижче кожного є підказка."],
+        sending: ["info", "Надсилаємо заявку…"],
+        saved: ["ok", "Дякуємо! Заявку № " + id + " збережено. Перед оплатою підтвердимо обсяг і строк роботи. Контактна адреса: " + email.replace(/[<>&"]/g, "")],
+        delayed: ["warn", "Заявку № " + id + " збережено. Підтвердження електронною поштою затримується. Повторно заповнювати форму не потрібно."],
+        "": ["", ""]
+      };
+      var m = map[kind] || map[""];
+      msg.className = "msg " + m[0];
+      msg.innerHTML = m[1] ? m[1] + demo : "";
+    }
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var bad = check();
+      if (bad) { state("error"); bad.focus(); return; }
+      state("sending");
+      setTimeout(function () { state("saved"); }, RM ? 0 : 900);
+    });
+    Array.prototype.forEach.call(f.parentNode.querySelectorAll("[data-state]"), function (b) {
+      b.addEventListener("click", function () {
+        var k = b.getAttribute("data-state");
+        if (k === "error") { check(); }
+        else Array.prototype.forEach.call(f.querySelectorAll("[aria-invalid]"), function (el) { setErr(el, ""); });
+        state(k);
+        msg.scrollIntoView({ block: "nearest", behavior: RM ? "auto" : "smooth" });
+      });
+    });
+  });
+
+  /* ---------- мобільна панель ---------- */
+  var bar = document.getElementById("mbar"), form = document.getElementById("zayavka");
+  if (bar && form && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) { es.forEach(function (e) {
+      bar.classList.toggle("away", e.isIntersecting);
+      var c = document.getElementById("cb"); if (c) c.classList.toggle("away", e.isIntersecting);   // не перекриваємо форму й згоду
+    }); }, { threshold: 0.02 }).observe(form);
+  }
+
+  /* ---------- місце віджета Zadarma (у прототипі — лише показ) ---------- */
+  var cb = document.getElementById("cb"), cbp = document.getElementById("cb-pop");
+  if (cb && cbp) {
+    var close = function () { cbp.hidden = true; cb.setAttribute("aria-expanded", "false"); };
+    cb.addEventListener("click", function () {
+      var open = cbp.hidden;
+      cbp.hidden = !open; cb.setAttribute("aria-expanded", String(open));
+      if (open) { var t = cbp.querySelector("input,button"); if (t) t.focus(); }
+    });
+    cbp.addEventListener("keydown", function (e) { if (e.key === "Escape") { close(); cb.focus(); } });
+    var cx = cbp.querySelector(".cb-x"); if (cx) cx.addEventListener("click", function () { close(); cb.focus(); });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-callback]"), function (a) {
+      a.addEventListener("click", function (e) { e.preventDefault(); if (cbp.hidden) cb.click(); });
+    });
+  }
+
+  /* ---------- переглядачі звіту ---------- */
+  TW.viewers = {};
+  if (window.RV) Array.prototype.forEach.call(document.querySelectorAll("[data-viewer]"), function (el) {
+    TW.viewers[el.id || ("v" + Object.keys(TW.viewers).length)] = window.RV.mount(el, {
+      doc: el.getAttribute("data-doc") || "pos", mode: el.getAttribute("data-mode") || "page",
+      docs: el.getAttribute("data-docs") !== "false", focusControls: el.getAttribute("data-controls") !== "false",
+      thumbs: el.getAttribute("data-thumbs") === "true"
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-open-report]"), function (b) {
+    b.addEventListener("click", function (e) {
+      if (!window.RV) return;
+      e.preventDefault();
+      var v = TW.viewers[b.getAttribute("data-open-report")];
+      if (v) v.open(); else window.RV.open("pos", 1, null);
+    });
+  });
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  /* зміст документа: вибір розділу переміщує переглядач до сторінки й обводить заголовок */
+  var big = TW.viewers.big, toc = document.getElementById("toc");
+  function build() {
+    toc.innerHTML = "";
+    big.doc().toc.forEach(function (t, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.innerHTML = "<span></span><small></small>";
+      b.firstChild.textContent = t.title; b.lastChild.textContent = "с. " + t.page;
+      b.addEventListener("click", function () {
+        Array.prototype.forEach.call(toc.children, function (x) { x.removeAttribute("aria-current"); });
+        b.setAttribute("aria-current", "true");
+        big.mark(t);
+      });
+      toc.appendChild(b);
+    });
+  }
+  var lastDoc = null;
+  big.el.addEventListener("rv:change", function (e) { if (e.detail.doc !== lastDoc) { lastDoc = e.detail.doc; build(); } });
+  lastDoc = big.state.doc; build();
+})();
+</script>
+</body>
+</html>

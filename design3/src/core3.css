@@ -1,0 +1,103 @@
+/* ===== спільна основа прототипів v3 (кольори й шрифти задає концепція) ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%}
+a{color:inherit}
+h1,h2,h3,h4,p,ul,ol,figure,blockquote{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit}
+.nw{white-space:nowrap}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{width:min(100% - 32px, var(--wrap,1200px));margin-inline:auto}
+@media(min-width:700px){.wrap{width:min(100% - 64px, var(--wrap,1200px))}}
+:focus-visible{outline:3px solid var(--focus,#1f4fd1);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:12px;top:-60px;z-index:999;padding:10px 14px;border-radius:8px;background:#111;color:#fff;text-decoration:none}
+.skip:focus{top:12px}
+
+/* поява: стан спокою видимий; приховуються лише елементи нижче першого екрана й ненадовго */
+.pre{opacity:0;transform:translateY(14px)}
+.pre.in{opacity:1;transform:none;transition:opacity .42s ease,transform .42s cubic-bezier(.2,.7,.2,1)}
+
+/* кнопки: реакція 150 мс */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;min-height:48px;padding:0 1.4em;border-radius:var(--btn-r,10px);font-weight:700;font-size:1rem;line-height:1.1;text-decoration:none;border:2px solid transparent;cursor:pointer;
+  transition:background-color .15s,border-color .15s,color .15s,transform .15s,box-shadow .15s}
+.btn:active{transform:translateY(1px)}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* FAQ */
+.faq details{overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq .ans{overflow:hidden;transition:height .22s ease}
+.faq .ans ol{list-style:decimal;padding-left:1.3em;margin-top:8px}
+.faq .ans li+li{margin-top:6px}
+
+/* форма */
+.tw-form{display:grid;gap:16px}
+.tw-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:620px){.tw-form .row2{grid-template-columns:1fr}}
+.tw-form .fld{display:grid;gap:6px;min-width:0}
+.tw-form label{font-weight:600;font-size:.92rem}
+.tw-form .opt{font-weight:400;opacity:.8}
+.tw-form input[type=text],.tw-form input[type=email],.tw-form input:not([type]),.tw-form textarea{width:100%;min-width:0;font:inherit;font-size:1rem;min-height:48px;padding:11px 13px;border-radius:var(--field-r,10px);
+  border:1.5px solid var(--field-line,#a9b0ba);background:var(--field-bg,#fff);color:inherit;transition:border-color .15s,box-shadow .15s}
+.tw-form textarea{min-height:110px;resize:vertical}
+.tw-form input:focus,.tw-form textarea:focus{outline:none;border-color:var(--focus,#1f4fd1);box-shadow:0 0 0 3px color-mix(in srgb,var(--focus,#1f4fd1) 25%,transparent)}
+.tw-form input:disabled{opacity:.55}
+.tw-form [aria-invalid="true"]{border-color:var(--err,#b42318)}
+.tw-form .hint{font-size:.86rem;opacity:.85}
+.tw-form .err{font-size:.88rem;font-weight:600;color:var(--err,#b42318)}
+.tw-form .err:empty{display:none}
+.tw-form .chk{display:flex;gap:11px;align-items:flex-start;cursor:pointer;font-weight:400;font-size:.95rem}
+.tw-form .chk input{width:20px;height:20px;margin-top:2px;flex-shrink:0;accent-color:var(--accent,#1f4fd1)}
+.tw-form .count{font-size:.8rem;opacity:.75;text-align:right;font-variant-numeric:tabular-nums}
+.tw-form button[type=submit]{width:100%;min-height:54px}
+.tw-form .msg{padding:14px 16px;border-radius:10px;font-weight:600;border:1.5px solid}
+.tw-form .msg:empty{display:none}
+.tw-form .msg.ok{background:#e9f6ef;border-color:#9bd3b5;color:#0f5132}
+.tw-form .msg.err{background:#fdecea;border-color:#f1b8b1;color:#8a1c12}
+.tw-form .msg.warn{background:#fff6e0;border-color:#efd18a;color:#6b4a00}
+.tw-form .msg.info{background:#eef3ff;border-color:#b9c9f5;color:#1c3474}
+.tw-form .msg .demo-tag{display:block;margin-top:6px;font-weight:500;font-size:.85rem;opacity:.85}
+.tw-form .note{font-size:.88rem;opacity:.85}
+.demo-states{margin-top:14px;padding:12px 14px;border-radius:10px;border:1.5px dashed var(--field-line,#a9b0ba);font-size:.88rem}
+.demo-states p{margin-bottom:8px;font-weight:600}
+.demo-states div{display:flex;flex-wrap:wrap;gap:6px}
+.demo-states button{padding:6px 11px;border-radius:8px;border:1.5px solid var(--field-line,#a9b0ba);background:transparent;cursor:pointer;font-size:.85rem}
+.demo-states button:hover{border-color:var(--focus,#1f4fd1)}
+
+/* мобільна панель */
+.mbar{display:none}
+@media(max-width:767px){
+  .mbar{display:flex;align-items:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:80;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));transition:transform .25s ease}
+  .mbar.away{transform:translateY(110%)}
+  .mbar .t{flex:1;min-width:0;font-size:.86rem;line-height:1.25;font-weight:600}
+  .mbar .btn{min-height:44px;padding:0 1em;white-space:nowrap}
+  .mbar .call{width:44px;height:44px;display:grid;place-items:center;border-radius:10px;flex-shrink:0}
+  .mbar .call svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:359px){.mbar .t{display:none}.mbar .btn{flex:1}}
+
+/* місце віджета Zadarma: лише від 768 px; на телефоні — дзвінок у мобільній панелі */
+.cb{display:none}
+@media(min-width:768px){
+  .cb{display:flex;position:fixed;right:20px;bottom:20px;z-index:70;align-items:center;gap:8px;min-height:52px;padding:0 18px 0 14px;border-radius:999px;border:0;cursor:pointer;font-weight:700;box-shadow:0 10px 30px -10px rgba(0,0,0,.45);transition:transform .2s,opacity .2s}
+  .cb:hover{transform:translateY(-1px)}
+  .cb.away{opacity:0;pointer-events:none;transform:translateY(20px)}
+  .cb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+}
+.cb-pop{position:fixed;right:20px;bottom:84px;z-index:71;width:min(340px,100vw - 40px);padding:18px;border-radius:14px;background:#fff;color:#14181d;box-shadow:0 20px 50px -15px rgba(0,0,0,.45);border:1px solid #e3e0d9}
+.cb-pop[hidden]{display:none}
+.cb-pop h2{font-size:1.05rem;margin-bottom:10px}
+.cb-pop label{display:block;font-size:.88rem;font-weight:600;margin-bottom:6px}
+.cb-pop input{width:100%;min-height:46px;padding:10px 12px;border-radius:10px;border:1.5px solid #a9b0ba;font:inherit}
+.cb-pop .cb-send{width:100%;margin-top:10px;min-height:46px;border-radius:10px;border:0;background:#c9ced6;color:#3a4048;font-weight:700;cursor:not-allowed}
+.cb-pop .cb-note{margin-top:10px;font-size:.82rem;color:#5f6670}
+.cb-pop .cb-x{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:8px;border:1px solid #e3e0d9;background:#fff;cursor:pointer}
+
+/* менше руху (і без JS — за налаштуванням системи) */
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+.rm *,.rm *::before,.rm *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+.rm .pre{opacity:1!important;transform:none!important}
