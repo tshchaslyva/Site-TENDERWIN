@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+{{HEAD}}
+<style>
+{{CORE_CSS}}
+{{VIEWER_CSS}}
+{{PROTO_CSS}}
+/* ============ В «ТОЧНІСТЬ І СПОКІЙ» — розвиток темно-синьої та золотої системи ============
+   Світлі площини, темно-сині смуги для головних акцентів, золото лише в деталях; впевнена сітка 12 колонок. */
+:root{
+  --navy:#0E2442; --navy2:#173459; --navy3:#22446F; --gold:#C49A3E; --gold-l:#E5C77F; --paper:#F6F7F9; --white:#FFFFFF;
+  --ink:#13202F; --ink2:#334356; --muted:#536276; --line:#DCE1E8; --line2:#C3CBD6;
+  --disp:"Fixel Display","Fixel",system-ui,sans-serif; --f:"Fixel",system-ui,sans-serif;
+  --focus:#173459; --err:#B42318; --wrap:1200px; --btn-r:8px; --field-r:8px; --field-line:#9AA6B6;
+}
+body{background:var(--white);color:var(--ink);font:400 17px/1.62 var(--f)}
+h1,h2,h3{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;line-height:1.08;text-wrap:balance}
+h2{font-size:clamp(1.9rem,3.6vw,2.9rem)}
+h3{font-family:var(--f);font-weight:700;font-size:1.2rem;letter-spacing:-.005em;line-height:1.3}
+.kick{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;color:var(--navy3)}
+.kick::before{content:"";width:22px;height:2px;background:var(--gold)}
+.lede{font-size:1.12rem;color:var(--ink2);max-width:62ch}
+.num{font-variant-numeric:tabular-nums}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-primary:hover{background:var(--navy2);border-color:var(--navy2)}
+.btn-ghost{background:transparent;color:var(--navy);border-color:var(--line2)}
+.btn-ghost:hover{border-color:var(--navy)}
+.btn-gold{background:var(--gold-l);color:var(--navy);border-color:var(--gold-l)}
+.btn-gold:hover{background:#fff;border-color:#fff}
+
+/* шапка */
+.hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.hdr .in{display:flex;align-items:center;gap:24px;height:70px}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--navy)}
+.logo svg{width:34px;height:34px;flex-shrink:0}
+.logo span{font:800 1.18rem var(--disp);letter-spacing:-.01em}
+.logo span b{color:var(--gold);font-weight:800}
+.nav{display:flex;gap:24px;margin-left:auto;font-size:.95rem}
+.nav a{text-decoration:none;color:var(--ink2);padding:6px 0;border-bottom:2px solid transparent;transition:border-color .15s,color .15s}
+.nav a:hover{color:var(--navy);border-color:var(--gold)}
+.hdr .tel{font-weight:600;text-decoration:none;white-space:nowrap;color:var(--navy)}
+.hdr .btn{min-height:42px;font-size:.95rem}
+@media(max-width:1080px){.nav{display:none}.hdr .tel{margin-left:auto}}
+@media(max-width:620px){.hdr .btn{display:none}.hdr .in{height:60px}}
+@media(max-width:400px){.hdr .in{gap:12px}.logo svg{width:30px;height:30px}.logo span{font-size:1.02rem}.hdr .tel{font-size:.92rem}}
+
+/* перший екран */
+.hero{background:var(--paper);padding:56px 0 64px;border-bottom:1px solid var(--line)}
+.hero .g{display:grid;grid-template-columns:7fr 5fr;grid-template-areas:"t o" "a o";gap:0 clamp(28px,4vw,64px);align-items:center}
+.hero .t{grid-area:t}.hero .offer{grid-area:o}.hero .a{grid-area:a;align-self:start}
+@media(max-width:960px){.hero .g{grid-template-columns:1fr;grid-template-areas:"t" "o" "a";gap:24px}}
+.hero h1{font-size:clamp(2.3rem,4.8vw,4.1rem);color:var(--navy);margin-top:18px}
+.hero .lede{margin-top:20px}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+@media(max-width:960px){.acts{margin-top:0}}
+.hero .note{margin-top:14px;font-size:.92rem;color:var(--muted)}
+@media(max-width:560px){.acts .btn{flex:1 1 100%}.hero{padding-top:30px}.hero h1{font-size:2.15rem}.hero .lede{font-size:1.04rem}}
+.offer{background:var(--navy);color:#fff;border-radius:14px;padding:30px;position:relative;overflow:hidden}
+.offer::before{content:"";position:absolute;left:30px;right:30px;top:0;height:3px;background:var(--gold)}
+.offer .amt{font:800 clamp(2.8rem,5vw,3.8rem)/1 var(--disp);letter-spacing:-.03em}
+.offer .amt small{font-size:.38em;font-family:var(--f);font-weight:600;margin-left:.2em;color:var(--gold-l)}
+.offer .what{margin-top:6px;color:#C9D3E1}
+.offer dl{margin:22px 0 0;display:grid;gap:0;border-top:1px solid rgba(255,255,255,.16)}
+.offer dl div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.16)}
+.offer dt{font-weight:700;color:var(--gold-l)}
+.offer dd{margin:0;color:#E4E9F1}
+.offer .term{margin-top:16px;font-size:.92rem;color:#C9D3E1}
+
+section{padding:96px 0}
+@media(max-width:760px){section{padding:64px 0}}
+.sh{display:grid;grid-template-columns:4fr 8fr;gap:24px;margin-bottom:40px}
+.sh h2{margin-top:6px}
+.sh .lede{margin-top:14px}
+@media(max-width:860px){.sh{grid-template-columns:1fr;gap:8px}}
+
+/* що входить: специфікація */
+.spec{border-top:2px solid var(--navy)}
+.spec>div{display:grid;grid-template-columns:4fr 8fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line)}
+@media(max-width:860px){.spec>div{grid-template-columns:1fr;gap:8px}}
+.spec dt{display:flex;align-items:baseline;gap:12px}
+.spec dt b{font:800 1.25rem var(--disp);color:var(--navy);letter-spacing:-.01em}
+.spec dt span{font-size:.85rem;font-weight:600;color:var(--gold);letter-spacing:.06em;text-transform:uppercase}
+.spec dd{margin:0;color:var(--ink2)}
+.spec dd ol{margin-top:12px;display:grid;gap:6px}
+.spec dd ol li{display:grid;grid-template-columns:28px 1fr;gap:8px}
+.spec dd ol .i{font-weight:700;color:var(--navy3);font-variant-numeric:tabular-nums}
+.spec .big{font:800 2.2rem/1 var(--disp);color:var(--navy);letter-spacing:-.02em}
+.spec .out{color:var(--ink2)}
+
+/* великий перегляд звіту */
+.band{background:var(--navy);color:#fff}
+.band .kick{color:var(--gold-l)}
+.band h2{color:#fff}
+.band .lede{color:#C9D3E1}
+.reader{display:grid;grid-template-columns:3fr 9fr;gap:clamp(20px,3vw,40px);align-items:start}
+@media(max-width:900px){.reader{grid-template-columns:1fr}}
+.toc{position:sticky;top:90px;background:var(--navy2);border-radius:12px;padding:16px}
+@media(max-width:900px){.toc{position:static}}
+.toc p{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-l);margin:0 6px 10px}
+.toc button{display:flex;justify-content:space-between;gap:10px;width:100%;padding:10px;border:0;border-radius:8px;background:none;color:#E4E9F1;text-align:left;font:inherit;font-size:.95rem;cursor:pointer;transition:background .15s}
+.toc button small{color:#9FB0C6;white-space:nowrap;font-variant-numeric:tabular-nums}
+.toc button:hover{background:rgba(255,255,255,.07)}
+.toc button[aria-current="true"]{background:rgba(229,199,127,.16);color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+.toc .hint{margin:12px 6px 0;font-size:.84rem;color:#9FB0C6;text-transform:none;letter-spacing:0;font-weight:400}
+.band .rv{--rv-line:rgba(255,255,255,.22);--rv-muted:#C9D3E1;--rv-accent:var(--gold-l);--rv-btn:transparent;--rv-frame:#0A1B33;--rv-radius:12px;color:#fff}
+.band .rv .rv-doc{color:#fff}
+.band .rv-badge{background:#3B3215;color:#F3DFA6;border-color:#6F5B23}
+.band .wide{margin-top:12px}
+
+/* кроки */
+.steps{display:grid;gap:0;border-top:2px solid var(--navy);counter-reset:s}
+.step{display:grid;grid-template-columns:90px 1fr auto;gap:8px 24px;padding:24px 0;border-bottom:1px solid var(--line);align-items:start}
+.step .n{grid-row:1 / span 3;font:800 2.6rem/1 var(--disp);color:var(--navy);letter-spacing:-.03em}
+.step h3{grid-column:2}
+.step p{grid-column:2;color:var(--ink2)}
+.step .tag{grid-column:3;grid-row:1;font-weight:700;font-size:.82rem;padding:4px 10px;border-radius:6px;border:1px solid var(--gold);color:#7A5B17;white-space:nowrap}
+.step .iban{grid-column:2;margin-top:4px;padding:10px 12px;border-left:3px solid var(--gold);background:#FBF7EC;font-size:.92rem}
+@media(max-width:620px){.step{grid-template-columns:52px 1fr}.step .n{font-size:1.8rem;grid-row:1 / span 4}.step .tag{grid-column:2;grid-row:auto;justify-self:start}}
+
+/* межі послуги й FAQ */
+.limits{display:grid;grid-template-columns:4fr 8fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:900px){.limits{grid-template-columns:1fr}}
+.callout{padding:22px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.callout+.callout{margin-top:14px}
+.callout b{display:block;font:800 1.1rem var(--disp);color:var(--navy);margin-bottom:6px}
+.callout p{color:var(--ink2)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:2px solid var(--navy)}
+.faq summary{padding:20px 0;font-weight:700;font-size:1.08rem;color:var(--navy)}
+.faq summary i{width:28px;height:28px;flex-shrink:0;border-radius:6px;border:1.5px solid var(--line2);position:relative;transition:border-color .2s,background .2s}
+.faq summary i::before,.faq summary i::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:2px;background:var(--navy);transform:translate(-50%,-50%)}
+.faq summary i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .2s}
+.faq details[open] summary i{border-color:var(--gold);background:#FBF7EC}
+.faq details[open] summary i::after{transform:translate(-50%,-50%) rotate(0)}
+.faq .ans{color:var(--ink2);padding-bottom:20px;max-width:75ch}
+
+/* форма */
+.formsec{background:var(--paper);border-top:1px solid var(--line)}
+.fg{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:960px){.fg{grid-template-columns:1fr}}
+.fcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:clamp(20px,3vw,36px);box-shadow:0 20px 40px -32px rgba(14,36,66,.45)}
+.fcard .sub{margin:12px 0 24px;color:var(--ink2)}
+.tw-form .chk a{color:var(--navy3)}
+.tw-form .msg{transition:background-color .2s,border-color .2s}
+.side{position:sticky;top:96px}
+@media(max-width:960px){.side{position:static}}
+.side h3{font:800 1.4rem var(--disp);color:var(--navy)}
+.side>p{margin:10px 0 16px;color:var(--ink2)}
+.contacts li{display:grid;grid-template-columns:140px 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.contacts .k{font-weight:600;font-size:.84rem;color:var(--muted)}
+.contacts .v{font-weight:700;text-decoration:none;color:var(--navy);overflow-wrap:anywhere}
+@media(max-width:420px){.contacts li{grid-template-columns:1fr;gap:2px}}
+
+/* футер */
+.ft{background:var(--navy);color:#C9D3E1;padding:48px 0 30px;font-size:.94rem}
+.ft .g{display:grid;grid-template-columns:6fr 6fr;gap:24px}
+@media(max-width:760px){.ft .g{grid-template-columns:1fr}}
+.ft nav{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:flex-end}
+@media(max-width:760px){.ft nav{justify-content:flex-start}}
+.ft a{color:#fff}
+.ft .legal{margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:.84rem}
+.privacy{margin-top:16px}.privacy summary{cursor:pointer;font-weight:600;color:#fff}.privacy p{margin-top:8px;max-width:75ch}
+
+.mbar{background:#fff;border-top:1px solid var(--line2);box-shadow:0 -6px 20px -12px rgba(14,36,66,.3)}
+.mbar .call{border:1.5px solid var(--line2);color:var(--navy)}
+.cb{background:var(--navy);color:#fff}
+.cb svg{color:var(--gold-l)}
+.rv-fallback img{width:100%;height:auto;border-radius:8px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">До змісту</a>
+{{PROTO}}
+<header class="hdr">
+  <div class="wrap in">
+    <a class="logo" href="#top" aria-label="TenderWin — на початок"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E2442"/><path d="M14 20h36M32 20v26M22 44h20" stroke="#C49A3E" stroke-width="6" stroke-linecap="round"/></svg><span>Tender<b>Win</b></span></a>
+    <nav class="nav" aria-label="Розділи"><a href="#rezultat">Результат</a><a href="#zrazok">Приклад звіту</a><a href="#yak">Як замовити</a><a href="#vartist">Вартість</a><a href="#kontakty">Контакти</a></nav>
+    <a class="tel" href="{{PHONE_HREF}}">{{PHONE}}</a>
+    <a class="btn btn-primary" href="#zayavka">{{BTN}}</a>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" id="top">
+  <div class="wrap g">
+    <div class="t">
+      <p class="kick">{{KICKER}}</p>
+      <h1>{{H1}}</h1>
+      <p class="lede">{{LEDE}}</p>
+    </div>
+    <div class="a">
+      <div class="acts"><a class="btn btn-primary" href="#zayavka">{{BTN}}</a><a class="btn btn-ghost" href="#zrazok">{{BTN2}}</a></div>
+      <p class="note">{{NOTE}}</p>
+    </div>
+    <div class="offer" id="vartist">
+      <p class="amt num">3&nbsp;499<small>грн</small></p>
+      <p class="what">за аналіз і консультацію</p>
+      <dl>
+        <div><dt>Аналіз</dt><dd>письмовий, протягом 24&nbsp;годин після оплати</dd></div>
+        <div><dt>Консультація</dt><dd>30 хвилин, після отримання висновку в погоджений час</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="rezultat">
+  <div class="wrap">
+    <div class="sh"><p class="kick">Що входить у 3&nbsp;499&nbsp;грн</p><div><h2>{{PRICE_TITLE}}</h2><p class="lede">{{PRICE_DESC}}</p></div></div>
+    <dl class="spec">
+      <div data-r><dt><b>Письмовий висновок</b></dt><dd><b>{{RES_H2}}.</b> {{RES_LEDE}}<ol>{{RESLIST}}</ol></dd></div>
+      <div data-r><dt><b>Консультація</b><span>30 хв</span></dt><dd><b>{{CONS_H3}}.</b> {{CONS_TEXT}}</dd></div>
+      <div data-r><dt><b>Строк</b><span>24 год</span></dt><dd>{{TERM}}</dd></div>
+      <div data-r><dt><b>Вартість</b></dt><dd><p class="big num">3&nbsp;499&nbsp;грн</p><p style="margin-top:6px">Консультація входить у ціну послуги.</p></dd></div>
+      <div data-r><dt><b>Не входить</b></dt><dd class="out">{{PRICE_LIMITS}}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="band" id="zrazok">
+  <div class="wrap">
+    <div class="sh"><p class="kick">Приклад звіту</p><div><h2>{{BTN2}}</h2><p class="lede">Великий перегляд документа, який отримує клієнт. Оберіть розділ у змісті — переглядач перейде до відповідної сторінки.</p></div></div>
+    <div class="reader">
+      <nav class="toc" aria-label="Зміст прикладу звіту"><p>Зміст документа</p><div id="toc"></div><p class="hint">Повний PDF — кнопками під документом, без реєстрації.</p></nav>
+      <div>
+        <div id="big" data-viewer data-doc="pos" data-mode="page">{{RVFALLBACK:pos}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="yak">
+  <div class="wrap">
+    <div class="sh"><p class="kick">Як замовити</p><h2>{{HOW_H2}}</h2></div>
+    <ol class="steps">{{STEPS}}</ol>
+  </div>
+</section>
+
+<section id="pytannya" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sh"><p class="kick">Межі послуги та питання</p><h2>{{FAQ_H2}}</h2></div>
+    <div class="limits">
+      <div>
+        <div class="callout" data-r><b>Чесна оцінка</b><p>{{RES_NOTE}}</p></div>
+        <div class="callout" data-r><b>Що не входить</b><p>{{PRICE_LIMITS}}</p></div>
+      </div>
+      {{FAQ}}
+    </div>
+  </div>
+</section>
+
+<section class="formsec" id="zayavka">
+  <div class="wrap fg">
+    <div class="fcard"><p class="kick">Заявка</p><h2 style="margin-top:10px">{{FORM_H2}}</h2><p class="sub">{{FORM_SUB}}</p>{{FORM:btn btn-primary}}</div>
+    <aside class="side" id="kontakty"><h3>{{CONT_H}}</h3><p>{{CONT_TEXT}}</p>{{CONTACTS}}</aside>
+  </div>
+</section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="g"><p>{{FOOT}}</p>
+      <nav aria-label="Розділи сайту"><a href="#rezultat">Результат</a><a href="#zrazok">Приклад звіту</a><a href="#yak">Як замовити</a><a href="#vartist">Вартість</a><a href="#kontakty">Контакти</a></nav></div>
+    {{PRIVACY}}
+    <div class="legal"><span>© 2026 TenderWin · {{EXECUTOR}}</span><span><a href="{{PHONE_HREF}}">{{PHONE}}</a> · <a href="mailto:{{EMAIL}}">{{EMAIL}}</a> · <a href="{{TG_URL}}">{{TG}}</a></span></div>
+  </div>
+</footer>
+
+{{MBAR:btn btn-primary}}
+{{CALLBACK}}
+
+<script>window.TW_REPORTS = {{REPORTS_JSON}};</script>
+<script>{{VIEWER_JS}}</script>
+<script>{{CORE_JS}}</script>
+<script>
+(function () {
+  "use strict";
+  /* зміст документа: вибір розділу переміщує переглядач до сторінки й обводить заголовок */
+  var big = TW.viewers.big, toc = document.getElementById("toc");
+  function build() {
+    toc.innerHTML = "";
+    big.doc().toc.forEach(function (t, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.innerHTML = "<span></span><small></small>";
+      b.firstChild.textContent = t.title; b.lastChild.textContent = "с. " + t.page;
+      b.addEventListener("click", function () {
+        Array.prototype.forEach.call(toc.children, function (x) { x.removeAttribute("aria-current"); });
+        b.setAttribute("aria-current", "true");
+        big.mark(t);
+      });
+      toc.appendChild(b);
+    });
+  }
+  var lastDoc = null;
+  big.el.addEventListener("rv:change", function (e) { if (e.detail.doc !== lastDoc) { lastDoc = e.detail.doc; build(); } });
+  lastDoc = big.state.doc; build();
+})();
+</script>
+</body>
+</html>
