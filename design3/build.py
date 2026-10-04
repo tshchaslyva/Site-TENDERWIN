@@ -204,7 +204,8 @@ REPORT_NOTE_PUBLIC = ("<b>Публічна версія.</b> Замість зв
                       "з рекомендацією оскаржувати і без неї.")
 REPORT_NOTE_PRIVATE = ("<b>Приватна версія — не пересилайте стороннім.</b> У переглядачі всіх прототипів першою стоїть чорнетка справжнього аналізу "
                        "(оскаржувати не рекомендовано) з даними клієнта; друга вкладка — заглушка з вигаданими даними. Це чорнетка: після погодження концепції "
-                       "її замінять два чистові знеособлені аналізи — з рекомендацією оскаржувати і без неї. Знімки на цій сторінці — з публічної версії.")
+                       "її замінять два чистові знеособлені аналізи — з рекомендацією оскаржувати і без неї. Чорнетка — лише для візуальної оцінки концепцій: "
+                       "на сайт вона не розміщується. Знімки на цій сторінці — з публічної версії.")
 
 
 if __name__ == "__main__":
@@ -221,6 +222,8 @@ if __name__ == "__main__":
     g = os.path.join(SRC, "gallery.html")
     if os.path.exists(g):
         body = open(g, encoding="utf-8").read().replace("{{REPORT_NOTE}}", REPORT_NOTE_PRIVATE if PRIVATE else REPORT_NOTE_PUBLIC)
+        if PRIVATE:
+            body = body.replace("<title>TenderWin: концепції сайту</title>", "<title>TenderWin: приватна версія</title>")
         open(os.path.join(DIST, "gallery.html"), "w", encoding="utf-8").write(body)
         open(os.path.join(DIST, "index.html"), "w", encoding="utf-8").write(
             '<!DOCTYPE html>\n<html lang="uk">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n'
